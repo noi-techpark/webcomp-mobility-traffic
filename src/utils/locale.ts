@@ -1,6 +1,6 @@
 function getComponentClosestLanguage(element: HTMLElement): string {
-  let closestElement = element.closest("[lang]") as HTMLElement;
-  return closestElement ? closestElement.lang : "en";
+  let closestElement = element.closest('[lang]') as HTMLElement;
+  return closestElement ? closestElement.lang : 'en';
 }
 
 function fetchLocaleStringsForComponent(componentName: string, locale: string): Promise<any> {
@@ -22,9 +22,7 @@ export async function getLocaleComponentStrings(element: HTMLElement): Promise<a
   try {
     strings = await fetchLocaleStringsForComponent(componentName, componentLanguage);
   } catch (e) {
-    console.warn(
-      `No locale for ${componentName} (${componentLanguage}) loading default locale en.`
-    );
+    console.warn(`No locale for ${componentName} (${componentLanguage}) loading default locale en.`);
     strings = await fetchLocaleStringsForComponent(componentName, 'en');
   }
   return strings;
