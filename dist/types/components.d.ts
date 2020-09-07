@@ -6,10 +6,33 @@
  */
 import { HTMLStencilElement, JSXBase } from "./stencil-public-runtime";
 export namespace Components {
+    interface NoiMobilityMap {
+        "defaultPopup": string;
+        "iconHeight": number;
+        "iconUrl": string;
+        "iconWidth": number;
+        "latitude": number;
+        "longitude": number;
+        "scale": number;
+        "showDefaultMarker": boolean;
+        "showScale": boolean;
+        "tileLayer": string;
+        "userIconHeight": number;
+        "userIconUrl": string;
+        "userIconWidth": number;
+        "userLatitude": number;
+        "userLongitude": number;
+    }
     interface NoiMobilityTraffic {
     }
 }
 declare global {
+    interface HTMLNoiMobilityMapElement extends Components.NoiMobilityMap, HTMLStencilElement {
+    }
+    var HTMLNoiMobilityMapElement: {
+        prototype: HTMLNoiMobilityMapElement;
+        new (): HTMLNoiMobilityMapElement;
+    };
     interface HTMLNoiMobilityTrafficElement extends Components.NoiMobilityTraffic, HTMLStencilElement {
     }
     var HTMLNoiMobilityTrafficElement: {
@@ -17,13 +40,32 @@ declare global {
         new (): HTMLNoiMobilityTrafficElement;
     };
     interface HTMLElementTagNameMap {
+        "noi-mobility-map": HTMLNoiMobilityMapElement;
         "noi-mobility-traffic": HTMLNoiMobilityTrafficElement;
     }
 }
 declare namespace LocalJSX {
+    interface NoiMobilityMap {
+        "defaultPopup"?: string;
+        "iconHeight"?: number;
+        "iconUrl"?: string;
+        "iconWidth"?: number;
+        "latitude"?: number;
+        "longitude"?: number;
+        "scale"?: number;
+        "showDefaultMarker"?: boolean;
+        "showScale"?: boolean;
+        "tileLayer"?: string;
+        "userIconHeight"?: number;
+        "userIconUrl"?: string;
+        "userIconWidth"?: number;
+        "userLatitude"?: number;
+        "userLongitude"?: number;
+    }
     interface NoiMobilityTraffic {
     }
     interface IntrinsicElements {
+        "noi-mobility-map": NoiMobilityMap;
         "noi-mobility-traffic": NoiMobilityTraffic;
     }
 }
@@ -31,6 +73,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "noi-mobility-map": LocalJSX.NoiMobilityMap & JSXBase.HTMLAttributes<HTMLNoiMobilityMapElement>;
             "noi-mobility-traffic": LocalJSX.NoiMobilityTraffic & JSXBase.HTMLAttributes<HTMLNoiMobilityTrafficElement>;
         }
     }

@@ -15,6 +15,9 @@ export class NoiMobilityTraffic {
   }
 
   render() {
-    return <div>{this.strings.title}</div>;
+    return <div class="wrapper">
+      <div>{this.strings.title}</div>
+      <noi-mobility-map class="map"></noi-mobility-map>
+    </div>;
   }
 }

@@ -4,14 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
     <title>NOI mobility traffic web component</title>
-
     <script type="module" src="/build/noi-mobility-traffic.esm.js"></script>
     <script nomodule src="/build/noi-mobility-traffic.js"></script>
     <style>
-      :root {
+      html, body {
+        display: block;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      noi-mobility-traffic {
         --noi-mt-background: #488aff;
-        --noi-mt-width: 100%;
-        --noi-mt-height: 100%;
+        --noi-mt-width: 300px;
+        --noi-mt-height: 200px;
       }
     </style>
   </head>

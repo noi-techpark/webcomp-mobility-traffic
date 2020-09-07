@@ -2,6 +2,12 @@
 
 import { Components, JSX } from "../types/components";
 
+interface NoiMobilityMap extends Components.NoiMobilityMap, HTMLElement {}
+export const NoiMobilityMap: {
+  prototype: NoiMobilityMap;
+  new (): NoiMobilityMap;
+};
+
 interface NoiMobilityTraffic extends Components.NoiMobilityTraffic, HTMLElement {}
 export const NoiMobilityTraffic: {
   prototype: NoiMobilityTraffic;
