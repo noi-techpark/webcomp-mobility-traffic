@@ -1,6 +1,8 @@
 import { attachShadow, h, proxyCustomElement } from '@stencil/core/internal/client';
 export { setAssetPath } from '@stencil/core/internal/client';
 
+const globalScripts = () => {};
+
 function format(first, middle, last) {
   return (first || '') + (middle ? ` ${middle}` : '') + (last ? ` ${last}` : '');
 }
@@ -22,6 +24,7 @@ const NoiMobilityTraffic = class extends HTMLElement {
   static get style() { return noiMobilityTrafficCss; }
 };
 
+globalScripts();
 const NoiMobilityTraffic$1 = /*@__PURE__*/proxyCustomElement(NoiMobilityTraffic, [1,"noi-mobility-traffic",{"first":[1],"middle":[1],"last":[1]}]);
 const defineCustomElements = (opts) => {
   if (typeof customElements !== 'undefined') {
