@@ -1,4 +1,5 @@
-import { Component, h } from '@stencil/core';
+import { Component, h, Element } from '@stencil/core';
+import { getLocaleComponentStrings } from '../../utils/locale';
 
 @Component({
   tag: 'noi-mobility-traffic',
@@ -6,7 +7,14 @@ import { Component, h } from '@stencil/core';
   shadow: true,
 })
 export class NoiMobilityTraffic {
+  @Element() element: HTMLElement;
+  private strings: any;
+
+  async componentWillLoad(): Promise<void> {
+    this.strings = await getLocaleComponentStrings(this.element);
+  }
+
   render() {
-    return <div>Hello, World!</div>;
+    return <div>{this.strings.title}</div>;
   }
 }
