@@ -1,0 +1,1 @@
+import{p as i,b as t}from"./p-2edf0b58.js";(()=>{const t=import.meta.url,r={};return""!==t&&(r.resourcesUrl=new URL(".",t).href),i(r)})().then(i=>t([["p-476a4c51",[[1,"noi-mobility-traffic",{first:[1],middle:[1],last:[1]}]]]],i));
