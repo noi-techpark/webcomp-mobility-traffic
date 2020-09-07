@@ -1,4 +1,4 @@
-import { B as BUILD, c as consoleDevInfo, p as plt, w as win, H, d as doc, N as NAMESPACE, a as promiseResolve, b as bootstrapLazy } from './index-a5f2d4a4.js';
+import { B as BUILD, c as consoleDevInfo, p as plt, w as win, H, d as doc, N as NAMESPACE, a as promiseResolve, b as bootstrapLazy } from './index-4debd3b5.js';
 import { g as globalScripts } from './app-globals-0f993ce5.js';
 
 /*
@@ -118,5 +118,5 @@ const patchCloneNodeFix = (HTMLElementPrototype) => {
 
 patchBrowser().then(options => {
   globalScripts();
-  return bootstrapLazy([["noi-mobility-traffic",[[1,"noi-mobility-traffic",{"first":[1],"middle":[1],"last":[1]}]]]], options);
+  return bootstrapLazy([["noi-mobility-traffic",[[1,"noi-mobility-traffic"]]]], options);
 });

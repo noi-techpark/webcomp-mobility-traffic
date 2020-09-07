@@ -1,20 +1,13 @@
-import { r as registerInstance, h } from './index-a5f2d4a4.js';
+import { r as registerInstance, h } from './index-4debd3b5.js';
 
-function format(first, middle, last) {
-  return (first || '') + (middle ? ` ${middle}` : '') + (last ? ` ${last}` : '');
-}
-
-const noiMobilityTrafficCss = ":host{display:block}";
+const noiMobilityTrafficCss = ":host{display:block;background:var(--noi-mt-background);width:var(--noi-mt-width);height:var(--noi-mt-height)}";
 
 const NoiMobilityTraffic = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
   }
-  getText() {
-    return format(this.first, this.middle, this.last);
-  }
   render() {
-    return h("div", null, "Hello, World! I'm ", this.getText());
+    return h("div", null, "Hello, World!");
   }
 };
 NoiMobilityTraffic.style = noiMobilityTrafficCss;

@@ -1,3 +1,6 @@
 :host {
   display: block;
+  background: var(--noi-mt-background);
+  width: var(--noi-mt-width);
+  height: var(--noi-mt-height);
 }

@@ -7,18 +7,6 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface NoiMobilityTraffic {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
     }
 }
 declare global {
@@ -34,18 +22,6 @@ declare global {
 }
 declare namespace LocalJSX {
     interface NoiMobilityTraffic {
-        /**
-          * The first name
-         */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
     }
     interface IntrinsicElements {
         "noi-mobility-traffic": NoiMobilityTraffic;

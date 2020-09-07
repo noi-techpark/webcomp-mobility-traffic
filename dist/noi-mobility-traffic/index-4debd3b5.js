@@ -1,28 +1,5 @@
-'use strict';
-
-function _interopNamespace(e) {
-  if (e && e.__esModule) { return e; } else {
-    var n = Object.create(null);
-    if (e) {
-      Object.keys(e).forEach(function (k) {
-        if (k !== 'default') {
-          var d = Object.getOwnPropertyDescriptor(e, k);
-          Object.defineProperty(n, k, d.get ? d : {
-            enumerable: true,
-            get: function () {
-              return e[k];
-            }
-          });
-        }
-      });
-    }
-    n['default'] = e;
-    return Object.freeze(n);
-  }
-}
-
 const NAMESPACE = 'noi-mobility-traffic';
-const BUILD = /* noi-mobility-traffic */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, asyncQueue: false, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: false, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: true, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: false, hydrateServerSide: false, hydratedAttribute: false, hydratedClass: true, initializeNextTick: false, isDebug: false, isDev: true, isTesting: true, lazyLoad: true, lifecycle: false, lifecycleDOMEvents: true, member: true, method: false, mode: false, observeAttribute: true, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: false, propString: true, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: false, slot: false, slotChildNodesFix: false, slotRelocation: false, state: false, style: true, svg: false, taskQueue: true, transformTagName: false, updatable: true, vdomAttribute: false, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: false, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
+const BUILD = /* noi-mobility-traffic */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, asyncQueue: false, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: false, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: true, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: true, hydrateClientSide: false, hydrateServerSide: false, hydratedAttribute: false, hydratedClass: true, initializeNextTick: false, isDebug: false, isDev: true, isTesting: false, lazyLoad: true, lifecycle: false, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: false, profile: true, prop: false, propBoolean: false, propMutable: false, propNumber: false, propString: false, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: false, slot: false, slotChildNodesFix: false, slotRelocation: false, state: false, style: true, svg: false, taskQueue: true, transformTagName: false, updatable: true, vdomAttribute: false, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: false, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
 
 let scopeId;
 let contentRef;
@@ -2008,7 +1985,7 @@ const initializeComponent = async (elm, hostRef, cmpMeta, hmrVersionId, Cstr) =>
             if (!styles.has(scopeId)) {
                 const endRegisterStyles = createTime('registerStyles', cmpMeta.$tagName$);
                 if (!BUILD.hydrateServerSide && BUILD.shadowDom && BUILD.shadowDomShim && cmpMeta.$flags$ & 8 /* needsShadowDomShim */) {
-                    style = await Promise.resolve().then(function () { return require('./shadow-css-49e0935f.js'); }).then(m => m.scopeCss(style, scopeId, false));
+                    style = await import('./shadow-css-140c4cf5.js').then(m => m.scopeCss(style, scopeId, false));
                 }
                 registerStyle(scopeId, style, !!(cmpMeta.$flags$ & 1 /* shadowDomEncapsulation */));
                 endRegisterStyles();
@@ -2722,11 +2699,11 @@ const loadModule = (cmpMeta, hostRef, hmrVersionId) => {
     if (module) {
         return module[exportName];
     }
-    return Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require(
+    return import(
     /* webpackInclude: /\.entry\.js$/ */
     /* webpackExclude: /\.system\.entry\.js$/ */
     /* webpackMode: "lazy" */
-    `./${bundleId}.entry.js${BUILD.hotModuleReplacement && hmrVersionId ? '?s-hmr=' + hmrVersionId : ''}`)); }).then(importedModule => {
+    `./${bundleId}.entry.js${BUILD.hotModuleReplacement && hmrVersionId ? '?s-hmr=' + hmrVersionId : ''}`).then(importedModule => {
         if (!BUILD.hotModuleReplacement) {
             cmpModules.set(bundleId, importedModule);
         }
@@ -2824,15 +2801,4 @@ const Build = {
     isTesting: BUILD.isTesting ? true : false,
 };
 
-exports.BUILD = BUILD;
-exports.CSS = CSS;
-exports.H = H;
-exports.NAMESPACE = NAMESPACE;
-exports.bootstrapLazy = bootstrapLazy;
-exports.consoleDevInfo = consoleDevInfo;
-exports.doc = doc;
-exports.h = h;
-exports.plt = plt;
-exports.promiseResolve = promiseResolve;
-exports.registerInstance = registerInstance;
-exports.win = win;
+export { BUILD as B, CSS as C, H, NAMESPACE as N, promiseResolve as a, bootstrapLazy as b, consoleDevInfo as c, doc as d, h, plt as p, registerInstance as r, win as w };
