@@ -8,10 +8,12 @@ import { getLocaleComponentStrings } from '../../utils/locale';
 })
 export class NoiMobilityTraffic {
   @Element() element: HTMLElement;
+  
   private strings: any;
 
   async componentWillLoad(): Promise<void> {
     this.strings = await getLocaleComponentStrings(this.element);
+    
   }
 
   render() {

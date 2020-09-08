@@ -1,4 +1,8 @@
-import { r as registerInstance, h, g as getElement } from './index-90a4521b.js';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+const index = require('./index-47f157e1.js');
 
 var SupportedLangs;
 (function (SupportedLangs) {
@@ -47,16 +51,16 @@ const noiMobilityTrafficCss = ":host{display:block;overflow:hidden;background:va
 
 const NoiMobilityTraffic = class {
   constructor(hostRef) {
-    registerInstance(this, hostRef);
+    index.registerInstance(this, hostRef);
   }
   async componentWillLoad() {
     this.strings = await getLocaleComponentStrings(this.element);
   }
   render() {
-    return h("div", { class: "wrapper" }, h("div", null, this.strings.title), h("noi-mobility-map", { class: "map" }));
+    return index.h("div", { class: "wrapper" }, index.h("div", null, this.strings.title), index.h("noi-mobility-map", { class: "map" }));
   }
-  get element() { return getElement(this); }
+  get element() { return index.getElement(this); }
 };
 NoiMobilityTraffic.style = noiMobilityTrafficCss;
 
-export { NoiMobilityTraffic as noi_mobility_traffic };
+exports.noi_mobility_traffic = NoiMobilityTraffic;

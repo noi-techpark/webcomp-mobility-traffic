@@ -1,4 +1,8 @@
-import { r as registerInstance, g as getElement } from './index-90a4521b.js';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+const index = require('./index-47f157e1.js');
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -14097,7 +14101,7 @@ const noiMobilityMapCss = "noi-mobility-map{height:100%;width:100%;overflow:hidd
 
 const LeafletMarker = class {
   constructor(hostRef) {
-    registerInstance(this, hostRef);
+    index.registerInstance(this, hostRef);
     this.lmap = null;
     this.dmarker = null;
     this.userMarker = null;
@@ -14342,7 +14346,7 @@ const LeafletMarker = class {
         .openPopup();
     }
   }
-  get el() { return getElement(this); }
+  get el() { return index.getElement(this); }
   static get watchers() { return {
     "defaultPopup": ["defaultPopupHandler"],
     "iconHeight": ["iconHeightHandler"],
@@ -14360,4 +14364,4 @@ const LeafletMarker = class {
 };
 LeafletMarker.style = noiMobilityMapCss;
 
-export { LeafletMarker as noi_mobility_map };
+exports.noi_mobility_map = LeafletMarker;

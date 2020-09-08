@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  overflow: hidden;
+  background: var(--noi-mt-background);
+  width: var(--noi-mt-width);
+  height: var(--noi-mt-height);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 8px;
+}
+
+.map {
+  flex: 1;
+}

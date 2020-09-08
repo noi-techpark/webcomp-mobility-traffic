@@ -1,4 +1,4 @@
-import { Component, Prop, Watch, Element } from '@stencil/core';
+import { Component, Prop, Watch, Element  } from '@stencil/core';
 import L from 'leaflet';
 
 interface LayerObserver {

@@ -1,8 +1,23 @@
-import { r as registerInstance, h, g as getElement } from './index-0adade59.js';
+import { r as registerInstance, h, g as getElement } from './index-90a4521b.js';
 
-function getComponentClosestLanguage(element) {
+var SupportedLangs;
+(function (SupportedLangs) {
+  SupportedLangs["it"] = "it";
+  SupportedLangs["en"] = "en";
+  SupportedLangs["de"] = "de";
+})(SupportedLangs || (SupportedLangs = {}));
+function getNavigatorLang() {
+  const lang = navigator.language.split('-')[0];
+  return SupportedLangs[lang] ? SupportedLangs[lang] : SupportedLangs.en;
+}
+function getComponentClosestLang(element) {
   let closestElement = element.closest('[lang]');
-  return closestElement ? closestElement.lang : 'en';
+  if (closestElement && closestElement.lang && SupportedLangs[closestElement.lang]) {
+    return SupportedLangs[element.lang];
+  }
+  else {
+    return getNavigatorLang();
+  }
 }
 function fetchLocaleStringsForComponent(componentName, locale) {
   return new Promise((resolve, reject) => {
@@ -16,7 +31,7 @@ function fetchLocaleStringsForComponent(componentName, locale) {
 }
 async function getLocaleComponentStrings(element) {
   let componentName = element.tagName.toLowerCase();
-  let componentLanguage = getComponentClosestLanguage(element);
+  let componentLanguage = getComponentClosestLang(element);
   let strings;
   try {
     strings = await fetchLocaleStringsForComponent(componentName, componentLanguage);
