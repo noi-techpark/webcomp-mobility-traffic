@@ -1,6 +1,8 @@
 export declare class NoiMobilityTraffic {
-  element: HTMLElement;
   private strings;
+  element: HTMLElement;
+  treeLength: number;
   componentWillLoad(): Promise<void>;
+  componentDidLoad(): Promise<void>;
   render(): any;
 }

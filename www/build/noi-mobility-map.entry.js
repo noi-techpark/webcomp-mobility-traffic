@@ -1,4 +1,4 @@
-import { r as registerInstance, g as getElement } from './index-90a4521b.js';
+import { r as registerInstance, g as getElement } from './index-2dbabfdf.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -14117,7 +14117,7 @@ const LeafletMarker = class {
     this.userIconHeight = 0;
   }
   componentDidLoad() {
-    this.lmap = leafletSrc.map(this.el);
+    this.lmap = leafletSrc.map(this.el, { zoomControl: false });
     this.setView();
     this.setTileLayer();
     this.setScale();

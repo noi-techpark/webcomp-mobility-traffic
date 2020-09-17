@@ -37,7 +37,7 @@ export class LeafletMarker {
   @Prop({ mutable: true }) userIconHeight: number = 0;
 
   componentDidLoad() {
-    this.lmap = L.map(this.el);
+    this.lmap = L.map(this.el, { zoomControl: false });
     this.setView();
     this.setTileLayer();
     this.setScale();

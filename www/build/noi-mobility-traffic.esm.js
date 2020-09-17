@@ -1,4 +1,4 @@
-import { B as BUILD, c as consoleDevInfo, p as plt, w as win, H, d as doc, N as NAMESPACE, a as promiseResolve, b as bootstrapLazy } from './index-90a4521b.js';
+import { B as BUILD, c as consoleDevInfo, p as plt, w as win, H, d as doc, N as NAMESPACE, a as promiseResolve, b as bootstrapLazy } from './index-2dbabfdf.js';
 import { g as globalScripts } from './app-globals-0f993ce5.js';
 
 /*
@@ -118,5 +118,5 @@ const patchCloneNodeFix = (HTMLElementPrototype) => {
 
 patchBrowser().then(options => {
   globalScripts();
-  return bootstrapLazy([["noi-mobility-map",[[0,"noi-mobility-map",{"tileLayer":[1,"tile-layer"],"iconUrl":[1025,"icon-url"],"iconHeight":[1026,"icon-height"],"iconWidth":[1026,"icon-width"],"latitude":[1026],"longitude":[1026],"scale":[1026],"showScale":[4,"show-scale"],"showDefaultMarker":[4,"show-default-marker"],"defaultPopup":[1025,"default-popup"],"userLatitude":[1026,"user-latitude"],"userLongitude":[1026,"user-longitude"],"userIconUrl":[1025,"user-icon-url"],"userIconWidth":[1026,"user-icon-width"],"userIconHeight":[1026,"user-icon-height"]}]]],["noi-mobility-traffic",[[1,"noi-mobility-traffic"]]]], options);
+  return bootstrapLazy([["noi-mobility-map",[[0,"noi-mobility-map",{"tileLayer":[1,"tile-layer"],"iconUrl":[1025,"icon-url"],"iconHeight":[1026,"icon-height"],"iconWidth":[1026,"icon-width"],"latitude":[1026],"longitude":[1026],"scale":[1026],"showScale":[4,"show-scale"],"showDefaultMarker":[4,"show-default-marker"],"defaultPopup":[1025,"default-popup"],"userLatitude":[1026,"user-latitude"],"userLongitude":[1026,"user-longitude"],"userIconUrl":[1025,"user-icon-url"],"userIconWidth":[1026,"user-icon-width"],"userIconHeight":[1026,"user-icon-height"]}]]],["noi-mobility-traffic",[[1,"noi-mobility-traffic",{"treeLength":[32]}]]]], options);
 });
