@@ -5,14 +5,18 @@
 <!-- Auto Generated Below -->
 
 
-## Properties
+## Dependencies
 
-| Property | Attribute | Description     | Type     | Default     |
-| -------- | --------- | --------------- | -------- | ----------- |
-| `first`  | `first`   | The first name  | `string` | `undefined` |
-| `last`   | `last`    | The last name   | `string` | `undefined` |
-| `middle` | `middle`  | The middle name | `string` | `undefined` |
+### Depends on
 
+- [noi-mobility-map](../noi-mobility-map)
+
+### Graph
+```mermaid
+graph TD;
+  noi-mobility-traffic --> noi-mobility-map
+  style noi-mobility-traffic fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

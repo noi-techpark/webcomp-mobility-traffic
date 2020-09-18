@@ -13,19 +13,16 @@ class NoiError extends Error {
 }
 
 const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
-const NOI_SERVICE_ERR_500 = 'error.noi-service.500';
 const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
 const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
-function getErrByServiceError(error) {
-  console.error(error);
+function getErrByServiceError(_) {
   return new NoiError(NOI_SERVICE_ERR_OFFLINE);
 }
 function getErrByStatus(status) {
-  // TODO: implement error codes handling from service
   if (status === 500) {
-    return new NoiError(NOI_SERVICE_ERR_500);
+    return new NoiError(NOI_SERVICE_ERR_UNKNOWN);
   }
-  return new NoiError(NOI_SERVICE_ERR_OFFLINE);
+  return new NoiError(NOI_SERVICE_ERR_UNKNOWN);
 }
 class OpenDataHubNoiService {
   async request(url) {
@@ -39,6 +36,9 @@ class OpenDataHubNoiService {
       return json;
     }
     catch (err) {
+      if (err instanceof NoiError) {
+        throw err;
+      }
       const noiErr = getErrByServiceError(err);
       throw noiErr;
     }
