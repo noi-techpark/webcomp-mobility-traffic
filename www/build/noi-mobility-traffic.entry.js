@@ -1,4 +1,5 @@
-import { r as registerInstance, h, g as getElement } from './index-2dbabfdf.js';
+import { r as registerInstance, h, g as getElement } from './index-d2a73870.js';
+import { l as leafletSrc } from './leaflet-src-ee2a66f1.js';
 
 const NOI_ERR_UNKNOWN = 'noi.error.unknown';
 class NoiError extends Error {
@@ -24,6 +25,18 @@ function getErrByStatus(status) {
   }
   return new NoiError(NOI_SERVICE_ERR_UNKNOWN);
 }
+function parse4326Coordinates(value) {
+  if (!value || value.srid !== 4326) {
+    return null;
+  }
+  try {
+    const result = new leafletSrc.latLng(value.x, value.y);
+    return { lat: result.lat, long: result.lng };
+  }
+  catch (error) {
+    return null;
+  }
+}
 class OpenDataHubNoiService {
   async request(url) {
     try {
@@ -46,9 +59,30 @@ class OpenDataHubNoiService {
   async getTree() {
     const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree`);
     if (!Array.isArray(response)) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getTree expecting and array response' });
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getTree expecting an array response' });
     }
     return response;
+  }
+  async getBluetoothStations() {
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree/BluetoothStation`);
+    if (!response || !response.data || !response.data.BluetoothStation || !response.data.BluetoothStation.stations) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getBluetoothStations expecting an array response in data.BluetoothStation.stations' });
+    }
+    const stations = Object.values(response.data.BluetoothStation.stations).map((s) => {
+      const coordinates = parse4326Coordinates(s.scoordinate);
+      if (!coordinates) {
+        return null;
+      }
+      return {
+        active: !!s.sactive,
+        available: !!s.savailable,
+        id: s.scode,
+        name: s.sname,
+        coordinates,
+        type: 'BluetoothStation'
+      };
+    });
+    return stations.filter(s => !!s);
   }
 }
 OpenDataHubNoiService.BASE_URL = 'https://mobility.api.opendatahub.bz.it';
@@ -103,21 +137,26 @@ const noiMobilityTrafficCss = ":host{display:block;overflow:hidden;background:va
 const NoiMobilityTraffic = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
-    this.treeLength = 0;
+    this.stations = null;
   }
   async componentWillLoad() {
     this.strings = await getLocaleComponentStrings(this.element);
   }
   async componentDidLoad() {
     try {
-      this.treeLength = (await NoiAPI.getTree()).length;
+      this.stations = await NoiAPI.getBluetoothStations();
     }
     catch (error) {
       alert(error.code);
     }
   }
+  getMarkers() {
+    return this.stations.map(s => {
+      return (h("leaflet-marker", { latitude: s.coordinates.long, longitude: s.coordinates.lat, "icon-url": "https://image.flaticon.com/icons/svg/194/194648.svg", "icon-width": "32", "icon-height": "32" }, s.id));
+    });
+  }
   render() {
-    return h("div", { class: "wrapper" }, h("div", null, this.strings.title, ". Tree length=", this.treeLength), h("noi-mobility-map", { class: "map" }));
+    return h("div", { class: "wrapper" }, h("div", null, this.strings.title, ": ", this.stations ? (this.stations.length) : 0), h("noi-mobility-map", { class: "map" }, this.stations ? (this.getMarkers()) : null));
   }
   get element() { return getElement(this); }
 };

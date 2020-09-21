@@ -1,4 +1,5 @@
 import { NoiError, NoiErrorOptionsObject } from "./error";
+import L from 'leaflet';
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
@@ -34,6 +35,27 @@ export interface NoiTreeItem {
   }
 }
 
+export interface NoiBTStation {
+  active: boolean;
+  available: boolean;
+  id: string;
+  coordinates: {lat: number; long: number};
+  name: string;
+  type: 'BluetoothStation'
+}
+
+export function parse4326Coordinates(value: {x: number, y: number; srid: number}): {lat: number; long: number} {
+  if (!value || value.srid !== 4326) {
+    return null;
+  }
+  try {
+    const result = new L.latLng(value.x, value.y);
+    return {lat: result.lat, long: result.lng};
+  } catch (error) {
+    return null;
+  }
+}
+
 export class OpenDataHubNoiService implements NoiService {
   static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
   static VERSION = 'v2';
@@ -59,9 +81,31 @@ export class OpenDataHubNoiService implements NoiService {
   async getTree(): Promise<Array<NoiTreeItem>> {
     const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree`);
     if (!Array.isArray(response)) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: 'getTree expecting and array response'});
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: 'getTree expecting an array response'});
     }
     return response;
+  }
+
+  async getBluetoothStations(): Promise<Array<NoiBTStation>> {
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree/BluetoothStation`);
+    if (!response || !response.data || !response.data.BluetoothStation || !response.data.BluetoothStation.stations) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: 'getBluetoothStations expecting an array response in data.BluetoothStation.stations'});
+    }
+    const stations: Array<NoiBTStation> = Object.values(response.data.BluetoothStation.stations).map((s: any) => {
+      const coordinates = parse4326Coordinates(s.scoordinate);
+      if (!coordinates) {
+        return null;
+      }
+      return {
+        active: !!s.sactive,
+        available: !!s.savailable,
+        id: s.scode,
+        name: s.sname,
+        coordinates,
+        type: 'BluetoothStation'
+      };
+    });
+    return stations.filter(s => !!s);
   }
 }
 

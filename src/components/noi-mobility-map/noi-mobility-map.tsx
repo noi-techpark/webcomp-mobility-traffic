@@ -24,8 +24,8 @@ export class LeafletMarker {
   @Prop({ mutable: true }) iconUrl: string = '';
   @Prop({ mutable: true }) iconHeight: number = 32;
   @Prop({ mutable: true }) iconWidth: number = 32;
-  @Prop({ mutable: true }) latitude: number = 51.505;
-  @Prop({ mutable: true }) longitude: number = -0.09;
+  @Prop({ mutable: true }) latitude: number = 46.4983;
+  @Prop({ mutable: true }) longitude: number = 11.3548;
   @Prop({ mutable: true }) scale: number = 13;
   @Prop() showScale: boolean;
   @Prop() showDefaultMarker: boolean;
@@ -183,7 +183,6 @@ export class LeafletMarker {
   childrenObserver(mutationsList: Array<any>): void {
     for (const mutation of mutationsList) {
       if (mutation.type !== 'childList') continue;
-
       this.removeChildren(mutation.removedNodes);
       this.setChildren();
     }

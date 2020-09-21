@@ -1,5 +1,5 @@
 import { Component, h, Element, State } from '@stencil/core';
-import { NoiAPI } from '../../utils/api';
+import { NoiAPI, NoiBTStation } from '../../utils/api';
 import { getLocaleComponentStrings } from '../../utils/locale';
 
 @Component({
@@ -11,7 +11,7 @@ export class NoiMobilityTraffic {
   private strings: any;
   
   @Element() element: HTMLElement;
-  @State() treeLength = 0;
+  @State() stations: Array<NoiBTStation> = null;
   
   
 
@@ -22,16 +22,26 @@ export class NoiMobilityTraffic {
 
   async componentDidLoad(): Promise<void> {
     try {
-      this.treeLength = (await NoiAPI.getTree()).length;
+      this.stations = await NoiAPI.getBluetoothStations();
     } catch (error) {
       alert(error.code);
     }
   }
 
+  getMarkers() {
+    return this.stations.map(s => {
+      return (<leaflet-marker latitude={s.coordinates.long} longitude={s.coordinates.lat} icon-url="https://image.flaticon.com/icons/svg/194/194648.svg" icon-width="32" icon-height="32">
+        {s.id}
+      </leaflet-marker>)
+    })
+  }
+
   render() {
     return <div class="wrapper">
-      <div>{this.strings.title}. Tree length={this.treeLength}</div>
-      <noi-mobility-map class="map"></noi-mobility-map>
+      <div>{this.strings.title}: {this.stations ? (this.stations.length): 0}</div>
+      <noi-mobility-map class="map">
+        {this.stations ? (this.getMarkers()): null}
+      </noi-mobility-map>
     </div>;
   }
 }
