@@ -10,6 +10,7 @@ export interface NoiErrorService {
 }
 export interface NoiService {
   getTree(): Promise<any>;
+  getBluetoothStations(): Promise<Array<NoiBTStation>>;
 }
 export interface NoiTreeItem {
   id: string;
@@ -46,4 +47,4 @@ export declare class OpenDataHubNoiService implements NoiService {
   getTree(): Promise<Array<NoiTreeItem>>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
 }
-export declare const NoiAPI: OpenDataHubNoiService;
+export declare const NoiAPI: NoiService;

@@ -1,4 +1,5 @@
 import { Config } from '@stencil/core';
+import dotEnvPlugin from 'rollup-plugin-dotenv';
 
 export const config: Config = {
   namespace: 'noi-mobility-traffic',
@@ -36,5 +37,8 @@ export const config: Config = {
         }
       ]
     },
+  ],
+  plugins: [
+    dotEnvPlugin()
   ]
 };

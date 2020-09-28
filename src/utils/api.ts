@@ -23,6 +23,7 @@ export interface NoiErrorService {
 
 export interface NoiService {
   getTree(): Promise<any>;
+  getBluetoothStations(): Promise<Array<NoiBTStation>>;
 }
 
 export interface NoiTreeItem {
@@ -109,4 +110,4 @@ export class OpenDataHubNoiService implements NoiService {
   }
 }
 
-export const NoiAPI = new OpenDataHubNoiService();
+export const NoiAPI: NoiService = new OpenDataHubNoiService();

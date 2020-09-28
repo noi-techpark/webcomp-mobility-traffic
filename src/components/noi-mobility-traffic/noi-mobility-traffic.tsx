@@ -1,5 +1,6 @@
 import { Component, h, Element, State } from '@stencil/core';
 import { NoiAPI, NoiBTStation } from '../../utils/api';
+import { NoiAuth } from '../../utils/auth';
 import { getLocaleComponentStrings } from '../../utils/locale';
 
 @Component({
@@ -26,6 +27,8 @@ export class NoiMobilityTraffic {
     } catch (error) {
       alert(error.code);
     }
+    const accessToken = await NoiAuth.getValidAccessToken();
+    alert(accessToken); 
   }
 
   getMarkers() {
