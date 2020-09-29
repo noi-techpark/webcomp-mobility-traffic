@@ -1,3 +1,4 @@
+import '../../utils/leaflet-curve';
 interface LayerObserver {
   layer: any;
   observer: any;
@@ -44,6 +45,9 @@ export declare class LeafletMarker {
   childrenObserver(mutationsList: Array<any>): void;
   getIcon(el: any): any;
   removeChildren(nodes: Array<any>): void;
+  private renderMarker;
+  private renderCircle;
+  private renderPolyline;
   setChildren(): void;
   setDefaultIcon(): void;
   setDefaultMarker(): void;

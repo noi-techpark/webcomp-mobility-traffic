@@ -1,5 +1,6 @@
 import { NoiError, NoiErrorOptionsObject } from "./error";
 import L from 'leaflet';
+import { NoiAuth } from "./auth";
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
@@ -24,6 +25,7 @@ export interface NoiErrorService {
 export interface NoiService {
   getTree(): Promise<any>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
+  getHighwayStations(): Promise<Array<NoiHighwayStation>>;
 }
 
 export interface NoiTreeItem {
@@ -45,6 +47,21 @@ export interface NoiBTStation {
   type: 'BluetoothStation'
 }
 
+
+export interface NoiHighwayStation {
+  type: 'VMS';
+  id: string;
+  active: boolean;
+  available: boolean;
+  name: string;
+  coordinates: {lat: number; long: number};
+  highway: string;
+  position: number;
+  direction: NoiHighwayStationDirection;
+};
+
+export type NoiHighwayStationDirection = 'north' | 'south' | 'vehicle' | 'unknown';
+
 export function parse4326Coordinates(value: {x: number, y: number; srid: number}): {lat: number; long: number} {
   if (!value || value.srid !== 4326) {
     return null;
@@ -57,13 +74,54 @@ export function parse4326Coordinates(value: {x: number, y: number; srid: number}
   }
 }
 
+export function parseHighwayStationDirection(s: any): NoiHighwayStationDirection {
+  if (!s || !s.smetadata || !s.smetadata.direction_id) {
+    return 'unknown';
+  }
+  switch (s.smetadata.direction_id) {
+    case '1':
+      return 'north';
+    case '2':
+      return 'south';
+    case '3':
+      return 'vehicle';
+    default:
+      return 'unknown';
+  }
+}
+
+export function parseVmsPosition(s: {scode: string, smetadata: any}): number {
+  if (s.scode.startsWith('A22:5515')) {
+    return 33000;
+  }
+  if (s.scode.startsWith('A22:5514')) {
+    return 119600;
+  }
+  if (s.scode.startsWith('A22:5514')) {
+    return 119600;
+  }
+  if (s.scode.startsWith('A22:2014')) {
+    return 136500;
+  }
+  if (s.scode.startsWith('A22:2015')) {
+    return 136500;
+  }
+  if (s.scode.startsWith('A22:2018')) {
+    return 136500;
+  }
+  if (s.scode.startsWith('A22:2020')) {
+    return 136500;
+  }
+  return s.smetadata ? +s.smetadata.position_m : 0;
+}
+
 export class OpenDataHubNoiService implements NoiService {
   static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
   static VERSION = 'v2';
 
-  public async request(url: string) {
+  public async request(url: string, init: RequestInit = {}) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, init);
       if (!response.ok){
         const noiErr = getErrByStatus(response.status);
         throw noiErr;
@@ -77,6 +135,48 @@ export class OpenDataHubNoiService implements NoiService {
       const noiErr = getErrByServiceError(err);
       throw noiErr;
     }
+  }
+
+  async getHighwayStations(): Promise<Array<NoiHighwayStation>> {
+    const accessToken = await NoiAuth.getValidAccessToken();
+    const select = 'sactive,stype,savailable,scoordinate,scode,sname,smetadata';
+    const limit = -1;
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/VMS/*?select=${select}&limit=${limit}`,
+      { headers: { 'Authorization': `bearer ${accessToken}` } }
+    );
+    const stations: Array<NoiHighwayStation> = Object.values(response.data)
+    .map((s: any) => {
+      const code = s.scode.split(':');
+      const highway = code[0];
+      const id = s.scode;
+      const coordinates = parse4326Coordinates(s.scoordinate);
+      if (!coordinates) {
+        return null;
+      }
+      return {
+        active: !!s.sactive,
+        available: !!s.savailable,
+        id,
+        highway,
+        name: s.sname.slice(0, -13),
+        coordinates,
+        type: 'VMS',
+        position: parseVmsPosition(s),
+        direction: parseHighwayStationDirection(s)
+      };
+    });
+    return stations
+    .filter(s => !!s && !(['A22:2014:2', 'A22:2014:1', 'A22:2014:3'].includes(s.id)))
+    .sort((a, b) => {
+      if (a.position > b.position) {
+        return 1;
+      }
+      if (a.position < b.position) {
+        return -1;
+      }
+      return 0;
+    });
   }
 
   async getTree(): Promise<Array<NoiTreeItem>> {

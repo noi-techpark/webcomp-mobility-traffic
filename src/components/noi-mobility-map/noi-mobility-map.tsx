@@ -1,10 +1,13 @@
 import { Component, Prop, Watch, Element  } from '@stencil/core';
 import L from 'leaflet';
+import '../../utils/leaflet-curve';
+import { computePathThroughKnots, NoiLeafletCurvePath, parseKnots } from './path';
 
 interface LayerObserver {
   layer: any,
   observer: any,
 }
+
 
 @Component({
   tag: 'noi-mobility-map',
@@ -206,59 +209,108 @@ export class LeafletMarker {
     });
   }
 
+  private renderMarker(e: Element, observeProps = false) {
+    if (e.nodeName !== 'LEAFLET-MARKER') {
+      return;
+    }
+    const observer = observeProps ? new MutationObserver((mutations: Array<any>, _observer: any) => this.attributesObserver(e, mutations)) : null;
+    observer && observer.observe(e, { attributes: true, childList: false, subtree: false });
+    const marker = {
+      layer: L.marker([e.getAttribute('latitude'), e.getAttribute('longitude')]),
+      observer,
+    }
+    this.children.set(e, marker);
+    marker.layer.addTo(this.lmap);
+
+    if (e.textContent) {
+      marker.layer.bindPopup(e.textContent).openPopup();
+    }
+    if (e.getAttribute('icon-url')) {
+      const icon = this.getIcon(e)
+      marker.layer.setIcon(icon);
+    }
+  }
+
+  private renderCircle(e: Element) {
+    if (e.nodeName !== 'LEAFLET-CIRCLE') {
+      return;
+    }
+    const opts = {
+      radius: e.getAttribute('radius'),
+      stroke: e.hasAttribute('stroke'),
+      color: e.hasAttribute('color') ? e.getAttribute('color') : '#5b879f',
+      weight: e.hasAttribute('weight') ? e.getAttribute('weight') : 3,
+      opacity: e.hasAttribute('opacity') ? e.getAttribute('opacity') : 1.0,
+      lineCap: e.hasAttribute('line-cap') ? e.getAttribute('line-cap') : 'round',
+      lineJoin: e.hasAttribute('line-join') ? e.getAttribute('line-join') : 'round',
+      dashArray: e.hasAttribute('dash-array') ? e.getAttribute('dash-array') : null,
+      dashOffset: e.hasAttribute('dash-offset') ? e.getAttribute('dash-offset') : null,
+      fill: e.hasAttribute('fill') && e.getAttribute('fill') === 'false' ? false : true,
+      fillColor: e.hasAttribute('fill-color') ? e.getAttribute('fill-color') : '#88b2ca',
+      fillOpacity: e.hasAttribute('fill-opacity') ? e.getAttribute('fill-opacity') : 0.8,
+      fillRule: e.hasAttribute('fill-rule') ? e.getAttribute('fill-rule') : 'nonzero',
+      bubblingMouseEvents: e.hasAttribute('bubbling-mouse-events'),
+    };
+
+    const circle = L.circle([e.getAttribute('latitude'), e.getAttribute('longitude')], opts);
+    this.children.set(e, circle);
+    circle.addTo(this.lmap);
+    if (e.textContent) {
+      circle.bindPopup(e.textContent).openPopup();
+    }
+  }
+
+  private renderPolyline(e: Element) {
+    if (e.nodeName !== 'LEAFLET-POLYLINE') {
+      return;
+    }
+    const opts = {
+      fill: false,
+      color: e.hasAttribute('color') ? e.getAttribute('color') : '#5b879f',
+      weight: e.hasAttribute('weight') ? e.getAttribute('weight') : 3,
+      opacity: e.hasAttribute('opacity') ? e.getAttribute('opacity') : 1.0,
+      lineCap: e.hasAttribute('line-cap') ? e.getAttribute('line-cap') : 'round',
+      lineJoin: e.hasAttribute('line-join') ? e.getAttribute('line-join') : 'round',
+      dashArray: e.hasAttribute('dash-array') ? e.getAttribute('dash-array') : null,
+      dashOffset: e.hasAttribute('dash-offset') ? e.getAttribute('dash-offset') : null,
+      bubblingMouseEvents: e.hasAttribute('bubbling-mouse-events'),
+      className: e.hasAttribute('class-name'),
+    };
+    const path: Array<[number, number]> = JSON.parse(e.getAttribute('path'));
+    const pathRenderer = new NoiLeafletCurvePath();
+    computePathThroughKnots(path, pathRenderer);
+    const curveData = pathRenderer.getValue();
+    const line = L.curve(curveData, opts);
+
+    this.children.set(e, line);
+    line.addTo(this.lmap);
+    // const fitMap = e.hasAttribute('fit-map') && e.getAttribute('fit-map') === 'false' ? false : true;
+    // if (fitMap) {
+    //   this.lmap.fitBounds(line.getBounds());
+    // }
+  }
+
   setChildren(): void {
-    Array.from(this.el.children)
-      .map(e => {
-        if (this.children.get(e) !== undefined) return;
-
-        if (e.nodeName === "LEAFLET-MARKER") {
-          const observer = new MutationObserver((mutations: Array<any>, _observer: any) => this.attributesObserver(e, mutations));
-          observer.observe(e, { attributes: true, childList: false, subtree: false });
-
-          const marker = {
-            layer: L.marker([e.getAttribute('latitude'), e.getAttribute('longitude')]),
-            observer,
-          }
-
-          this.children.set(e, marker);
-          marker.layer.addTo(this.lmap);
-
-          if (e.textContent) {
-            marker.layer.bindPopup(e.textContent).openPopup();
-          }
-
-          if (e.getAttribute('icon-url')) {
-            const icon = this.getIcon(e)
-
-            marker.layer.setIcon(icon);
-          }
-        } else if (e.nodeName === "LEAFLET-CIRCLE") {
-          const opts = {
-            radius: e.getAttribute('radius'),
-            stroke: e.hasAttribute('stroke'),
-            color: e.hasAttribute('color') ? e.getAttribute('color') : "#3388ff",
-            weight: e.hasAttribute('weight') ? e.getAttribute('weight') : 3,
-            opacity: e.hasAttribute('opacity') ? e.getAttribute('opacity') : 1.0,
-            lineCap: e.hasAttribute('line-cap') ? e.getAttribute('line-cap') : "round",
-            lineJoin: e.hasAttribute('line-join') ? e.getAttribute('line-join') : "round",
-            dashArray: e.hasAttribute('dash-array') ? e.getAttribute('dash-array') : null,
-            dashOffset: e.hasAttribute('dash-offset') ? e.getAttribute('dash-offset') : null,
-            fill: e.hasAttribute('fill') && e.getAttribute('fill') == "false" ? false : true,
-            fillColor: e.hasAttribute('fill-color') ? e.getAttribute('fill-color') : "#3388ff",
-            fillOpacity: e.hasAttribute('fill-opacity') ? e.getAttribute('fill-opacity') : 0.2,
-            fillRule: e.hasAttribute('fill-rule') ? e.getAttribute('fill-rule') : "evenodd",
-            bubblingMouseEvents: e.hasAttribute('bubbling-mouse-events'),
-          };
-
-          const circle = {
-            layer: L.circle([e.getAttribute('latitude'), e.getAttribute('longitude')], opts),
-            observer: null,
-          };
-
-          this.children.set(e, circle);
-          circle.layer.addTo(this.lmap);
-        }
-      });
+    Array.from(this.el.children).map(e => {
+      if (this.children.get(e) !== undefined) {
+        return;
+      }
+      switch (e.nodeName) {
+        case 'LEAFLET-MARKER':
+          this.renderMarker(e);
+          break;
+        case 'LEAFLET-CIRCLE':
+          this.renderCircle(e);
+          break;
+        case 'LEAFLET-CIRCLE':
+          this.renderCircle(e);
+        case 'LEAFLET-POLYLINE':
+          this.renderPolyline(e);
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   setDefaultIcon(): void {

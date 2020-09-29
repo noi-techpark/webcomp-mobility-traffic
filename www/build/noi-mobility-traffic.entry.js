@@ -13,82 +13,6 @@ class NoiError extends Error {
   }
 }
 
-const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
-const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
-const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
-function getErrByServiceError(_) {
-  return new NoiError(NOI_SERVICE_ERR_OFFLINE);
-}
-function getErrByStatus(status) {
-  if (status === 500) {
-    return new NoiError(NOI_SERVICE_ERR_UNKNOWN);
-  }
-  return new NoiError(NOI_SERVICE_ERR_UNKNOWN);
-}
-function parse4326Coordinates(value) {
-  if (!value || value.srid !== 4326) {
-    return null;
-  }
-  try {
-    const result = new leafletSrc.latLng(value.x, value.y);
-    return { lat: result.lat, long: result.lng };
-  }
-  catch (error) {
-    return null;
-  }
-}
-class OpenDataHubNoiService {
-  async request(url) {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        const noiErr = getErrByStatus(response.status);
-        throw noiErr;
-      }
-      const json = await response.json();
-      return json;
-    }
-    catch (err) {
-      if (err instanceof NoiError) {
-        throw err;
-      }
-      const noiErr = getErrByServiceError(err);
-      throw noiErr;
-    }
-  }
-  async getTree() {
-    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree`);
-    if (!Array.isArray(response)) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getTree expecting an array response' });
-    }
-    return response;
-  }
-  async getBluetoothStations() {
-    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree/BluetoothStation`);
-    if (!response || !response.data || !response.data.BluetoothStation || !response.data.BluetoothStation.stations) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getBluetoothStations expecting an array response in data.BluetoothStation.stations' });
-    }
-    const stations = Object.values(response.data.BluetoothStation.stations).map((s) => {
-      const coordinates = parse4326Coordinates(s.scoordinate);
-      if (!coordinates) {
-        return null;
-      }
-      return {
-        active: !!s.sactive,
-        available: !!s.savailable,
-        id: s.scode,
-        name: s.sname,
-        coordinates,
-        type: 'BluetoothStation'
-      };
-    });
-    return stations.filter(s => !!s);
-  }
-}
-OpenDataHubNoiService.BASE_URL = 'https://mobility.api.opendatahub.bz.it';
-OpenDataHubNoiService.VERSION = 'v2';
-const NoiAPI = new OpenDataHubNoiService();
-
 const AUTH_SERVICE_ERR_UNKNOWN = 'error.auth-service.unknown';
 const AUTH_SERVICE_ERR_OFFLINE = 'error.auth-service.offline';
 class NoiAuthService {
@@ -198,6 +122,160 @@ class NoiAuthService {
 }
 const NoiAuth = new NoiAuthService();
 
+const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
+const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
+const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
+function getErrByServiceError(_) {
+  return new NoiError(NOI_SERVICE_ERR_OFFLINE);
+}
+function getErrByStatus(status) {
+  if (status === 500) {
+    return new NoiError(NOI_SERVICE_ERR_UNKNOWN);
+  }
+  return new NoiError(NOI_SERVICE_ERR_UNKNOWN);
+}
+;
+function parse4326Coordinates(value) {
+  if (!value || value.srid !== 4326) {
+    return null;
+  }
+  try {
+    const result = new leafletSrc.latLng(value.x, value.y);
+    return { lat: result.lat, long: result.lng };
+  }
+  catch (error) {
+    return null;
+  }
+}
+function parseHighwayStationDirection(s) {
+  if (!s || !s.smetadata || !s.smetadata.direction_id) {
+    return 'unknown';
+  }
+  switch (s.smetadata.direction_id) {
+    case '1':
+      return 'north';
+    case '2':
+      return 'south';
+    case '3':
+      return 'vehicle';
+    default:
+      return 'unknown';
+  }
+}
+function parseVmsPosition(s) {
+  if (s.scode.startsWith('A22:5515')) {
+    return 33000;
+  }
+  if (s.scode.startsWith('A22:5514')) {
+    return 119600;
+  }
+  if (s.scode.startsWith('A22:5514')) {
+    return 119600;
+  }
+  if (s.scode.startsWith('A22:2014')) {
+    return 136500;
+  }
+  if (s.scode.startsWith('A22:2015')) {
+    return 136500;
+  }
+  if (s.scode.startsWith('A22:2018')) {
+    return 136500;
+  }
+  if (s.scode.startsWith('A22:2020')) {
+    return 136500;
+  }
+  return s.smetadata ? +s.smetadata.position_m : 0;
+}
+class OpenDataHubNoiService {
+  async request(url, init = {}) {
+    try {
+      const response = await fetch(url, init);
+      if (!response.ok) {
+        const noiErr = getErrByStatus(response.status);
+        throw noiErr;
+      }
+      const json = await response.json();
+      return json;
+    }
+    catch (err) {
+      if (err instanceof NoiError) {
+        throw err;
+      }
+      const noiErr = getErrByServiceError(err);
+      throw noiErr;
+    }
+  }
+  async getHighwayStations() {
+    const accessToken = await NoiAuth.getValidAccessToken();
+    const select = 'sactive,stype,savailable,scoordinate,scode,sname,smetadata';
+    const limit = -1;
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/VMS/*?select=${select}&limit=${limit}`, { headers: { 'Authorization': `bearer ${accessToken}` } });
+    const stations = Object.values(response.data)
+      .map((s) => {
+      const code = s.scode.split(':');
+      const highway = code[0];
+      const id = s.scode;
+      const coordinates = parse4326Coordinates(s.scoordinate);
+      if (!coordinates) {
+        return null;
+      }
+      return {
+        active: !!s.sactive,
+        available: !!s.savailable,
+        id,
+        highway,
+        name: s.sname.slice(0, -13),
+        coordinates,
+        type: 'VMS',
+        position: parseVmsPosition(s),
+        direction: parseHighwayStationDirection(s)
+      };
+    });
+    return stations
+      .filter(s => !!s && !(['A22:2014:2', 'A22:2014:1', 'A22:2014:3'].includes(s.id)))
+      .sort((a, b) => {
+      if (a.position > b.position) {
+        return 1;
+      }
+      if (a.position < b.position) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+  async getTree() {
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree`);
+    if (!Array.isArray(response)) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getTree expecting an array response' });
+    }
+    return response;
+  }
+  async getBluetoothStations() {
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree/BluetoothStation`);
+    if (!response || !response.data || !response.data.BluetoothStation || !response.data.BluetoothStation.stations) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getBluetoothStations expecting an array response in data.BluetoothStation.stations' });
+    }
+    const stations = Object.values(response.data.BluetoothStation.stations).map((s) => {
+      const coordinates = parse4326Coordinates(s.scoordinate);
+      if (!coordinates) {
+        return null;
+      }
+      return {
+        active: !!s.sactive,
+        available: !!s.savailable,
+        id: s.scode,
+        name: s.sname,
+        coordinates,
+        type: 'BluetoothStation'
+      };
+    });
+    return stations.filter(s => !!s);
+  }
+}
+OpenDataHubNoiService.BASE_URL = 'https://mobility.api.opendatahub.bz.it';
+OpenDataHubNoiService.VERSION = 'v2';
+const NoiAPI = new OpenDataHubNoiService();
+
 var SupportedLangs;
 (function (SupportedLangs) {
   SupportedLangs["it"] = "it";
@@ -241,33 +319,56 @@ async function getLocaleComponentStrings(element) {
   return strings;
 }
 
-const noiMobilityTrafficCss = ":host{display:block;overflow:hidden;background:var(--noi-mt-background);width:var(--noi-mt-width);height:var(--noi-mt-height)}.wrapper{display:flex;flex-direction:column;height:100%;margin:8px}.map{flex:1}";
+const noiMobilityTrafficCss = ":host{display:block;overflow:hidden;background:var(--noi-mt-background);width:var(--noi-mt-width);height:var(--noi-mt-height)}.wrapper{display:flex;flex-direction:column;height:100%;margin:8px}.map{flex:1}leaflet-circle,leaflet-marker,leaflet-polyline{display:none}.leaflet-tile-pane{-webkit-filter:grayscale(100%);filter:grayscale(100%)}";
 
 const NoiMobilityTraffic = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
-    this.stations = null;
+    this.btStations = null;
+    this.highwayStations = null;
+    this.highwayLine = null;
   }
   async componentWillLoad() {
     this.strings = await getLocaleComponentStrings(this.element);
   }
   async componentDidLoad() {
     try {
-      this.stations = await NoiAPI.getBluetoothStations();
+      this.btStations = await NoiAPI.getBluetoothStations();
     }
     catch (error) {
       alert(error.code);
     }
-    const accessToken = await NoiAuth.getValidAccessToken();
-    alert(accessToken);
+    try {
+      this.highwayStations = await NoiAPI.getHighwayStations();
+      this.highwayLine = this.highwayStations.reduce((result, i) => {
+        if (i.direction === 'unknown' || i.direction === 'vehicle') {
+          return result;
+        }
+        const p = [i.coordinates.long, i.coordinates.lat];
+        if (result.coordinates !== JSON.stringify(i.coordinates)) {
+          result.data.push(p);
+          result.coordinates = JSON.stringify(i.coordinates);
+        }
+        return result;
+      }, { data: [], coordinates: '' }).data;
+    }
+    catch (error) {
+      alert(error.code);
+    }
   }
-  getMarkers() {
-    return this.stations.map(s => {
-      return (h("leaflet-marker", { latitude: s.coordinates.long, longitude: s.coordinates.lat, "icon-url": "https://image.flaticon.com/icons/svg/194/194648.svg", "icon-width": "32", "icon-height": "32" }, s.id));
+  getBtMarkers() {
+    const icon = 'https://image.flaticon.com/icons/svg/194/194648.svg';
+    return this.btStations.map(s => {
+      return (h("leaflet-marker", { latitude: s.coordinates.long, longitude: s.coordinates.lat, "icon-url": icon, "icon-width": "32", "icon-height": "32" }, s.id));
+    });
+  }
+  getHighwayCircles() {
+    return this.highwayStations.map((s, i) => {
+      return (h("leaflet-circle", { latitude: s.coordinates.long, longitude: s.coordinates.lat, radius: 20, stroke: 1 }, "(", i, ") ", s.id, " - ", s.position));
     });
   }
   render() {
-    return h("div", { class: "wrapper" }, h("div", null, this.strings.title, ": ", this.stations ? (this.stations.length) : 0), h("noi-mobility-map", { class: "map" }, this.stations ? (this.getMarkers()) : null));
+    return h("div", { class: "wrapper" }, h("div", null, this.strings.title, ": ", this.btStations ? (this.btStations.length) : 0), h("noi-mobility-map", { class: "map" }, this.btStations ? (this.getBtMarkers()) : null, this.highwayStations ? (this.getHighwayCircles()) : null, this.highwayLine ? (h("leaflet-polyline", { path: JSON.stringify(this.highwayLine) })) : null));
   }
   get element() { return getElement(this); }
 };

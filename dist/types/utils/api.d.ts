@@ -11,6 +11,7 @@ export interface NoiErrorService {
 export interface NoiService {
   getTree(): Promise<any>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
+  getHighwayStations(): Promise<Array<NoiHighwayStation>>;
 }
 export interface NoiTreeItem {
   id: string;
@@ -32,6 +33,21 @@ export interface NoiBTStation {
   name: string;
   type: 'BluetoothStation';
 }
+export interface NoiHighwayStation {
+  type: 'VMS';
+  id: string;
+  active: boolean;
+  available: boolean;
+  name: string;
+  coordinates: {
+    lat: number;
+    long: number;
+  };
+  highway: string;
+  position: number;
+  direction: NoiHighwayStationDirection;
+}
+export declare type NoiHighwayStationDirection = 'north' | 'south' | 'vehicle' | 'unknown';
 export declare function parse4326Coordinates(value: {
   x: number;
   y: number;
@@ -40,10 +56,16 @@ export declare function parse4326Coordinates(value: {
   lat: number;
   long: number;
 };
+export declare function parseHighwayStationDirection(s: any): NoiHighwayStationDirection;
+export declare function parseVmsPosition(s: {
+  scode: string;
+  smetadata: any;
+}): number;
 export declare class OpenDataHubNoiService implements NoiService {
   static BASE_URL: string;
   static VERSION: string;
-  request(url: string): Promise<any>;
+  request(url: string, init?: RequestInit): Promise<any>;
+  getHighwayStations(): Promise<Array<NoiHighwayStation>>;
   getTree(): Promise<Array<NoiTreeItem>>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
 }
