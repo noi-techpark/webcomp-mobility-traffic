@@ -1,6 +1,8 @@
 # General
 .DS_Store
 .env
+www/build
+
 
 # Editors
 .idea
