@@ -438,6 +438,30 @@ L.curve = function (path, options) {
   return new L.Curve(path, options);
 };
 
+class NoiLeafletCurvePath {
+  constructor() {
+    this.value = [];
+  }
+  getValue() {
+    return [...this.value];
+  }
+  moveTo(to) {
+    this.value.push('M', to.getValue());
+  }
+  cubicTo(control1, control2, to) {
+    this.value.push('C', control1.getValue(), control2.getValue(), to.getValue());
+  }
+  lineTo(to) {
+    this.value.push('L', to.getValue());
+  }
+  finish(to) {
+    this.value.push('T', to.getValue());
+  }
+  cubicWithPrevTo(control, to) {
+    this.value.push('S', control.getValue(), to.getValue());
+  }
+}
+
 class NoiPoint {
   constructor(value) {
     this.value = [...value];
@@ -468,29 +492,6 @@ class NoiPoint {
   }
 }
 ;
-class NoiLeafletCurvePath {
-  constructor() {
-    this.value = [];
-  }
-  getValue() {
-    return [...this.value];
-  }
-  moveTo(to) {
-    this.value.push('M', to.getValue());
-  }
-  cubicTo(control1, control2, to) {
-    this.value.push('C', control1.getValue(), control2.getValue(), to.getValue());
-  }
-  lineTo(to) {
-    this.value.push('L', to.getValue());
-  }
-  finish(to) {
-    this.value.push('T', to.getValue());
-  }
-  cubicWithPrevTo(control, to) {
-    this.value.push('S', control.getValue(), to.getValue());
-  }
-}
 function parseKnots(value) {
   return value.map(i => new NoiPoint(i));
 }
@@ -854,6 +855,15 @@ const LeafletMarker = class {
     //   this.lmap.fitBounds(line.getBounds());
     // }
   }
+  renderGeoJson(e) {
+    if (e.nodeName !== 'LEAFLET-GEOJSON') {
+      return;
+    }
+    const geometry = JSON.parse(e.getAttribute('geometry'));
+    const line = leafletSrc.geoJSON(geometry, geometry);
+    this.children.set(e, line);
+    line.addTo(this.lmap);
+  }
   setChildren() {
     Array.from(this.el.children).map(e => {
       if (this.children.get(e) !== undefined) {
@@ -870,6 +880,9 @@ const LeafletMarker = class {
           this.renderCircle(e);
         case 'LEAFLET-POLYLINE':
           this.renderPolyline(e);
+          break;
+        case 'LEAFLET-GEOJSON':
+          this.renderGeoJson(e);
           break;
         default:
           break;

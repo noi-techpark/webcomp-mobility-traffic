@@ -1,7 +1,8 @@
 import { Component, Prop, Watch, Element  } from '@stencil/core';
 import L from 'leaflet';
 import '../../utils/leaflet-curve';
-import { computePathThroughKnots, NoiLeafletCurvePath, parseKnots } from './path';
+import { NoiLeafletCurvePath } from './leaflet-curve.path';
+import { computePathThroughKnots } from './path';
 
 interface LayerObserver {
   layer: any,
@@ -290,6 +291,17 @@ export class LeafletMarker {
     // }
   }
 
+  private renderGeoJson(e: Element) {
+    if (e.nodeName !== 'LEAFLET-GEOJSON') {
+      return;
+    }
+    const geometry = JSON.parse(e.getAttribute('geometry'));
+    const line = L.geoJSON(geometry, geometry);
+
+    this.children.set(e, line);
+    line.addTo(this.lmap);
+  }
+
   setChildren(): void {
     Array.from(this.el.children).map(e => {
       if (this.children.get(e) !== undefined) {
@@ -306,6 +318,9 @@ export class LeafletMarker {
           this.renderCircle(e);
         case 'LEAFLET-POLYLINE':
           this.renderPolyline(e);
+          break;
+        case 'LEAFLET-GEOJSON':
+          this.renderGeoJson(e);
           break;
         default:
           break;

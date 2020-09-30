@@ -5,6 +5,7 @@ import { NoiAuth } from "./auth";
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
 export const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
+export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
 
 export function getErrByServiceError(_: Error): NoiError {
   return new NoiError(NOI_SERVICE_ERR_OFFLINE);
@@ -26,8 +27,22 @@ export interface NoiService {
   getTree(): Promise<any>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
+  getLinkStation(id: string): Promise<NoiLinkStation>;
+  getLinkStations(): Promise<Array<NoiLinkStation>>
 }
 
+
+export interface NoiLinkStation {
+  type: 'LinkStation',
+  available: boolean,
+  active: boolean,
+  id: string,
+  name: string,
+  origin: string,
+  start: NoiBTStation,
+  end: NoiBTStation,
+  geometry: GeoJSON.Geometry,
+}
 export interface NoiTreeItem {
   id: string;
   description: string;
@@ -90,6 +105,40 @@ export function parseHighwayStationDirection(s: any): NoiHighwayStationDirection
   }
 }
 
+export function parseBluetoothStation(prefix, s: any): NoiBTStation {
+  if (s[`${prefix}type`] !== 'BluetoothStation') {
+    return null;
+  }
+  const coordinates = parse4326Coordinates(s[`${prefix}coordinate`]);
+  if (!coordinates) {
+    return null;
+  }
+  return {
+    active: !!s[`${prefix}active`],
+    available: !!s[`${prefix}available`],
+    id: s[`${prefix}code`],
+    name: s[`${prefix}name`],
+    coordinates,
+    type: 'BluetoothStation'
+  };
+}
+
+export function parseLinkStation(s): NoiLinkStation {
+  const start: NoiBTStation = parseBluetoothStation('sb', s);
+  const end: NoiBTStation = parseBluetoothStation('se', s);
+  return {
+    type: 'LinkStation',
+    active: !!s.eactive,
+    available: !!s.eavailable,
+    id: s.ecode,
+    name: s.ename,
+    origin: s.eorigin,
+    geometry: s.egeometry,
+    start,
+    end
+  };
+}
+
 export function parseVmsPosition(s: {scode: string, smetadata: any}): number {
   if (s.scode.startsWith('A22:5515')) {
     return 33000;
@@ -135,6 +184,29 @@ export class OpenDataHubNoiService implements NoiService {
       const noiErr = getErrByServiceError(err);
       throw noiErr;
     }
+  }
+
+  async getLinkStation(id: string): Promise<NoiLinkStation> {
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=ecode.eq.${id},eactive.eq.true`
+    );
+    debugger;
+    if (!response || !response.data || response.data.length !== 1) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${id} not found`});
+    }
+    debugger;
+    return parseLinkStation(response.data[0]);
+  }
+
+  async getLinkStations(): Promise<Array<NoiLinkStation>> {
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=egeometry.neq.null,eactive.eq.true&limit=-1`,
+    );
+    if (!response || !response.data || !Array.isArray(response.data)) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `LinkStations expecting an array response`});
+    }
+    debugger;
+    return response.data.map(parseLinkStation);
   }
 
   async getHighwayStations(): Promise<Array<NoiHighwayStation>> {
@@ -188,25 +260,19 @@ export class OpenDataHubNoiService implements NoiService {
   }
 
   async getBluetoothStations(): Promise<Array<NoiBTStation>> {
-    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree/BluetoothStation`);
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/
+      tree/BluetoothStation`
+    );
     if (!response || !response.data || !response.data.BluetoothStation || !response.data.BluetoothStation.stations) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: 'getBluetoothStations expecting an array response in data.BluetoothStation.stations'});
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {
+        message: 'getBluetoothStations expecting an array response in data.BluetoothStation.stations'
+      });
     }
-    const stations: Array<NoiBTStation> = Object.values(response.data.BluetoothStation.stations).map((s: any) => {
-      const coordinates = parse4326Coordinates(s.scoordinate);
-      if (!coordinates) {
-        return null;
-      }
-      return {
-        active: !!s.sactive,
-        available: !!s.savailable,
-        id: s.scode,
-        name: s.sname,
-        coordinates,
-        type: 'BluetoothStation'
-      };
-    });
-    return stations.filter(s => !!s);
+    return Object
+      .values(response.data.BluetoothStation.stations)
+      .map(s => parseBluetoothStation('s', s))
+      .filter(s => !!s);
   }
 }
 

@@ -48,6 +48,7 @@ export declare class LeafletMarker {
   private renderMarker;
   private renderCircle;
   private renderPolyline;
+  private renderGeoJson;
   setChildren(): void;
   setDefaultIcon(): void;
   setDefaultMarker(): void;

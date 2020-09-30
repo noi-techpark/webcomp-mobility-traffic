@@ -1,5 +1,5 @@
 import { Component, h, Element, State } from '@stencil/core';
-import { NoiAPI, NoiBTStation, NoiHighwayStation } from '../../utils/api';
+import { NoiAPI, NoiBTStation, NoiHighwayStation, NoiLinkStation } from '../../utils/api';
 import { getLocaleComponentStrings } from '../../utils/locale';
 
 @Component({
@@ -14,6 +14,8 @@ export class NoiMobilityTraffic {
   @State() btStations: Array<NoiBTStation> = null;
   @State() highwayStations: Array<NoiHighwayStation> = null;
   @State() highwayLine: Array<[number, number]> = null;
+  @State() linkStation: NoiLinkStation = null;
+  @State() linkStations: Array<NoiLinkStation> = null;
   
   
 
@@ -30,17 +32,21 @@ export class NoiMobilityTraffic {
     }
     try {
       this.highwayStations = await NoiAPI.getHighwayStations();
-      this.highwayLine = this.highwayStations.reduce((result, i) => {
-        if (i.direction === 'unknown' || i.direction === 'vehicle') {
-          return result;
-        }
-        const p = [i.coordinates.long, i.coordinates.lat];
-        if (result.coordinates !== JSON.stringify(i.coordinates)) {
-          result.data.push(p);
-          result.coordinates = JSON.stringify(i.coordinates);
-        }
-        return result;
-      }, {data: [], coordinates: ''}).data;
+      // this.linkStation = await NoiAPI.getLinkStation('A22_ML103->A22_ML107');
+      // this.linkStation = await NoiAPI.getLinkStation('Agip_Einstein->meinstein');
+      this.linkStations = await NoiAPI.getLinkStations();
+      // debugger;
+      // this.highwayLine = this.highwayStations.reduce((result, i) => {
+      //   if (i.direction === 'unknown' || i.direction === 'vehicle') {
+      //     return result;
+      //   }
+      //   const p = [i.coordinates.long, i.coordinates.lat];
+      //   if (result.coordinates !== JSON.stringify(i.coordinates)) {
+      //     result.data.push(p);
+      //     result.coordinates = JSON.stringify(i.coordinates);
+      //   }
+      //   return result;
+      // }, {data: [], coordinates: ''}).data;
     } catch (error) {
       alert(error.code);
     }
@@ -68,6 +74,12 @@ export class NoiMobilityTraffic {
     })
   }
 
+  getAllLinkStations() {
+    return this.linkStations.map(s => {
+      return <leaflet-geojson geometry={JSON.stringify(s.geometry)}></leaflet-geojson>;
+    })
+  }
+
   render() {
     return <div class="wrapper">
       <div>{this.strings.title}: {this.btStations ? (this.btStations.length): 0}</div>
@@ -75,6 +87,8 @@ export class NoiMobilityTraffic {
         {this.btStations ? (this.getBtMarkers()): null}
         {this.highwayStations ? (this.getHighwayCircles()): null}
         {this.highwayLine ? (<leaflet-polyline path={JSON.stringify(this.highwayLine)}></leaflet-polyline>): null}
+        {this.linkStation ? (<leaflet-geojson geometry={JSON.stringify(this.linkStation.geometry)}></leaflet-geojson>): null}
+        {this.linkStations ? (this.getAllLinkStations()): null}
       </noi-mobility-map>
     </div>;
   }
