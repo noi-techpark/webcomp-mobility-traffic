@@ -5,7 +5,7 @@ import { getLocaleComponentStrings } from '../../utils/locale';
 @Component({
   tag: 'noi-mobility-traffic',
   styleUrl: 'noi-mobility-traffic.css',
-  shadow: true,
+  scoped: true
 })
 export class NoiMobilityTraffic {
   private strings: any;
@@ -26,15 +26,15 @@ export class NoiMobilityTraffic {
 
   async componentDidLoad(): Promise<void> {
     try {
-      this.btStations = await NoiAPI.getBluetoothStations();
+      // this.btStations = await NoiAPI.getBluetoothStations();
     } catch (error) {
       alert(error.code);
     }
     try {
-      this.highwayStations = await NoiAPI.getHighwayStations();
+      // this.highwayStations = await NoiAPI.getHighwayStations();
       // this.linkStation = await NoiAPI.getLinkStation('A22_ML103->A22_ML107');
       // this.linkStation = await NoiAPI.getLinkStation('Agip_Einstein->meinstein');
-      this.linkStations = await NoiAPI.getLinkStations();
+      // this.linkStations = await NoiAPI.getLinkStations();
       // debugger;
       // this.highwayLine = this.highwayStations.reduce((result, i) => {
       //   if (i.direction === 'unknown' || i.direction === 'vehicle') {
@@ -83,6 +83,9 @@ export class NoiMobilityTraffic {
   render() {
     return <div class="wrapper">
       <div>{this.strings.title}: {this.btStations ? (this.btStations.length): 0}</div>
+      <div>
+      <ion-button color="primary">Click me!</ion-button>
+      </div>
       <noi-mobility-map class="map">
         {this.btStations ? (this.getBtMarkers()): null}
         {this.highwayStations ? (this.getHighwayCircles()): null}

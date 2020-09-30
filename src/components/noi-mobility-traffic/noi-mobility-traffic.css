@@ -20,8 +20,3 @@
 leaflet-circle, leaflet-marker, leaflet-polyline {
   display: none;
 }
-
-.leaflet-tile-pane {
-  -webkit-filter: grayscale(100%);
-  filter: grayscale(100%);
-}

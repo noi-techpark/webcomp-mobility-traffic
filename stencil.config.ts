@@ -1,9 +1,11 @@
 import { Config } from '@stencil/core';
 import dotEnvPlugin from 'rollup-plugin-dotenv';
+import { sass } from '@stencil/sass';
 
 export const config: Config = {
   namespace: 'noi-mobility-traffic',
-  globalStyle: 'src/global/variables.css',
+  globalStyle: 'src/global/styles.css',
+  globalScript: 'src/global/ionic.ts',
   outputTargets: [
     {
       type: 'dist',
@@ -39,6 +41,11 @@ export const config: Config = {
     },
   ],
   plugins: [
-    dotEnvPlugin()
+    dotEnvPlugin(),
+    sass({
+      injectGlobalPaths: [
+       'src/global/ionic-theme.scss'
+     ]
+   })
   ]
 };

@@ -6,6 +6,11 @@ noi-mobility-map {
 
 /* required styles */
 
+.leaflet-tile-pane {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
 .leaflet-pane,
 .leaflet-tile,
 .leaflet-marker-icon,

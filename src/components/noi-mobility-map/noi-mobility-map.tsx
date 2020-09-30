@@ -12,8 +12,7 @@ interface LayerObserver {
 
 @Component({
   tag: 'noi-mobility-map',
-  styleUrl: 'noi-mobility-map.css',
-  shadow: false,
+  styleUrl: 'noi-mobility-map.css'
 })
 export class LeafletMarker {
   lmap: any = null;
