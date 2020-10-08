@@ -1,6 +1,6 @@
 import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Prop, h } from '@stencil/core';
 
-import { hasShadowDom } from '../../utils/helpers';
+import { hasShadowDom } from '../helpers';
 
 export interface AnchorInterface {
   href: string | undefined;

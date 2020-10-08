@@ -1,4 +1,4 @@
-import { r as registerInstance, h, g as getElement } from './index-e280071f.js';
+import { r as registerInstance, h, g as getElement } from './index-eae66176.js';
 
 var SupportedLangs;
 (function (SupportedLangs) {
@@ -64,7 +64,7 @@ const NoiMobilityTraffic = class {
   }
   async componentDidLoad() {
     rIC(() => {
-      import('./tap-click-ea539ae7.js').then(module => module.startTapClick());
+      import('./tap-click-e7f0b412.js').then(module => module.startTapClick());
     });
   }
   getHighwayCircles(highwayStations) {
@@ -80,6 +80,7 @@ const NoiMobilityTraffic = class {
   render() {
     return h("div", { class: "wrapper" }, h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-mobility-map", { class: "map" }, this.linkStations ? (this.getAllLinkStations(this.linkStations)) : null));
   }
+  static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }
 };
 NoiMobilityTraffic.style = noiMobilityTrafficCss;

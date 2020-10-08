@@ -1,4 +1,4 @@
-import { ComponentInterface, EventEmitter } from '../../stencil-public-runtime';
+import { ComponentInterface, EventEmitter } from '../../../../stencil-public-runtime';
 export interface InputChangeEventDetail {
   value: string | undefined | null;
 }

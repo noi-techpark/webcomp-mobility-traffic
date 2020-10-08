@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { InputChangeEventDetail, StyleEventDetail, TextFieldTypes } from "./components/input/input";
+import { InputChangeEventDetail, StyleEventDetail, TextFieldTypes } from "./components/noi-mobility-traffic/components/input/input";
 export namespace Components {
     interface NoiButton {
         /**

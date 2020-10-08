@@ -1,4 +1,4 @@
-import { r as registerInstance, g as getElement } from './index-e280071f.js';
+import { r as registerInstance, g as getElement } from './index-eae66176.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 

@@ -13,7 +13,7 @@ import {
   h
 } from '@stencil/core';
 
-import { debounceEvent, findItemLabel } from '../../utils/helpers';
+import { debounceEvent, findItemLabel } from '../helpers';
 
 export interface InputChangeEventDetail {
   value: string | undefined | null;

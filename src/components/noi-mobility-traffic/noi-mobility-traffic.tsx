@@ -13,7 +13,8 @@ const rIC = (callback: () => void) => {
 @Component({
   tag: 'noi-mobility-traffic',
   styleUrl: 'noi-mobility-traffic.css',
-  scoped: true
+  scoped: true,
+  assetsDirs: ['assets']
 })
 export class NoiMobilityTraffic {
   private strings: any;
@@ -31,7 +32,7 @@ export class NoiMobilityTraffic {
 
   async componentDidLoad(): Promise<void> {
     rIC(() => {
-      import('../../utils/tap-click').then(module => module.startTapClick());
+      import('./components/tap-click').then(module => module.startTapClick());
     });
   }
 

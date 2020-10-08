@@ -1,4 +1,4 @@
-import { Host, Component, h } from '@stencil/core';
+import { Host, Component, h, getAssetPath } from '@stencil/core';
 
 @Component({
   tag: 'noi-search',
@@ -13,10 +13,13 @@ export class Search {
       </div>
       <div class="noi-search__inputs">
         <noi-input placeholder="Partenza?"></noi-input>
+        <hr/>
         <noi-input placeholder="Destinazione?"></noi-input>
       </div>
       <div class="noi-search__button">
-        <noi-button class="button-md" fill="solid" shape="round"></noi-button>
+        <noi-button fill="solid">
+          <img slot="icon-only" src={getAssetPath(`./assets/reorder.svg`)}/>
+        </noi-button>
       </div>
     </Host>);
   }

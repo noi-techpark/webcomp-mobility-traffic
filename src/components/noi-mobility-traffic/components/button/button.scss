@@ -1,4 +1,4 @@
-@import "../../global/mixins";
+@import "../mixins";
 @import "./button-md";
 
 // Button
@@ -25,8 +25,6 @@
    * @prop --border-width: Border width of the button
    * @prop --border-style: Border style of the button
    * @prop --border-color: Border color of the button
-   *
-   * @prop --ripple-color: Color of the button ripple effect
    *
    * @prop --box-shadow: Box shadow of the button
    * @prop --opacity: Opacity of the button

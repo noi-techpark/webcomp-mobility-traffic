@@ -1,4 +1,4 @@
-import { EventEmitter } from '../stencil-public-runtime';
+import { EventEmitter } from '../../../stencil-public-runtime';
 /**
  * Gets the root context of a shadow dom element
  * On newer browsers this will be the shadowRoot,
