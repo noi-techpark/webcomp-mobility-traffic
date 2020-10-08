@@ -23,7 +23,6 @@
     "chrome": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --disable-web-security --user-data-dir=\"/tmp/chrome_dev_test\" --remote-debugging-port=9222"
   },
   "dependencies": {
-    "@ionic/core": "^5.3.4",
     "@stencil/core": "^2.0.1",
     "leaflet": "^1.7.1"
   },

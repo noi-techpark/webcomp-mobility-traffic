@@ -1,16 +1,12 @@
-import { NoiBTStation, NoiHighwayStation, NoiLinkStation } from '../../utils/api';
+import { NoiLinkStation } from '../../utils/api';
 export declare class NoiMobilityTraffic {
   private strings;
   element: HTMLElement;
-  btStations: Array<NoiBTStation>;
-  highwayStations: Array<NoiHighwayStation>;
-  highwayLine: Array<[number, number]>;
-  linkStation: NoiLinkStation;
   linkStations: Array<NoiLinkStation>;
+  showSearch: boolean;
   componentWillLoad(): Promise<void>;
   componentDidLoad(): Promise<void>;
-  getBtMarkers(): any[];
-  getHighwayCircles(): any[];
-  getAllLinkStations(): any[];
+  getHighwayCircles(highwayStations: any): any;
+  getAllLinkStations(linkStations: any): any;
   render(): any;
 }

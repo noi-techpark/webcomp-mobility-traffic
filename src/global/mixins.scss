@@ -1,0 +1,311 @@
+@mixin input-cover() {
+  @include position(0, null, null, 0);
+  @include margin(0);
+
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  appearance: none;
+  outline: none;
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+}
+
+@mixin text-inherit() {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-decoration: inherit;
+  text-indent: inherit;
+  text-overflow: inherit;
+  text-transform: inherit;
+  text-align: inherit;
+  white-space: inherit;
+  color: inherit;
+}
+
+@mixin button-state() {
+  @include position(0, 0, 0, 0);
+
+  position: absolute;
+
+  content: "";
+
+  opacity: 0;
+}
+
+// Font smoothing
+// --------------------------------------------------
+
+@mixin font-smoothing() {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Get the key from a map based on the index
+@function index-to-key($map, $index) {
+  $keys: map-keys($map);
+
+  @return nth($keys, $index);
+}
+
+
+// Breakpoint Mixins
+// ---------------------------------------------------------------------------------
+
+// Breakpoint viewport sizes and media queries.
+//
+// Breakpoints are defined as a map of (name: minimum width), order from small to large:
+//
+//    (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
+//
+// The map defined in the `$screen-breakpoints` global variable is used as the `$breakpoints` argument by default.
+
+// ---------------------------------------------------------------------------------
+
+// Minimum breakpoint width. Null for the smallest (first) breakpoint.
+//
+//    >> breakpoint-min(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    576px
+@function breakpoint-min($name, $breakpoints: $screen-breakpoints) {
+  $min: map-get($breakpoints, $name);
+
+  @return if($name != index-to-key($breakpoints, 1), $min, null);
+}
+
+// Returns a blank string if smallest breakpoint, otherwise returns the name with a dash infront.
+// Useful for making responsive utilities.
+//
+//    >> breakpoint-infix(xs, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    ""  (Returns a blank string)
+//    >> breakpoint-infix(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    "-sm"
+@function breakpoint-infix($name, $breakpoints: $screen-breakpoints) {
+  @return if(breakpoint-min($name, $breakpoints) == null, "", "-#{$name}");
+}
+
+// Media of at least the minimum breakpoint width. No query for the smallest breakpoint.
+// Makes the @content apply to the given breakpoint and wider.
+@mixin media-breakpoint-up($name, $breakpoints: $screen-breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+// Name of the next breakpoint, or null for the last breakpoint.
+//
+//    >> breakpoint-next(sm)
+//    md
+//    >> breakpoint-next(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    md
+//    >> breakpoint-next(sm, $breakpoint-names: (xs sm md lg xl))
+//    md
+@function breakpoint-next($name, $breakpoints: $screen-breakpoints, $breakpoint-names: map-keys($breakpoints)) {
+  $n: index($breakpoint-names, $name);
+  @return if($n < length($breakpoint-names), nth($breakpoint-names, $n + 1), null);
+}
+
+// Maximum breakpoint width. Null for the smallest (first) breakpoint.
+// The maximum value is reduced by 0.02px to work around the limitations of
+// `min-` and `max-` prefixes and viewports with fractional widths.
+//
+// See https://www.w3.org/TR/mediaqueries-4/#mq-min-max
+// Uses 0.02px rather than 0.01px to work around a current rounding bug in Safari.	// Uses 0.02px rather than 0.01px to work around a current rounding bug in Safari.
+// See https://bugs.webkit.org/show_bug.cgi?id=178261	// See https://bugs.webkit.org/show_bug.cgi?id=178261
+//
+//    >> breakpoint-max(md, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    767.98px
+@function breakpoint-max($name, $breakpoints: $screen-breakpoints) {
+  $max: map-get($breakpoints, $name);
+  @return if($max and $max > 0, $max - .02, null);
+}
+
+// Media of at most the maximum breakpoint width. No query for the largest breakpoint.
+// Makes the @content apply to the given breakpoint and narrower.
+@mixin media-breakpoint-down($name, $breakpoints: $screen-breakpoints) {
+  $max: breakpoint-max($name, $breakpoints);
+  @if $max {
+    @media (max-width: $max) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+
+// SVG Background Image Mixin
+// @param {string} $svg
+// ----------------------------------------------------------
+@mixin svg-background-image($svg) {
+  $url: url-encode($svg);
+  background-image: url("data:image/svg+xml;charset=utf-8,#{$url}");
+}
+
+// Add property horizontal
+// @param {string} $start
+// @param {string} $end
+// ----------------------------------------------------------
+@mixin property-horizontal($prop, $start, $end: $start) {
+  @if $start == 0 and $end == 0 {
+    #{$prop}-left: $start;
+    #{$prop}-right: $end;
+
+  } @else {
+    #{$prop}-left: $start;
+    #{$prop}-right: $end;
+
+    @at-root {
+      @supports ((margin-inline-start: 0) or (-webkit-margin-start: 0)) {
+        & {
+          @if $start != null {
+            #{$prop}-left: unset;
+          }
+          @if $end != null {
+            #{$prop}-right: unset;
+          }
+
+          -webkit-#{$prop}-start: $start;
+          #{$prop}-inline-start: $start;
+          -webkit-#{$prop}-end: $end;
+          #{$prop}-inline-end: $end;
+        }
+      }
+    }
+  }
+}
+
+// Add property for all directions
+// @param {string} $prop
+// @param {string} $top
+// @param {string} $end
+// @param {string} $bottom
+// @param {string} $start
+// @param {boolean} $content include content or use default
+// ----------------------------------------------------------
+@mixin property($prop, $top, $end: $top, $bottom: $top, $start: $end) {
+  @include property-horizontal($prop, $start, $end);
+  #{$prop}-top: $top;
+  #{$prop}-bottom: $bottom;
+}
+
+// Add padding horizontal
+// @param {string} $start
+// @param {string} $end
+// ----------------------------------------------------------
+@mixin padding-horizontal($start, $end: $start) {
+  @include property-horizontal(padding, $start, $end);
+}
+
+// Add padding for all directions
+// @param {string} $top
+// @param {string} $end
+// @param {string} $bottom
+// @param {string} $start
+// ----------------------------------------------------------
+@mixin padding($top, $end: $top, $bottom: $top, $start: $end) {
+  @include property(padding, $top, $end, $bottom, $start);
+}
+
+// Add margin horizontal
+// @param {string} $start
+// @param {string} $end
+// ----------------------------------------------------------
+@mixin margin-horizontal($start, $end: $start) {
+  @include property-horizontal(margin, $start, $end);
+}
+
+// Add margin for all directions
+// @param {string} $top
+// @param {string} $end
+// @param {string} $bottom
+// @param {string} $start
+// ----------------------------------------------------------
+@mixin margin($top, $end: $top, $bottom: $top, $start: $end) {
+  @include property(margin, $top, $end, $bottom, $start);
+}
+
+// Add position horizontal
+// @param {string} $start - amount to position start
+// @param {string} $end - amount to left: 0; end
+// ----------------------------------------------------------
+@mixin position-horizontal($start: null, $end: null) {
+  @if $start == $end {
+    left: $start;
+    right: $end;
+  } @else {
+    left: $start;
+    right: $end;
+  }
+}
+
+// Add position for all directions
+// @param {string} $top
+// @param {string} $end
+// @param {string} $bottom
+// @param {string} $start
+// ----------------------------------------------------------
+@mixin position($top: null, $end: null, $bottom: null, $start: null) {
+  @include position-horizontal($start, $end);
+  top: $top;
+  bottom: $bottom;
+}
+
+// Add border for all directions
+// @param {string} $top
+// @param {string} $end
+// @param {string} $bottom
+// @param {string} $start
+// ----------------------------------------------------------
+@mixin border($top, $end: $top, $bottom: $top, $start: $end) {
+  @include property(border, $top, $end, $bottom, $start);
+}
+
+// Add border radius for all directions
+// @param {string} $top-start
+// @param {string} $top-end
+// @param {string} $bottom-end
+// @param {string} $bottom-start
+// ----------------------------------------------------------
+@mixin border-radius($top-start, $top-end: $top-start, $bottom-end: $top-start, $bottom-start: $top-end) {
+  @if $top-start == $top-end and $top-start == $bottom-end and $top-start == $bottom-start {
+    border-radius: $top-start;
+  } @else {
+    border-top-left-radius: $top-start;
+    border-top-right-radius: $top-end;
+    border-bottom-right-radius: $bottom-end;
+    border-bottom-left-radius: $bottom-start;
+  }
+}
+
+@mixin background-position($horizontal, $horizontal-amount: null, $vertical: null, $vertical-amount: null) {
+  @if $horizontal == start or $horizontal == end {
+    $horizontal-ltr: null;
+    $horizontal-rtl: null;
+    @if $horizontal == start {
+      $horizontal-ltr: left;
+      $horizontal-rtl: right;
+    } @else {
+      $horizontal-ltr: right;
+      $horizontal-rtl: left;
+    }
+    background-position: $horizontal-ltr $horizontal-amount $vertical $vertical-amount;
+  } @else {
+    background-position: $horizontal $horizontal-amount $vertical $vertical-amount;
+  }
+}

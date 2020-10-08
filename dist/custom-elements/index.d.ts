@@ -2,6 +2,24 @@
 
 import { Components, JSX } from "../types/components";
 
+interface NoiButton extends Components.NoiButton, HTMLElement {}
+export const NoiButton: {
+  prototype: NoiButton;
+  new (): NoiButton;
+};
+
+interface NoiCard extends Components.NoiCard, HTMLElement {}
+export const NoiCard: {
+  prototype: NoiCard;
+  new (): NoiCard;
+};
+
+interface NoiInput extends Components.NoiInput, HTMLElement {}
+export const NoiInput: {
+  prototype: NoiInput;
+  new (): NoiInput;
+};
+
 interface NoiMobilityMap extends Components.NoiMobilityMap, HTMLElement {}
 export const NoiMobilityMap: {
   prototype: NoiMobilityMap;
@@ -12,6 +30,12 @@ interface NoiMobilityTraffic extends Components.NoiMobilityTraffic, HTMLElement 
 export const NoiMobilityTraffic: {
   prototype: NoiMobilityTraffic;
   new (): NoiMobilityTraffic;
+};
+
+interface NoiSearch extends Components.NoiSearch, HTMLElement {}
+export const NoiSearch: {
+  prototype: NoiSearch;
+  new (): NoiSearch;
 };
 
 /**

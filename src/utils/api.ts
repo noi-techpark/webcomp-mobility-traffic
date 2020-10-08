@@ -199,8 +199,10 @@ export class OpenDataHubNoiService implements NoiService {
   }
 
   async getLinkStations(): Promise<Array<NoiLinkStation>> {
+    const accessToken = await NoiAuth.getValidAccessToken();
     const response = await this.request(
       `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=egeometry.neq.null,eactive.eq.true&limit=-1`,
+      { headers: { 'Authorization': `bearer ${accessToken}` } }
     );
     if (!response || !response.data || !Array.isArray(response.data)) {
       throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `LinkStations expecting an array response`});

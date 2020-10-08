@@ -1,22 +1,48 @@
 :host {
   display: block;
   overflow: hidden;
-  background: var(--noi-mt-background);
-  width: var(--noi-mt-width);
-  height: var(--noi-mt-height);
+  width: var(--noi-width);
+  height: var(--noi-height);
 }
 
 .wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin: 8px;
+  margin: 0;
 }
 
 .map {
+  z-index: 0;
   flex: 1;
 }
 
-leaflet-circle, leaflet-marker, leaflet-polyline {
-  display: none;
+noi-card.search {
+  position: absolute;
+  top: 10%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  overflow: visible;
+  border-radius: 0;
+}
+
+@media only screen and (min-width: 600px) {
+  noi-card.search {
+    overflow: hidden;
+    left: 5%;
+    right: 5%;
+    width: auto;
+    border-radius: 5px;
+  }
+}
+
+@media only screen and (min-width: 600px) and (orientation: landscape) {
+  noi-card.search {
+    width: 37%;
+    max-width: 500px;
+    bottom: 10%;
+  }
 }
