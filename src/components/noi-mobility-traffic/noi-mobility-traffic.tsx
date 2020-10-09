@@ -2,7 +2,7 @@ import { Component, h, Element, State } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
 import { NoiAPI, NoiHighwayStation } from '../../utils/api';
 import { getLocaleComponentStrings } from '../../utils/locale';
-import { MapHighwayStation } from './blocks/map/map-entity';
+import { MapHighwayStation, Selectable } from './blocks/map/map-entity';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -11,6 +11,7 @@ const rIC = (callback: () => void) => {
     setTimeout(callback, 32);
   }
 };
+
 
 @Component({
   tag: 'noi-mobility-traffic',
@@ -23,10 +24,18 @@ export class NoiMobilityTraffic {
   private resizeObserver: ResizeObserver;
   
   @Element() element: HTMLElement;
-  @State() highwayPoints: Array<NoiHighwayStation> = null;
+  @State() highwayPoints: Array<Selectable<NoiHighwayStation>> = null;
   @State() showSearch: boolean = true;
   
-  
+  onSelectBrenner() {
+    this.highwayPoints = [...this.highwayPoints];
+    this.highwayPoints[1].selected = true;
+  }
+
+  onUnSelectBrenner() {
+    this.highwayPoints = [...this.highwayPoints];
+    delete this.highwayPoints[1].selected;
+  }
 
   async componentWillLoad(): Promise<void> {
     this.strings = await getLocaleComponentStrings(this.element);
@@ -73,8 +82,13 @@ export class NoiMobilityTraffic {
 
   render() {
     return <div class="wrapper">
+      <div>
+        <noi-button onClick={this.onSelectBrenner.bind(this)}>Select</noi-button>
+        <noi-button onClick={this.onUnSelectBrenner.bind(this)}>Un-Select</noi-button>
+      </div>
       <noi-card class="search">
-        <noi-search></noi-search>
+        <noi-search>
+        </noi-search>
       </noi-card>
       <noi-map>
         {this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)): null}

@@ -1,10 +1,10 @@
-import { CircleMarker, GeoJSON } from 'leaflet';
+import { CircleMarker, Map, GeoJSON } from 'leaflet';
 interface LayerObserver<T> {
   layer: T;
   observer: MutationObserver;
 }
 export declare class NoiMap {
-  map: any;
+  map: Map;
   userMarker: any;
   childrenObserver: MutationObserver;
   entityChildren: WeakMap<any, LayerObserver<CircleMarker>>;

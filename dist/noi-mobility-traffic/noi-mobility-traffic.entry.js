@@ -1,5 +1,5 @@
 import { r as registerInstance, h, g as getElement } from './index-eae66176.js';
-import { M as MapHighwayStation } from './map-entity-85739292.js';
+import { M as MapHighwayStation } from './map-entity-31d9cbe3.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1356,6 +1356,14 @@ const NoiMobilityTraffic = class {
     this.highwayPoints = null;
     this.showSearch = true;
   }
+  onSelectBrenner() {
+    this.highwayPoints = [...this.highwayPoints];
+    this.highwayPoints[1].selected = true;
+  }
+  onUnSelectBrenner() {
+    this.highwayPoints = [...this.highwayPoints];
+    delete this.highwayPoints[1].selected;
+  }
   async componentWillLoad() {
     this.strings = await getLocaleComponentStrings(this.element);
     try {
@@ -1394,7 +1402,7 @@ const NoiMobilityTraffic = class {
     });
   }
   render() {
-    return h("div", { class: "wrapper" }, h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)) : null));
+    return h("div", { class: "wrapper" }, h("div", null, h("noi-button", { onClick: this.onSelectBrenner.bind(this) }, "Select"), h("noi-button", { onClick: this.onUnSelectBrenner.bind(this) }, "Un-Select")), h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)) : null));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

@@ -1,9 +1,9 @@
 import { FunctionalComponent, h } from '@stencil/core';
-import L, { CircleMarker, FillRule } from 'leaflet';
+import { CircleMarker, FillRule, Browser } from 'leaflet';
 import { NoiHighwayStation } from '../../../../utils/api';
 
-interface MapHighwayStationProps extends NoiHighwayStation {
-}
+export type Selectable<T> = T & {selected?: boolean};
+export type MapHighwayStationProps = Selectable<NoiHighwayStation>;
 
 export const MAP_ENTITY_HIGHWAY_STATION = 'HighwayStation';
 const HIGHWAY_STATION_CIRCLE_RADIUS = 10;
@@ -15,10 +15,25 @@ export const MapHighwayStation: FunctionalComponent<MapHighwayStationProps> = (p
     entity-id={props.id}
     lat={props.coordinates.lat}
     long={props.coordinates.long}
-    class="noi-highway-station"
+    class={props.selected ? "noi-highway-station-selected": "noi-highway-station"}
     style={{display: 'none'}}>
+      {props.id}-{props.name}
   </noi-map-entity>
 );
+
+export function highlightHighwayStation(e) {
+  const layer: CircleMarker = e.target;
+  layer.getElement().classList.add('noi-highway-station--hover');
+  if (!Browser.ie && !Browser.opera && !Browser.edge) {
+    layer.bringToFront();
+  }
+}
+
+export function unHighlightHighwayStation(e) {
+  const layer: CircleMarker = e.target;
+  layer.getElement().classList.remove('noi-highway-station--hover');
+
+}
 
 export function renderHighwayStationElement(e: Element): CircleMarker {
   const lat: number = +e.getAttribute('lat');
@@ -31,5 +46,5 @@ export function renderHighwayStationElement(e: Element): CircleMarker {
     bubblingMouseEvents: false
   };
 
-  return L.circleMarker([lat, long], opts);
+  return new CircleMarker([lat, long], opts);
 }

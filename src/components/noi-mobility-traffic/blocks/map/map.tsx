@@ -1,6 +1,6 @@
 import { Component, Prop, Watch, Element  } from '@stencil/core';
-import L, { CircleMarker, GeoJSON } from 'leaflet';
-import { MAP_ENTITY_HIGHWAY_STATION, renderHighwayStationElement } from './map-entity';
+import { CircleMarker, Browser, TileLayer, Map, GeoJSON } from 'leaflet';
+import { highlightHighwayStation, MAP_ENTITY_HIGHWAY_STATION, renderHighwayStationElement, unHighlightHighwayStation } from './map-entity';
 
 interface LayerObserver<T> {
   layer: T,
@@ -18,7 +18,7 @@ const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   styleUrl: 'map.css'
 })
 export class NoiMap {
-  map: any = null;
+  map: Map = null;
   userMarker: any = null;
   childrenObserver: MutationObserver = null;
   entityChildren: WeakMap<any, LayerObserver<CircleMarker>> = new WeakMap();
@@ -31,9 +31,9 @@ export class NoiMap {
   @Prop({ mutable: true }) scale: number = 13;
 
   componentDidLoad() {
-    this.map = L.map(this.el, { zoomControl: false });
+    this.map = new Map(this.el, { zoomControl: false });
     this.updateCenterAndZoom();
-    L.tileLayer(TILE_LAYER).addTo(this.map);
+    new TileLayer(TILE_LAYER).addTo(this.map);
     this.renderChildren();
     this.childrenObserver = new MutationObserver((mutations: Array<any>) =>
       this.childrenObserverCallback(mutations)
@@ -70,8 +70,18 @@ export class NoiMap {
         this.entityChildren.get(el).layer.setLatLng([el.getAttribute('lat'), el.getAttribute('long')]);
       }
       if (['class'].includes(mutation.attributeName)) {
-        const oldStyle = this.entityChildren.get(el).layer.options;
-        this.entityChildren.get(el).layer.setStyle({...oldStyle, className: el.getAttribute('class')});
+        const layer = this.entityChildren.get(el).layer;
+        const newClasses = (el.getAttribute('class') + '').split(' ');
+        const oldClasses = (layer.getElement().classList.value + '').split(' ').filter(c => !c.startsWith('leaflet-'));
+        oldClasses.forEach(c => {
+          layer.getElement().classList.remove(c);
+        });
+        newClasses.forEach(c => {
+          layer.getElement().classList.add(c);
+        });
+        if (!Browser.ie && !Browser.opera && !Browser.edge) {
+          layer.bringToFront();
+      }
       }
     }
   }
@@ -114,11 +124,18 @@ export class NoiMap {
     // TODO: create a factory
     if (type === MAP_ENTITY_HIGHWAY_STATION) {
       const layer = renderHighwayStationElement(e);
+      layer.on({
+        mouseover: highlightHighwayStation,
+        mouseout: unHighlightHighwayStation,
+        click: (e) => {
+          const latLong = (e.target as CircleMarker).getLatLng();
+          this.map.setView(latLong, this.scale);
+        }
+      });
       const observer = new MutationObserver((mutations: Array<any>, _observer: any) => this.entityAttrsObserver(e, mutations));
       observer.observe(e, { attributes: true, childList: false, subtree: false });
       this.entityChildren.set(e, {layer, observer});
       layer.addTo(this.map);
-      // TODO: add the popup here
       if (e.textContent) {
         layer.bindPopup(e.textContent).openPopup();
       }
@@ -127,7 +144,7 @@ export class NoiMap {
 
   private renderGeoJson(e: Element) {
     const geometry = JSON.parse(e.getAttribute('geometry'));
-    const layer = L.geoJSON(geometry, geometry);
+    const layer = new GeoJSON(geometry, geometry);
     this.pathChildren.set(e, {layer, observer: null});
     layer.addTo(this.map);
   }
