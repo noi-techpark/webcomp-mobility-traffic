@@ -13,6 +13,7 @@ export interface NoiService {
   getTree(): Promise<any>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
+  getVMSs(): Promise<Array<NoiVMS>>;
   getLinkStation(id: string): Promise<NoiLinkStation>;
   getLinkStations(): Promise<Array<NoiLinkStation>>;
 }
@@ -48,10 +49,18 @@ export interface NoiBTStation {
   type: 'BluetoothStation';
 }
 export interface NoiHighwayStation {
+  id: string;
+  name: string;
+  coordinates: {
+    lat: number;
+    long: number;
+  };
+  highway: 'A22';
+}
+export declare function parseHighwayStations(linkStations: Array<any>): Array<NoiHighwayStation>;
+export interface NoiVMS {
   type: 'VMS';
   id: string;
-  active: boolean;
-  available: boolean;
   name: string;
   coordinates: {
     lat: number;
@@ -59,9 +68,9 @@ export interface NoiHighwayStation {
   };
   highway: string;
   position: number;
-  direction: NoiHighwayStationDirection;
+  direction: NoiVMSDirection;
 }
-export declare type NoiHighwayStationDirection = 'north' | 'south' | 'vehicle' | 'unknown';
+export declare type NoiVMSDirection = 'north' | 'south' | 'vehicle' | 'unknown';
 export declare function parse4326Coordinates(value: {
   x: number;
   y: number;
@@ -70,7 +79,7 @@ export declare function parse4326Coordinates(value: {
   lat: number;
   long: number;
 };
-export declare function parseHighwayStationDirection(s: any): NoiHighwayStationDirection;
+export declare function parsVMSDirection(s: any): NoiVMSDirection;
 export declare function parseBluetoothStation(prefix: any, s: any): NoiBTStation;
 export declare function parseLinkStation(s: any): NoiLinkStation;
 export declare function parseVmsPosition(s: {
@@ -84,6 +93,7 @@ export declare class OpenDataHubNoiService implements NoiService {
   getLinkStation(id: string): Promise<NoiLinkStation>;
   getLinkStations(): Promise<Array<NoiLinkStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
+  getVMSs(): Promise<Array<NoiVMS>>;
   getTree(): Promise<Array<NoiTreeItem>>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
 }

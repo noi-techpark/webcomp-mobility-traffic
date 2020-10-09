@@ -1,5 +1,5 @@
 import { Component, h, Element, State } from '@stencil/core';
-import { NoiLinkStation } from '../../utils/api';
+import { NoiAPI } from '../../utils/api';
 import { getLocaleComponentStrings } from '../../utils/locale';
 
 const rIC = (callback: () => void) => {
@@ -20,14 +20,19 @@ export class NoiMobilityTraffic {
   private strings: any;
   
   @Element() element: HTMLElement;
-  @State() linkStations: Array<NoiLinkStation> = null;
+  @State() highwayPoints: Array<{coordinates: {lat, long}, id, name}> = null;
   @State() showSearch: boolean = true;
   
   
 
   async componentWillLoad(): Promise<void> {
     this.strings = await getLocaleComponentStrings(this.element);
-    
+    try {
+      this.highwayPoints = await NoiAPI.getHighwayStations();
+      debugger;
+    } catch (error) {
+      // TODO:
+    }
   }
 
   async componentDidLoad(): Promise<void> {
@@ -36,15 +41,15 @@ export class NoiMobilityTraffic {
     });
   }
 
-  getHighwayCircles(highwayStations) {
+  getHighwayCircles(highwayStations: Array<{id, coordinates: {lat, long}}>) {
     return highwayStations.map((s, i) => {
       return (<leaflet-circle
-        latitude={s.coordinates.long}
-        longitude={s.coordinates.lat}
+        latitude={s.coordinates.lat}
+        longitude={s.coordinates.long}
         radius={20}
         stroke={1}
 
-      >({i}) {s.id} - {s.position}
+      >({i}) {s.id}
       </leaflet-circle>)
     })
   }
@@ -62,7 +67,7 @@ export class NoiMobilityTraffic {
         <noi-search></noi-search>
       </noi-card>
       <noi-mobility-map class="map">
-        {this.linkStations ? (this.getAllLinkStations(this.linkStations)): null}
+        {this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)): null}
       </noi-mobility-map>
     </div>;
   }

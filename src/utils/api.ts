@@ -27,10 +27,10 @@ export interface NoiService {
   getTree(): Promise<any>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
+  getVMSs(): Promise<Array<NoiVMS>>;
   getLinkStation(id: string): Promise<NoiLinkStation>;
   getLinkStations(): Promise<Array<NoiLinkStation>>
 }
-
 
 export interface NoiLinkStation {
   type: 'LinkStation',
@@ -43,6 +43,7 @@ export interface NoiLinkStation {
   end: NoiBTStation,
   geometry: GeoJSON.Geometry,
 }
+
 export interface NoiTreeItem {
   id: string;
   description: string;
@@ -62,20 +63,72 @@ export interface NoiBTStation {
   type: 'BluetoothStation'
 }
 
-
 export interface NoiHighwayStation {
+  id: string;
+  name: string;
+  coordinates: {lat: number; long: number};
+  highway: 'A22';
+};
+
+export function parseHighwayStations(linkStations: Array<any>): Array<NoiHighwayStation> {
+  const stations = linkStations.reduce<{[id: string]: NoiHighwayStation}>((result, s) => {
+    if (
+      !s ||
+      typeof(s.scode) !== 'string' ||
+      typeof(s.sname) !== 'string' ||
+      !s.smetadata ||
+      !s.smetadata.latitudineinizio || !s.smetadata.longitudininizio ||
+      !s.smetadata.latitudinefine || !s.smetadata.longitudinefine
+    ) {
+      return result;
+    }
+    const ids: string[] = s.scode.split('-');
+    if (ids.length !== 2) {
+      return result;
+    }
+    const names: string[] = s.sname.split(' - ').map(n => {
+      let withoutStart = n.replace('INIZIO ', '');
+      return withoutStart.replace('FINE ', '');
+    });
+    if (names.length !== 2) {
+      return result;
+    }
+    const coordinates: {lat: number, long: number}[] = [
+      {lat: s.smetadata.latitudineinizio, long: s.smetadata.longitudininizio},
+      {lat: s.smetadata.latitudinefine, long: s.smetadata.longitudinefine},
+    ];
+    if (!result[ids[0]]) {
+      result[ids[0]] = {
+        id: ids[0],
+        name: names[0],
+        coordinates: coordinates[0],
+        highway: 'A22'
+      };
+    }
+    if (!result[ids[1]]) {
+      result[ids[1]] = {
+        id: ids[1],
+        name: names[1],
+        coordinates: coordinates[1],
+        highway: 'A22'
+      };
+    }
+    return result;
+  }, {});
+  return Object.keys(stations).map(i => stations[i]);
+}
+
+export interface NoiVMS {
   type: 'VMS';
   id: string;
-  active: boolean;
-  available: boolean;
   name: string;
   coordinates: {lat: number; long: number};
   highway: string;
   position: number;
-  direction: NoiHighwayStationDirection;
+  direction: NoiVMSDirection;
 };
 
-export type NoiHighwayStationDirection = 'north' | 'south' | 'vehicle' | 'unknown';
+export type NoiVMSDirection = 'north' | 'south' | 'vehicle' | 'unknown';
 
 export function parse4326Coordinates(value: {x: number, y: number; srid: number}): {lat: number; long: number} {
   if (!value || value.srid !== 4326) {
@@ -89,7 +142,7 @@ export function parse4326Coordinates(value: {x: number, y: number; srid: number}
   }
 }
 
-export function parseHighwayStationDirection(s: any): NoiHighwayStationDirection {
+export function parsVMSDirection(s: any): NoiVMSDirection {
   if (!s || !s.smetadata || !s.smetadata.direction_id) {
     return 'unknown';
   }
@@ -190,28 +243,38 @@ export class OpenDataHubNoiService implements NoiService {
     const response = await this.request(
       `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=ecode.eq.${id},eactive.eq.true`
     );
-    debugger;
     if (!response || !response.data || response.data.length !== 1) {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${id} not found`});
     }
-    debugger;
     return parseLinkStation(response.data[0]);
   }
 
   async getLinkStations(): Promise<Array<NoiLinkStation>> {
+    const where = 'egeometry.neq.null,eactive.eq.true';
     const accessToken = await NoiAuth.getValidAccessToken();
     const response = await this.request(
-      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=egeometry.neq.null,eactive.eq.true&limit=-1`,
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=${where}&limit=-1`,
       { headers: { 'Authorization': `bearer ${accessToken}` } }
     );
     if (!response || !response.data || !Array.isArray(response.data)) {
       throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `LinkStations expecting an array response`});
     }
-    debugger;
     return response.data.map(parseLinkStation);
   }
 
   async getHighwayStations(): Promise<Array<NoiHighwayStation>> {
+    const where = 'sorigin.eq.A22,sactive.eq.true';
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/LinkStation?where=${where}&limit=-1`,
+    );
+    if (!response || !response.data || !Array.isArray(response.data)) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `HighwayStations expecting an array response`});
+    }
+    debugger;
+    return parseHighwayStations(response.data);
+  }
+
+  async getVMSs(): Promise<Array<NoiVMS>> {
     const accessToken = await NoiAuth.getValidAccessToken();
     const select = 'sactive,stype,savailable,scoordinate,scode,sname,smetadata';
     const limit = -1;
@@ -219,7 +282,7 @@ export class OpenDataHubNoiService implements NoiService {
       `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/VMS/*?select=${select}&limit=${limit}`,
       { headers: { 'Authorization': `bearer ${accessToken}` } }
     );
-    const stations: Array<NoiHighwayStation> = Object.values(response.data)
+    const stations: Array<NoiVMS> = Object.values(response.data)
     .map((s: any) => {
       const code = s.scode.split(':');
       const highway = code[0];
@@ -229,15 +292,13 @@ export class OpenDataHubNoiService implements NoiService {
         return null;
       }
       return {
-        active: !!s.sactive,
-        available: !!s.savailable,
         id,
         highway,
         name: s.sname.slice(0, -13),
         coordinates,
         type: 'VMS',
         position: parseVmsPosition(s),
-        direction: parseHighwayStationDirection(s)
+        direction: parsVMSDirection(s)
       };
     });
     return stations
