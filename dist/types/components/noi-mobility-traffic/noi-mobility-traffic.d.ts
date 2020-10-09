@@ -1,5 +1,6 @@
 export declare class NoiMobilityTraffic {
   private strings;
+  private resizeObserver;
   element: HTMLElement;
   highwayPoints: Array<{
     coordinates: {
@@ -12,6 +13,8 @@ export declare class NoiMobilityTraffic {
   showSearch: boolean;
   componentWillLoad(): Promise<void>;
   componentDidLoad(): Promise<void>;
+  disconnectedCallback(): void;
+  applyMediaClasses(widthPx: number, heightPx: number): void;
   getHighwayCircles(highwayStations: Array<{
     id: any;
     coordinates: {

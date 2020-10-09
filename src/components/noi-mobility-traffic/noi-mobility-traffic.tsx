@@ -1,4 +1,5 @@
 import { Component, h, Element, State } from '@stencil/core';
+import ResizeObserver from 'resize-observer-polyfill';
 import { NoiAPI } from '../../utils/api';
 import { getLocaleComponentStrings } from '../../utils/locale';
 
@@ -18,6 +19,7 @@ const rIC = (callback: () => void) => {
 })
 export class NoiMobilityTraffic {
   private strings: any;
+  private resizeObserver: ResizeObserver;
   
   @Element() element: HTMLElement;
   @State() highwayPoints: Array<{coordinates: {lat, long}, id, name}> = null;
@@ -29,7 +31,6 @@ export class NoiMobilityTraffic {
     this.strings = await getLocaleComponentStrings(this.element);
     try {
       this.highwayPoints = await NoiAPI.getHighwayStations();
-      debugger;
     } catch (error) {
       // TODO:
     }
@@ -39,6 +40,21 @@ export class NoiMobilityTraffic {
     rIC(() => {
       import('./components/tap-click').then(module => module.startTapClick());
     });
+    this.resizeObserver = new ResizeObserver(([entry]) => {
+      this.applyMediaClasses(entry.contentRect.width, entry.contentRect.height);
+    });
+    this.resizeObserver.observe(this.element);
+  }
+
+  disconnectedCallback() {
+    this.resizeObserver.disconnect();
+  }
+
+  applyMediaClasses(widthPx: number, heightPx: number) {
+    const greaterThanSmall = widthPx > 600;
+    const greaterThanSmallLandscape = greaterThanSmall && widthPx > heightPx;
+    this.element.classList.toggle('noi-media-gs', greaterThanSmall);
+    this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
   }
 
   getHighwayCircles(highwayStations: Array<{id, coordinates: {lat, long}}>) {
@@ -67,7 +83,7 @@ export class NoiMobilityTraffic {
         <noi-search></noi-search>
       </noi-card>
       <noi-mobility-map class="map">
-        {this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)): null}
+        {/* {this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)): null} */}
       </noi-mobility-map>
     </div>;
   }

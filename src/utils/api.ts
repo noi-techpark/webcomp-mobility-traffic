@@ -270,7 +270,6 @@ export class OpenDataHubNoiService implements NoiService {
     if (!response || !response.data || !Array.isArray(response.data)) {
       throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `HighwayStations expecting an array response`});
     }
-    debugger;
     return parseHighwayStations(response.data);
   }
 

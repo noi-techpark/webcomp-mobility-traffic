@@ -6,7 +6,6 @@ export const startTapClick = () => {
   let scrollingEl: HTMLElement | undefined;
 
   let activatableEle: HTMLElement | undefined;
-  let activeRipple: Promise<() => void> | undefined;
   let activeDefer: any;
 
   const clearDefers = new WeakMap<HTMLElement, any>();
@@ -105,15 +104,7 @@ export const startTapClick = () => {
     el.classList.add(ACTIVATED);
   };
 
-  const removeRipple = () => {
-    if (activeRipple !== undefined) {
-      activeRipple.then(remove => remove());
-      activeRipple = undefined;
-    }
-  };
-
   const removeActivated = (smooth: boolean) => {
-    removeRipple();
     const active = activatableEle;
     if (!active) {
       return;
@@ -131,14 +122,14 @@ export const startTapClick = () => {
   };
 
   const doc = document;
-  doc.addEventListener('ionScrollStart', ev => {
+  doc.addEventListener('noiScrollStart', ev => {
     scrollingEl = ev.target as HTMLElement;
     cancelActive();
   });
-  doc.addEventListener('ionScrollEnd', () => {
+  doc.addEventListener('noiScrollEnd', () => {
     scrollingEl = undefined;
   });
-  doc.addEventListener('ionGestureCaptured', cancelActive);
+  doc.addEventListener('noiGestureCaptured', cancelActive);
 
   doc.addEventListener('touchstart', onTouchStart, true);
   doc.addEventListener('touchcancel', onTouchEnd, true);

@@ -88,14 +88,7 @@ const startTapClick = () => {
     lastActivated = Date.now();
     el.classList.add(ACTIVATED);
   };
-  const removeRipple = () => {
-    if (activeRipple !== undefined) {
-      activeRipple.then(remove => remove());
-      activeRipple = undefined;
-    }
-  };
   const removeActivated = (smooth) => {
-    removeRipple();
     const active = activatableEle;
     if (!active) {
       return;
@@ -113,14 +106,14 @@ const startTapClick = () => {
     }
   };
   const doc = document;
-  doc.addEventListener('ionScrollStart', ev => {
+  doc.addEventListener('noiScrollStart', ev => {
     scrollingEl = ev.target;
     cancelActive();
   });
-  doc.addEventListener('ionScrollEnd', () => {
+  doc.addEventListener('noiScrollEnd', () => {
     scrollingEl = undefined;
   });
-  doc.addEventListener('ionGestureCaptured', cancelActive);
+  doc.addEventListener('noiGestureCaptured', cancelActive);
   doc.addEventListener('touchstart', onTouchStart, true);
   doc.addEventListener('touchcancel', onTouchEnd, true);
   doc.addEventListener('touchend', onTouchEnd, true);

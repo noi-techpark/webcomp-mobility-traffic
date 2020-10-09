@@ -29,20 +29,17 @@ noi-card.search {
   border-radius: 0;
 }
 
-@media only screen and (min-width: 600px) {
-  noi-card.search {
-    overflow: hidden;
-    left: 5%;
-    right: 5%;
-    width: auto;
-    border-radius: 5px;
-  }
+
+:host.noi-media-gs noi-card.search {
+  overflow: hidden;
+  left: 5%;
+  right: 5%;
+  width: auto;
+  border-radius: 5px;
 }
 
-@media only screen and (min-width: 600px) and (orientation: landscape) {
-  noi-card.search {
-    width: 37%;
-    max-width: 500px;
-    bottom: 10%;
-  }
+:host.noi-media-gs--landscape  noi-card.search {
+  width: 37%;
+  max-width: 500px;
+  bottom: 10%;
 }
