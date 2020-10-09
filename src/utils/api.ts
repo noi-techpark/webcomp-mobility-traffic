@@ -1,4 +1,3 @@
-import L from 'leaflet';
 import { NoiError, NoiErrorOptionsObject } from "./error";
 import { NoiAuth } from "./auth";
 
@@ -6,6 +5,7 @@ export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
 export const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
 export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
+
 
 export function getErrByServiceError(_: Error): NoiError {
   return new NoiError(NOI_SERVICE_ERR_OFFLINE);
@@ -135,8 +135,9 @@ export function parse4326Coordinates(value: {x: number, y: number; srid: number}
     return null;
   }
   try {
-    const result = new L.latLng(value.x, value.y);
-    return {lat: result.lat, long: result.lng};
+    const long = value.x * 180 / 20037508.34;
+    const lat = Math.atan(Math.exp(value.y * Math.PI / 20037508.34)) * 360 / Math.PI - 90;
+    return {lat, long};
   } catch (error) {
     return null;
   }

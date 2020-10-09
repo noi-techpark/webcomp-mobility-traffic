@@ -4,7 +4,17 @@
   overflow: hidden;
 }
 
-/* required styles */
+/* svg entity styles */
+
+.noi-highway-station {
+  stroke-width: 2;
+  color: #5b879f;
+  fill: #88b2ca;
+  opacity: 1.0;
+  fill-opacity: 0.8;
+}
+
+/* leaflet required styles */
 
 .leaflet-tile-pane {
   -webkit-filter: grayscale(100%);

@@ -157,8 +157,6 @@ export namespace Components {
         "lat": number;
         "long": number;
         "scale": number;
-        "userLat": number;
-        "userLong": number;
     }
     interface NoiMobilityTraffic {
     }
@@ -378,8 +376,6 @@ declare namespace LocalJSX {
         "lat"?: number;
         "long"?: number;
         "scale"?: number;
-        "userLat"?: number;
-        "userLong"?: number;
     }
     interface NoiMobilityTraffic {
     }

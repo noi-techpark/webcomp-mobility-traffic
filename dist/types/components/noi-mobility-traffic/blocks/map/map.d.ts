@@ -1,35 +1,29 @@
-interface LayerObserver {
-  layer: any;
+import { CircleMarker, GeoJSON } from 'leaflet';
+interface LayerObserver<T> {
+  layer: T;
   observer: MutationObserver;
 }
 export declare class NoiMap {
   map: any;
   userMarker: any;
-  observer: MutationObserver;
-  children: WeakMap<any, LayerObserver>;
+  childrenObserver: MutationObserver;
+  entityChildren: WeakMap<any, LayerObserver<CircleMarker>>;
+  pathChildren: WeakMap<any, LayerObserver<GeoJSON>>;
   el: HTMLElement;
   lat: number;
   long: number;
   scale: number;
-  userLat: number;
-  userLong: number;
   componentDidLoad(): void;
   disconnectedCallback(): void;
   latHandler(newValue: number, _oldValue: number): void;
   longHandler(newValue: number, _oldValue: number): void;
   scaleHandler(newValue: number, _oldValue: number): void;
-  userLatHandler(newValue: number, _oldValue: number): void;
-  userLongHandler(newValue: number, _oldValue: number): void;
-  updateUserMarker(): void;
-  attributesObserver(el: any, mutationsList: Array<any>): void;
-  childrenObserver(mutationsList: Array<any>): void;
-  getIcon(el: any): any;
+  entityAttrsObserver(el: any, mutationsList: Array<any>): void;
+  childrenObserverCallback(mutationsList: Array<any>): void;
   removeChildren(nodes: Array<any>): void;
-  private renderMarker;
   private renderMapEntity;
-  private getHighwayStationLayer;
   private renderGeoJson;
-  setChildren(): void;
+  renderChildren(): void;
   updateCenterAndZoom(): void;
 }
 export {};

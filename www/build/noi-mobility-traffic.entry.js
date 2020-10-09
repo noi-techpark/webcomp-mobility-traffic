@@ -1,5 +1,5 @@
 import { r as registerInstance, h, g as getElement } from './index-eae66176.js';
-import { l as leafletSrc, M as MapHighwayStation } from './map-entity-fbcdfc1d.js';
+import { M as MapHighwayStation } from './map-entity-85739292.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1114,8 +1114,9 @@ function parse4326Coordinates(value) {
     return null;
   }
   try {
-    const result = new leafletSrc.latLng(value.x, value.y);
-    return { lat: result.lat, long: result.lng };
+    const long = value.x * 180 / 20037508.34;
+    const lat = Math.atan(Math.exp(value.y * Math.PI / 20037508.34)) * 360 / Math.PI - 90;
+    return { lat, long };
   }
   catch (error) {
     return null;

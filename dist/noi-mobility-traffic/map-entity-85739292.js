@@ -14094,6 +14094,19 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 });
 
 const MAP_ENTITY_HIGHWAY_STATION = 'HighwayStation';
-const MapHighwayStation = (props) => (h("noi-map-entity", { "entity-type": MAP_ENTITY_HIGHWAY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, style: { display: 'none' } }));
+const HIGHWAY_STATION_CIRCLE_RADIUS = 10;
+const MapHighwayStation = (props) => (h("noi-map-entity", { "entity-type": MAP_ENTITY_HIGHWAY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: "noi-highway-station", style: { display: 'none' } }));
+function renderHighwayStationElement(e) {
+  const lat = +e.getAttribute('lat');
+  const long = +e.getAttribute('long');
+  const opts = {
+    radius: HIGHWAY_STATION_CIRCLE_RADIUS,
+    fill: true,
+    fillRule: 'nonzero',
+    className: e.getAttribute('class'),
+    bubblingMouseEvents: false
+  };
+  return leafletSrc.circleMarker([lat, long], opts);
+}
 
-export { MapHighwayStation as M, MAP_ENTITY_HIGHWAY_STATION as a, leafletSrc as l };
+export { MapHighwayStation as M, MAP_ENTITY_HIGHWAY_STATION as a, leafletSrc as l, renderHighwayStationElement as r };
