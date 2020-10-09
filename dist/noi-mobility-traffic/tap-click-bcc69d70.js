@@ -5,7 +5,6 @@ const startTapClick = () => {
   let lastActivated = 0;
   let scrollingEl;
   let activatableEle;
-  let activeRipple;
   let activeDefer;
   const clearDefers = new WeakMap();
   const isScrolling = () => {

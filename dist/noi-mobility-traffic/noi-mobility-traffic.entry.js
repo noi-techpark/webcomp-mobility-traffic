@@ -1,5 +1,5 @@
 import { r as registerInstance, h, g as getElement } from './index-eae66176.js';
-import { l as leafletSrc } from './leaflet-src-ee2a66f1.js';
+import { l as leafletSrc, M as MapHighwayStation } from './map-entity-fbcdfc1d.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1339,7 +1339,7 @@ async function getLocaleComponentStrings(element) {
   return strings;
 }
 
-const noiMobilityTrafficCss = ".sc-noi-mobility-traffic-h{display:block;overflow:hidden;width:var(--noi-width);height:var(--noi-height)}.wrapper.sc-noi-mobility-traffic{position:relative;display:flex;flex-direction:column;height:100%;margin:0}.map.sc-noi-mobility-traffic{z-index:0;flex:1}noi-card.search.sc-noi-mobility-traffic{position:absolute;top:10%;width:100%;margin:0;padding:0;z-index:1;overflow:visible;border-radius:0}.noi-media-gs.sc-noi-mobility-traffic-h noi-card.search.sc-noi-mobility-traffic{overflow:hidden;left:5%;right:5%;width:auto;border-radius:5px}.noi-media-gs--landscape.sc-noi-mobility-traffic-h noi-card.search.sc-noi-mobility-traffic{width:37%;max-width:500px;bottom:10%}";
+const noiMobilityTrafficCss = ".sc-noi-mobility-traffic-h{display:block;overflow:hidden;width:var(--noi-width);height:var(--noi-height)}.wrapper.sc-noi-mobility-traffic{position:relative;display:flex;flex-direction:column;height:100%;margin:0}noi-map.sc-noi-mobility-traffic{z-index:0;flex:1}noi-card.search.sc-noi-mobility-traffic{position:absolute;top:10%;width:100%;margin:0;padding:0;z-index:1;overflow:visible;border-radius:0}.noi-media-gs.sc-noi-mobility-traffic-h noi-card.search.sc-noi-mobility-traffic{overflow:hidden;left:5%;right:5%;width:auto;border-radius:5px}.noi-media-gs--landscape.sc-noi-mobility-traffic-h noi-card.search.sc-noi-mobility-traffic{width:37%;max-width:500px;bottom:10%}";
 
 const rIC = (callback) => {
   if ('requestIdleCallback' in window) {
@@ -1366,7 +1366,7 @@ const NoiMobilityTraffic = class {
   }
   async componentDidLoad() {
     rIC(() => {
-      import('./tap-click-03f71aa8.js').then(module => module.startTapClick());
+      import('./tap-click-bcc69d70.js').then(module => module.startTapClick());
     });
     this.resizeObserver = new index(([entry]) => {
       this.applyMediaClasses(entry.contentRect.width, entry.contentRect.height);
@@ -1383,8 +1383,8 @@ const NoiMobilityTraffic = class {
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
   }
   getHighwayCircles(highwayStations) {
-    return highwayStations.map((s, i) => {
-      return (h("leaflet-circle", { latitude: s.coordinates.lat, longitude: s.coordinates.long, radius: 20, stroke: 1 }, "(", i, ") ", s.id));
+    return highwayStations.map(s => {
+      return (h(MapHighwayStation, Object.assign({}, s)));
     });
   }
   getAllLinkStations(linkStations) {
@@ -1393,7 +1393,7 @@ const NoiMobilityTraffic = class {
     });
   }
   render() {
-    return h("div", { class: "wrapper" }, h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-mobility-map", { class: "map" }));
+    return h("div", { class: "wrapper" }, h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)) : null));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

@@ -13,7 +13,7 @@
   margin: 0;
 }
 
-.map {
+noi-map {
   z-index: 0;
   flex: 1;
 }

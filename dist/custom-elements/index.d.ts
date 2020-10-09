@@ -20,10 +20,10 @@ export const NoiInput: {
   new (): NoiInput;
 };
 
-interface NoiMobilityMap extends Components.NoiMobilityMap, HTMLElement {}
-export const NoiMobilityMap: {
-  prototype: NoiMobilityMap;
-  new (): NoiMobilityMap;
+interface NoiMap extends Components.NoiMap, HTMLElement {}
+export const NoiMap: {
+  prototype: NoiMap;
+  new (): NoiMap;
 };
 
 interface NoiMobilityTraffic extends Components.NoiMobilityTraffic, HTMLElement {}

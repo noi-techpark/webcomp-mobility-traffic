@@ -1,7 +1,8 @@
 import { Component, h, Element, State } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
-import { NoiAPI } from '../../utils/api';
+import { NoiAPI, NoiHighwayStation } from '../../utils/api';
 import { getLocaleComponentStrings } from '../../utils/locale';
+import { MapHighwayStation } from './blocks/map/map-entity';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -22,7 +23,7 @@ export class NoiMobilityTraffic {
   private resizeObserver: ResizeObserver;
   
   @Element() element: HTMLElement;
-  @State() highwayPoints: Array<{coordinates: {lat, long}, id, name}> = null;
+  @State() highwayPoints: Array<NoiHighwayStation> = null;
   @State() showSearch: boolean = true;
   
   
@@ -57,16 +58,9 @@ export class NoiMobilityTraffic {
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
   }
 
-  getHighwayCircles(highwayStations: Array<{id, coordinates: {lat, long}}>) {
-    return highwayStations.map((s, i) => {
-      return (<leaflet-circle
-        latitude={s.coordinates.lat}
-        longitude={s.coordinates.long}
-        radius={20}
-        stroke={1}
-
-      >({i}) {s.id}
-      </leaflet-circle>)
+  getHighwayCircles(highwayStations: Array<NoiHighwayStation>) {
+    return highwayStations.map(s => {
+      return (<MapHighwayStation {...s}></MapHighwayStation>)
     })
   }
 
@@ -82,9 +76,9 @@ export class NoiMobilityTraffic {
       <noi-card class="search">
         <noi-search></noi-search>
       </noi-card>
-      <noi-mobility-map class="map">
-        {/* {this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)): null} */}
-      </noi-mobility-map>
+      <noi-map>
+        {this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)): null}
+      </noi-map>
     </div>;
   }
 }

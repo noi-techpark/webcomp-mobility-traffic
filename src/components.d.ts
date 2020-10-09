@@ -153,22 +153,12 @@ export namespace Components {
          */
         "value"?: string | number | null | undefined;
     }
-    interface NoiMobilityMap {
-        "defaultPopup": string;
-        "iconHeight": number;
-        "iconUrl": string;
-        "iconWidth": number;
-        "latitude": number;
-        "longitude": number;
+    interface NoiMap {
+        "lat": number;
+        "long": number;
         "scale": number;
-        "showDefaultMarker": boolean;
-        "showScale": boolean;
-        "tileLayer": string;
-        "userIconHeight": number;
-        "userIconUrl": string;
-        "userIconWidth": number;
-        "userLatitude": number;
-        "userLongitude": number;
+        "userLat": number;
+        "userLong": number;
     }
     interface NoiMobilityTraffic {
     }
@@ -194,11 +184,11 @@ declare global {
         prototype: HTMLNoiInputElement;
         new (): HTMLNoiInputElement;
     };
-    interface HTMLNoiMobilityMapElement extends Components.NoiMobilityMap, HTMLStencilElement {
+    interface HTMLNoiMapElement extends Components.NoiMap, HTMLStencilElement {
     }
-    var HTMLNoiMobilityMapElement: {
-        prototype: HTMLNoiMobilityMapElement;
-        new (): HTMLNoiMobilityMapElement;
+    var HTMLNoiMapElement: {
+        prototype: HTMLNoiMapElement;
+        new (): HTMLNoiMapElement;
     };
     interface HTMLNoiMobilityTrafficElement extends Components.NoiMobilityTraffic, HTMLStencilElement {
     }
@@ -216,7 +206,7 @@ declare global {
         "noi-button": HTMLNoiButtonElement;
         "noi-card": HTMLNoiCardElement;
         "noi-input": HTMLNoiInputElement;
-        "noi-mobility-map": HTMLNoiMobilityMapElement;
+        "noi-map": HTMLNoiMapElement;
         "noi-mobility-traffic": HTMLNoiMobilityTrafficElement;
         "noi-search": HTMLNoiSearchElement;
     }
@@ -384,22 +374,12 @@ declare namespace LocalJSX {
          */
         "value"?: string | number | null | undefined;
     }
-    interface NoiMobilityMap {
-        "defaultPopup"?: string;
-        "iconHeight"?: number;
-        "iconUrl"?: string;
-        "iconWidth"?: number;
-        "latitude"?: number;
-        "longitude"?: number;
+    interface NoiMap {
+        "lat"?: number;
+        "long"?: number;
         "scale"?: number;
-        "showDefaultMarker"?: boolean;
-        "showScale"?: boolean;
-        "tileLayer"?: string;
-        "userIconHeight"?: number;
-        "userIconUrl"?: string;
-        "userIconWidth"?: number;
-        "userLatitude"?: number;
-        "userLongitude"?: number;
+        "userLat"?: number;
+        "userLong"?: number;
     }
     interface NoiMobilityTraffic {
     }
@@ -409,7 +389,7 @@ declare namespace LocalJSX {
         "noi-button": NoiButton;
         "noi-card": NoiCard;
         "noi-input": NoiInput;
-        "noi-mobility-map": NoiMobilityMap;
+        "noi-map": NoiMap;
         "noi-mobility-traffic": NoiMobilityTraffic;
         "noi-search": NoiSearch;
     }
@@ -421,7 +401,7 @@ declare module "@stencil/core" {
             "noi-button": LocalJSX.NoiButton & JSXBase.HTMLAttributes<HTMLNoiButtonElement>;
             "noi-card": LocalJSX.NoiCard & JSXBase.HTMLAttributes<HTMLNoiCardElement>;
             "noi-input": LocalJSX.NoiInput & JSXBase.HTMLAttributes<HTMLNoiInputElement>;
-            "noi-mobility-map": LocalJSX.NoiMobilityMap & JSXBase.HTMLAttributes<HTMLNoiMobilityMapElement>;
+            "noi-map": LocalJSX.NoiMap & JSXBase.HTMLAttributes<HTMLNoiMapElement>;
             "noi-mobility-traffic": LocalJSX.NoiMobilityTraffic & JSXBase.HTMLAttributes<HTMLNoiMobilityTrafficElement>;
             "noi-search": LocalJSX.NoiSearch & JSXBase.HTMLAttributes<HTMLNoiSearchElement>;
         }

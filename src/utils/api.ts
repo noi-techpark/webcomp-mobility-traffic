@@ -1,5 +1,5 @@
-import { NoiError, NoiErrorOptionsObject } from "./error";
 import L from 'leaflet';
+import { NoiError, NoiErrorOptionsObject } from "./error";
 import { NoiAuth } from "./auth";
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
