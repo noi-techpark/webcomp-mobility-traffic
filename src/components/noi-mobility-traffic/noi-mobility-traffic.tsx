@@ -81,10 +81,6 @@ export class NoiMobilityTraffic {
 
   render() {
     return <div class="wrapper">
-      <div>
-        <noi-button onClick={this.onSelectBrenner.bind(this)}>Select</noi-button>
-        <noi-button onClick={this.onUnSelectBrenner.bind(this)}>Un-Select</noi-button>
-      </div>
       <noi-card class="search">
         <noi-search>
         </noi-search>

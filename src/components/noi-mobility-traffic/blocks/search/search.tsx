@@ -1,4 +1,5 @@
 import { Host, Component, h, getAssetPath } from '@stencil/core';
+import noiStore from '../../../../store';
 
 @Component({
   tag: 'noi-search',
@@ -6,15 +7,24 @@ import { Host, Component, h, getAssetPath } from '@stencil/core';
   scoped: true
 })
 export class Search {
+
+  getStart() {
+    return noiStore.start ? noiStore.start.name : ''
+  }
+
+  getEnd() {
+    return noiStore.end ? noiStore.end.name : ''
+  }
+
   render() {
     return (
     <Host>
       <div class="noi-search__img">
       </div>
       <div class="noi-search__inputs">
-        <noi-input placeholder="Partenza?"></noi-input>
+        <noi-input placeholder="Partenza?" value={this.getStart()}></noi-input>
         <hr/>
-        <noi-input placeholder="Destinazione?"></noi-input>
+        <noi-input placeholder="Destinazione?" value={this.getEnd()}></noi-input>
       </div>
       <div class="noi-search__button">
         <noi-button fill="solid">

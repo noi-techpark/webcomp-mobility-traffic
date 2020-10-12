@@ -28,6 +28,8 @@ export declare class NoiMap {
   updateCenterAndZoom(): void;
   onSetAsStart(): void;
   onSetAsEnd(): void;
+  renderSetAsStartButton(): any;
+  renderSetAsEndButton(): any;
   renderSelectedStationPopup(): any;
   render(): any;
 }

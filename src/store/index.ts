@@ -3,10 +3,12 @@ import { NoiHighwayStation } from '../api';
 import { Selectable } from '../utils';
 
 export interface NoiState {
-  start: NoiHighwayStation,
-  end: NoiHighwayStation,
   selectedId: string;
+  startId: string;
+  endId: string;
   stations: {[id: string]: NoiHighwayStation},
+  readonly start: NoiHighwayStation,
+  readonly end: NoiHighwayStation,
   readonly selected: NoiHighwayStation,
   readonly stationsList:  NoiHighwayStation[],
   readonly loading: boolean
@@ -19,11 +21,13 @@ function orderStations(value:{[id: string]: NoiHighwayStation}) {
 }
 
 const { state, onChange, set } = createStore<NoiState>({
+  selectedId: '',
+  startId: '',
+  endId: '',
+  stations: undefined,
   start: null,
   end: null,
   selected: null,
-  selectedId: '',
-  stations: undefined,
   stationsList: null,
   loading: true
 });
@@ -43,6 +47,28 @@ onChange('selectedId', (selectedId) => {
     set('selected', state.stations[selectedId]);
   } else {
     set('selected', null);
+  }
+});
+
+onChange('startId', (value) => {
+  if (value) {
+    set('start', state.stations[value]);
+    if (state.endId === value) {
+      set('endId', null);
+    }
+  } else {
+    set('start', null);
+  }
+});
+
+onChange('endId', (value) => {
+  if (value) {
+    set('end', state.stations[value]);
+    if (state.startId === value) {
+      set('startId', null);
+    }
+  } else {
+    set('end', null);
   }
 });
 

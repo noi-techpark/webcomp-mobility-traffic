@@ -39,10 +39,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 8px;
 }
 
 .noi-map-station-popup__header {
   height: 40px;
+  line-height: 40px;
   color: #346e97;
   font-size: large;
   width: 100%;
@@ -50,9 +52,17 @@
   text-transform: uppercase;
 }
 
+.noi-map-station-popup__content {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0 8px;
+}
+
 .noi-map-station-popup__btn {
   --background: rgba(87, 173, 57, 1);
   --color: #fff;
+  flex: 1;
 }
 
 

@@ -1,12 +1,14 @@
 import { NoiHighwayStation } from '../api';
 import { Selectable } from '../utils';
 export interface NoiState {
-  start: NoiHighwayStation;
-  end: NoiHighwayStation;
   selectedId: string;
+  startId: string;
+  endId: string;
   stations: {
     [id: string]: NoiHighwayStation;
   };
+  readonly start: NoiHighwayStation;
+  readonly end: NoiHighwayStation;
   readonly selected: NoiHighwayStation;
   readonly stationsList: NoiHighwayStation[];
   readonly loading: boolean;

@@ -1,5 +1,6 @@
 import { r as registerInstance, h, g as getElement } from './index-733fc348.js';
-import { s as state, a as selectStationsWithSelected, M as MapHighwayStation } from './index-c6200729.js';
+import { M as MapHighwayStation } from './map-entity-2b4ed657.js';
+import { s as state, a as selectStationsWithSelected } from './index-aa360443.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1411,7 +1412,7 @@ const NoiMobilityTraffic = class {
     });
   }
   render() {
-    return h("div", { class: "wrapper" }, h("div", null, h("noi-button", { onClick: this.onSelectBrenner.bind(this) }, "Select"), h("noi-button", { onClick: this.onUnSelectBrenner.bind(this) }, "Un-Select")), h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
+    return h("div", { class: "wrapper" }, h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

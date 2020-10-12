@@ -147,7 +147,7 @@ export class NoiMap {
       observer.observe(e, { attributes: true, childList: false, subtree: false });
       this.entityChildren.set(e, {layer, observer});
       layer.addTo(this.map);
-      layer.bindPopup(this.popupElement);
+      layer.bindPopup(this.popupElement, {minWidth: 350});
       layer.getPopup().on('remove', () => noiStore.selectedId = '');
     }
   }
@@ -188,29 +188,49 @@ export class NoiMap {
   }
 
   onSetAsStart() {
-    this.map.closePopup();
-    alert(noiStore.selected.name + ' is now start!'); 
-    noiStore.start = noiStore.selected;
+    noiStore.startId = noiStore.selectedId;
     noiStore.selectedId = '';
+    this.map.closePopup();
   }
 
   onSetAsEnd() {
-    this.map.closePopup();
-    alert(noiStore.selected.name + ' is now end!'); 
-    noiStore.end = noiStore.selected;
+    noiStore.endId = noiStore.selectedId;
     noiStore.selectedId = '';
+    this.map.closePopup();
+  }
+
+  renderSetAsStartButton() {
+    if (noiStore.selectedId === noiStore.startId) {
+      return null;
+    }
+    const title = noiStore.startId ? "Change origin" : "Set origin";
+    return (
+      <noi-button fill="solid" class="button-md noi-map-station-popup__btn" onClick={this.onSetAsStart.bind(this)}>
+        {title}
+      </noi-button>
+    );
+  }
+
+  renderSetAsEndButton() {
+    if (noiStore.selectedId === noiStore.endId) {
+      return null;
+    }
+    const title = noiStore.endId ? "Change destination" : "Set destination";
+    return (
+      <noi-button fill="solid" class="button-md noi-map-station-popup__btn" onClick={this.onSetAsEnd.bind(this)}>
+        {title}
+      </noi-button>
+    );
   }
 
   renderSelectedStationPopup() {
     return (
       <div class="noi-map-station-popup">
         <div class="noi-map-station-popup__header">{noiStore.selected.name}</div>
-        <noi-button expand="full" fill="solid" class="button-md noi-map-station-popup__btn"
-          onClick={this.onSetAsStart.bind(this)}>Set as start
-        </noi-button>
-        <noi-button expand="full" fill="solid" class="button-md noi-map-station-popup__btn"
-          onClick={this.onSetAsEnd.bind(this)}>Set as end
-        </noi-button>
+        <div class="noi-map-station-popup__content">
+          {this.renderSetAsStartButton()}
+          {this.renderSetAsEndButton()}
+        </div>
       </div>
     );
   }
