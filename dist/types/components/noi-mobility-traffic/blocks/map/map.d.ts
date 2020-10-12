@@ -9,6 +9,7 @@ export declare class NoiMap {
   childrenObserver: MutationObserver;
   entityChildren: WeakMap<any, LayerObserver<CircleMarker>>;
   pathChildren: WeakMap<any, LayerObserver<GeoJSON>>;
+  popupElement: HTMLElement;
   el: HTMLElement;
   lat: number;
   long: number;
@@ -25,5 +26,9 @@ export declare class NoiMap {
   private renderGeoJson;
   renderChildren(): void;
   updateCenterAndZoom(): void;
+  onSetAsStart(): void;
+  onSetAsEnd(): void;
+  renderSelectedStationPopup(): any;
+  render(): any;
 }
 export {};

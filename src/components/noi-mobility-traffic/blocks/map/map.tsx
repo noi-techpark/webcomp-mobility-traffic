@@ -1,4 +1,4 @@
-import { Component, Element, Prop, Watch } from '@stencil/core';
+import { Component, Element, Prop, Watch, h } from '@stencil/core';
 import { Browser, CircleMarker, GeoJSON, Map, TileLayer } from 'leaflet';
 
 import {
@@ -31,6 +31,7 @@ export class NoiMap {
   childrenObserver: MutationObserver = null;
   entityChildren: WeakMap<any, LayerObserver<CircleMarker>> = new WeakMap();
   pathChildren: WeakMap<any, LayerObserver<GeoJSON>> = new WeakMap();
+  popupElement!: HTMLElement;
 
   @Element() el: HTMLElement;
 
@@ -146,9 +147,8 @@ export class NoiMap {
       observer.observe(e, { attributes: true, childList: false, subtree: false });
       this.entityChildren.set(e, {layer, observer});
       layer.addTo(this.map);
-      if (e.textContent) {
-        layer.bindPopup(e.textContent).openPopup();
-      }
+      layer.bindPopup(this.popupElement);
+      layer.getPopup().on('remove', () => noiStore.selectedId = '');
     }
   }
 
@@ -185,6 +185,40 @@ export class NoiMap {
       return;
     }
     this.map.setView([this.lat, this.long], this.scale);
+  }
+
+  onSetAsStart() {
+    this.map.closePopup();
+    alert(noiStore.selected.name + ' is now start!'); 
+    noiStore.start = noiStore.selected;
+    noiStore.selectedId = '';
+  }
+
+  onSetAsEnd() {
+    this.map.closePopup();
+    alert(noiStore.selected.name + ' is now end!'); 
+    noiStore.end = noiStore.selected;
+    noiStore.selectedId = '';
+  }
+
+  renderSelectedStationPopup() {
+    return (
+      <div class="noi-map-station-popup">
+        <div class="noi-map-station-popup__header">{noiStore.selected.name}</div>
+        <noi-button expand="full" fill="solid" class="button-md noi-map-station-popup__btn"
+          onClick={this.onSetAsStart.bind(this)}>Set as start
+        </noi-button>
+        <noi-button expand="full" fill="solid" class="button-md noi-map-station-popup__btn"
+          onClick={this.onSetAsEnd.bind(this)}>Set as end
+        </noi-button>
+      </div>
+    );
+  }
+
+  render() {
+    return <div class="noi-map-popup" ref={(el) => this.popupElement= el as HTMLElement}>
+      {noiStore.selectedId ? this.renderSelectedStationPopup() : null}
+    </div>
   }
 
 }
