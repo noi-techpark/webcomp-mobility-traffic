@@ -1,8 +1,9 @@
 import { Component, h, Element, State } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
-import { NoiAPI, NoiHighwayStation } from '../../utils/api';
-import { getLocaleComponentStrings } from '../../utils/locale';
-import { MapHighwayStation, Selectable } from './blocks/map/map-entity';
+import { NoiAPI } from '../../api';
+import { getLocaleComponentStrings } from '../../lang';
+import { MapHighwayStation } from './blocks/map/map-entity';
+import noiStore, { selectStationsWithSelected } from '../../store';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -24,23 +25,21 @@ export class NoiMobilityTraffic {
   private resizeObserver: ResizeObserver;
   
   @Element() element: HTMLElement;
-  @State() highwayPoints: Array<Selectable<NoiHighwayStation>> = null;
   @State() showSearch: boolean = true;
   
   onSelectBrenner() {
-    this.highwayPoints = [...this.highwayPoints];
-    this.highwayPoints[1].selected = true;
+    noiStore.selectedId = '1840';
   }
 
   onUnSelectBrenner() {
-    this.highwayPoints = [...this.highwayPoints];
-    delete this.highwayPoints[1].selected;
+    noiStore.selectedId = null;
   }
 
   async componentWillLoad(): Promise<void> {
     this.strings = await getLocaleComponentStrings(this.element);
     try {
-      this.highwayPoints = await NoiAPI.getHighwayStations();
+      const stations = await NoiAPI.getHighwayStations();
+      noiStore.stations = stations.reduce((result, s) => { result[s.id] = s; return result;}, {})
     } catch (error) {
       // TODO:
     }
@@ -67,8 +66,8 @@ export class NoiMobilityTraffic {
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
   }
 
-  getHighwayCircles(highwayStations: Array<NoiHighwayStation>) {
-    return highwayStations.map(s => {
+  getHighwayCircles() {
+    return selectStationsWithSelected().map(s => {
       return (<MapHighwayStation {...s}></MapHighwayStation>)
     })
   }
@@ -91,7 +90,7 @@ export class NoiMobilityTraffic {
         </noi-search>
       </noi-card>
       <noi-map>
-        {this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)): null}
+        {noiStore.stations ? (this.getHighwayCircles()): null}
       </noi-map>
     </div>;
   }

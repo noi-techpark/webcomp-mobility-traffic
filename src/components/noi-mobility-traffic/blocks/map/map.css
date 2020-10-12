@@ -8,22 +8,26 @@
 
 .noi-highway-station {
   stroke-width: 2;
-  color: #5b879f;
+  stroke: #5b879f;
   fill: #88b2ca;
   opacity: 1.0;
   fill-opacity: 1;
 }
 
 .noi-highway-station--hover {
-  fill: red;
+  stroke-width: 4;
+  fill: rgba(55, 111, 149, 1);
+  stroke: #fff;
+  transition: fill 0.8s ease-out;
 }
 
 .noi-highway-station-selected {
   stroke-width: 3;
-  color: #fff;
+  stroke: #fff;
   fill: #346e97;
   opacity: 1.0;
   fill-opacity: 1;
+  transition: fill 0.8s ease-out;
 }
 
 /* leaflet required styles */

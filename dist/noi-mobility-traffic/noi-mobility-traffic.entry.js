@@ -1,5 +1,5 @@
-import { r as registerInstance, h, g as getElement } from './index-eae66176.js';
-import { M as MapHighwayStation } from './map-entity-31d9cbe3.js';
+import { r as registerInstance, h, g as getElement } from './index-aee307c3.js';
+import { s as state, a as selectStationsWithSelected, M as MapHighwayStation } from './index-aabb085e.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1088,12 +1088,17 @@ function parseHighwayStations(linkStations) {
       { lat: s.smetadata.latitudineinizio, long: s.smetadata.longitudininizio },
       { lat: s.smetadata.latitudinefine, long: s.smetadata.longitudinefine },
     ];
+    const positions = [
+      +s.smetadata.metroinizio,
+      +s.smetadata.metrofine,
+    ];
     if (!result[ids[0]]) {
       result[ids[0]] = {
         id: ids[0],
         name: names[0],
         coordinates: coordinates[0],
-        highway: 'A22'
+        highway: 'A22',
+        position: positions[0]
       };
     }
     if (!result[ids[1]]) {
@@ -1101,12 +1106,18 @@ function parseHighwayStations(linkStations) {
         id: ids[1],
         name: names[1],
         coordinates: coordinates[1],
-        highway: 'A22'
+        highway: 'A22',
+        position: positions[1]
       };
     }
     return result;
   }, {});
-  return Object.keys(stations).map(i => stations[i]);
+  return Object.keys(stations)
+    .map(i => stations[i])
+    .filter(i => {
+    // filter out the german ring data
+    return !i.id.startsWith('1111');
+  });
 }
 ;
 function parse4326Coordinates(value) {
@@ -1353,21 +1364,19 @@ const rIC = (callback) => {
 const NoiMobilityTraffic = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
-    this.highwayPoints = null;
     this.showSearch = true;
   }
   onSelectBrenner() {
-    this.highwayPoints = [...this.highwayPoints];
-    this.highwayPoints[1].selected = true;
+    state.selectedId = '1840';
   }
   onUnSelectBrenner() {
-    this.highwayPoints = [...this.highwayPoints];
-    delete this.highwayPoints[1].selected;
+    state.selectedId = null;
   }
   async componentWillLoad() {
     this.strings = await getLocaleComponentStrings(this.element);
     try {
-      this.highwayPoints = await NoiAPI.getHighwayStations();
+      const stations = await NoiAPI.getHighwayStations();
+      state.stations = stations.reduce((result, s) => { result[s.id] = s; return result; }, {});
     }
     catch (error) {
       // TODO:
@@ -1391,8 +1400,8 @@ const NoiMobilityTraffic = class {
     this.element.classList.toggle('noi-media-gs', greaterThanSmall);
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
   }
-  getHighwayCircles(highwayStations) {
-    return highwayStations.map(s => {
+  getHighwayCircles() {
+    return selectStationsWithSelected().map(s => {
       return (h(MapHighwayStation, Object.assign({}, s)));
     });
   }
@@ -1402,7 +1411,7 @@ const NoiMobilityTraffic = class {
     });
   }
   render() {
-    return h("div", { class: "wrapper" }, h("div", null, h("noi-button", { onClick: this.onSelectBrenner.bind(this) }, "Select"), h("noi-button", { onClick: this.onUnSelectBrenner.bind(this) }, "Un-Select")), h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, this.highwayPoints ? (this.getHighwayCircles(this.highwayPoints)) : null));
+    return h("div", { class: "wrapper" }, h("div", null, h("noi-button", { onClick: this.onSelectBrenner.bind(this) }, "Select"), h("noi-button", { onClick: this.onUnSelectBrenner.bind(this) }, "Un-Select")), h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

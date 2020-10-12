@@ -1,8 +1,8 @@
 import { FunctionalComponent, h } from '@stencil/core';
 import { CircleMarker, FillRule, Browser } from 'leaflet';
-import { NoiHighwayStation } from '../../../../utils/api';
+import { NoiHighwayStation } from '../../../../api';
+import { Selectable } from '../../../../utils';
 
-export type Selectable<T> = T & {selected?: boolean};
 export type MapHighwayStationProps = Selectable<NoiHighwayStation>;
 
 export const MAP_ENTITY_HIGHWAY_STATION = 'HighwayStation';

@@ -1,6 +1,14 @@
-import { Component, Prop, Watch, Element  } from '@stencil/core';
-import { CircleMarker, Browser, TileLayer, Map, GeoJSON } from 'leaflet';
-import { highlightHighwayStation, MAP_ENTITY_HIGHWAY_STATION, renderHighwayStationElement, unHighlightHighwayStation } from './map-entity';
+import { Component, Element, Prop, Watch } from '@stencil/core';
+import { Browser, CircleMarker, GeoJSON, Map, TileLayer } from 'leaflet';
+
+import {
+  highlightHighwayStation,
+  MAP_ENTITY_HIGHWAY_STATION,
+  renderHighwayStationElement,
+  unHighlightHighwayStation,
+} from './map-entity';
+
+import noiStore from '../../../../store';
 
 interface LayerObserver<T> {
   layer: T,
@@ -120,6 +128,7 @@ export class NoiMap {
 
   private renderMapEntity(e: Element) {
     const type: string = e.getAttribute('entity-type');
+    const id: string = e.getAttribute('entity-id');
     
     // TODO: create a factory
     if (type === MAP_ENTITY_HIGHWAY_STATION) {
@@ -130,6 +139,7 @@ export class NoiMap {
         click: (e) => {
           const latLong = (e.target as CircleMarker).getLatLng();
           this.map.setView(latLong, this.scale);
+          noiStore.selectedId = id;
         }
       });
       const observer = new MutationObserver((mutations: Array<any>, _observer: any) => this.entityAttrsObserver(e, mutations));

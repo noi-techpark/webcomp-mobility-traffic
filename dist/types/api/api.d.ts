@@ -56,6 +56,7 @@ export interface NoiHighwayStation {
     long: number;
   };
   highway: 'A22';
+  position: number;
 }
 export declare function parseHighwayStations(linkStations: Array<any>): Array<NoiHighwayStation>;
 export interface NoiVMS {

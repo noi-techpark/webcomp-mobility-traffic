@@ -1,4 +1,4 @@
-import { h } from './index-eae66176.js';
+import { h } from './index-50931e29.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -14101,21 +14101,14 @@ const MapHighwayStation = (props) => (h("noi-map-entity", { "entity-type": MAP_E
   props.name));
 function highlightHighwayStation(e) {
   const layer = e.target;
-  debugger;
-  layer.setStyle({
-    color: '#666',
-  });
+  layer.getElement().classList.add('noi-highway-station--hover');
   if (!leafletSrc.Browser.ie && !leafletSrc.Browser.opera && !leafletSrc.Browser.edge) {
     layer.bringToFront();
   }
 }
 function unHighlightHighwayStation(e) {
   const layer = e.target;
-  debugger;
-  const oldStyle = Object.assign({}, layer.options);
-  delete oldStyle.color;
-  layer.setStyle(oldStyle);
-  layer.redraw();
+  layer.getElement().classList.remove('noi-highway-station--hover');
 }
 function renderHighwayStationElement(e) {
   const lat = +e.getAttribute('lat');

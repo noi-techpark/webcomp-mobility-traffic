@@ -1,4 +1,4 @@
-import { CircleMarker, Map, GeoJSON } from 'leaflet';
+import { CircleMarker, GeoJSON, Map } from 'leaflet';
 interface LayerObserver<T> {
   layer: T;
   observer: MutationObserver;

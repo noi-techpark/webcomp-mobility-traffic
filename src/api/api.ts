@@ -68,6 +68,7 @@ export interface NoiHighwayStation {
   name: string;
   coordinates: {lat: number; long: number};
   highway: 'A22';
+  position: number;
 };
 
 export function parseHighwayStations(linkStations: Array<any>): Array<NoiHighwayStation> {
@@ -97,12 +98,17 @@ export function parseHighwayStations(linkStations: Array<any>): Array<NoiHighway
       {lat: s.smetadata.latitudineinizio, long: s.smetadata.longitudininizio},
       {lat: s.smetadata.latitudinefine, long: s.smetadata.longitudinefine},
     ];
+    const positions = [
+      +s.smetadata.metroinizio,
+      +s.smetadata.metrofine,
+    ]
     if (!result[ids[0]]) {
       result[ids[0]] = {
         id: ids[0],
         name: names[0],
         coordinates: coordinates[0],
-        highway: 'A22'
+        highway: 'A22',
+        position: positions[0]
       };
     }
     if (!result[ids[1]]) {
@@ -110,12 +116,18 @@ export function parseHighwayStations(linkStations: Array<any>): Array<NoiHighway
         id: ids[1],
         name: names[1],
         coordinates: coordinates[1],
-        highway: 'A22'
+        highway: 'A22',
+        position: positions[1]
       };
     }
     return result;
   }, {});
-  return Object.keys(stations).map(i => stations[i]);
+  return Object.keys(stations)
+    .map(i => stations[i])
+    .filter(i => {
+      // filter out the german ring data
+      return !i.id.startsWith('1111');
+    });
 }
 
 export interface NoiVMS {
