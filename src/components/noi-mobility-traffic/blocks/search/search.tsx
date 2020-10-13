@@ -9,27 +9,26 @@ import noiStore from '../../../../store';
 export class Search {
 
   getStart() {
-    return noiStore.start ? noiStore.start.name : ''
+    // TODO: get placeholder from strings
+    return noiStore.start ? noiStore.start.name : 'Partenza?'
   }
 
   getEnd() {
-    return noiStore.end ? noiStore.end.name : ''
+    // TODO: get placeholder from strings
+    return noiStore.end ? noiStore.end.name : 'Destinazione?'
+  }
+
+  onInputClick(what: 'start' | 'end') {
+    noiStore.selecting = what;
   }
 
   render() {
+    // TODO: add inputs class for color (placeholder/value)
     return (
     <Host>
-      <div class="noi-search__img">
-      </div>
       <div class="noi-search__inputs">
-        <noi-input placeholder="Partenza?" value={this.getStart()}></noi-input>
-        <hr/>
-        <noi-input placeholder="Destinazione?" value={this.getEnd()}></noi-input>
-      </div>
-      <div class="noi-search__button">
-        <noi-button fill="solid">
-          <img slot="icon-only" src={getAssetPath(`./assets/reorder.svg`)}/>
-        </noi-button>
+        <noi-button class="noi-search__input" onClick={this.onInputClick.bind(this, 'start')}>{this.getStart()}</noi-button>
+        <noi-button class="noi-search__input" onClick={this.onInputClick.bind(this, 'end')}>{this.getEnd()}</noi-button>
       </div>
     </Host>);
   }

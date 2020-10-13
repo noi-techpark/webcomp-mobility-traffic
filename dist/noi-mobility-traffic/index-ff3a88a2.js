@@ -1,4 +1,4 @@
-import { e as getRenderingRef, f as forceUpdate } from './index-733fc348.js';
+import { e as getRenderingRef, f as forceUpdate } from './index-70bc2936.js';
 
 const appendToMap = (map, propName, value) => {
     const items = map.get(propName);
@@ -177,6 +177,7 @@ function orderStations(value) {
     .sort((a, b) => a.position > b.position ? 1 : -1);
 }
 const { state, onChange, set } = createStore({
+  selecting: null,
   selectedId: '',
   startId: '',
   endId: '',
@@ -198,6 +199,7 @@ onChange('stations', (stations) => {
   }
 });
 onChange('selectedId', (selectedId) => {
+  state.selecting = null;
   if (selectedId) {
     set('selected', state.stations[selectedId]);
   }
@@ -206,6 +208,7 @@ onChange('selectedId', (selectedId) => {
   }
 });
 onChange('startId', (value) => {
+  state.selecting = null;
   if (value) {
     set('start', state.stations[value]);
     if (state.endId === value) {
@@ -217,6 +220,7 @@ onChange('startId', (value) => {
   }
 });
 onChange('endId', (value) => {
+  state.selecting = null;
   if (value) {
     set('end', state.stations[value]);
     if (state.startId === value) {

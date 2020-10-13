@@ -1,6 +1,7 @@
 export declare class NoiMobilityTraffic {
   private strings;
   private resizeObserver;
+  private stationsModal;
   element: HTMLElement;
   showSearch: boolean;
   onSelectBrenner(): void;
@@ -11,5 +12,6 @@ export declare class NoiMobilityTraffic {
   applyMediaClasses(widthPx: number, heightPx: number): void;
   getHighwayCircles(): any[];
   getAllLinkStations(linkStations: any): any;
+  onModalClose(): void;
   render(): any;
 }

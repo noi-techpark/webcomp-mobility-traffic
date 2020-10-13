@@ -3,6 +3,7 @@ import { NoiHighwayStation } from '../api';
 import { Selectable } from '../utils';
 
 export interface NoiState {
+  selecting: 'start' | 'end' | null;
   selectedId: string;
   startId: string;
   endId: string;
@@ -21,6 +22,7 @@ function orderStations(value:{[id: string]: NoiHighwayStation}) {
 }
 
 const { state, onChange, set } = createStore<NoiState>({
+  selecting: null,
   selectedId: '',
   startId: '',
   endId: '',
@@ -43,6 +45,7 @@ onChange('stations', (stations) => {
 });
 
 onChange('selectedId', (selectedId) => {
+  state.selecting = null;
   if (selectedId) {
     set('selected', state.stations[selectedId]);
   } else {
@@ -51,6 +54,7 @@ onChange('selectedId', (selectedId) => {
 });
 
 onChange('startId', (value) => {
+  state.selecting = null;
   if (value) {
     set('start', state.stations[value]);
     if (state.endId === value) {
@@ -62,6 +66,7 @@ onChange('startId', (value) => {
 });
 
 onChange('endId', (value) => {
+  state.selecting = null;
   if (value) {
     set('end', state.stations[value]);
     if (state.startId === value) {

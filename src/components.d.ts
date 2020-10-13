@@ -7,6 +7,12 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { InputChangeEventDetail, StyleEventDetail, TextFieldTypes } from "./components/noi-mobility-traffic/components/input/input";
 export namespace Components {
+    interface NoiBackdrop {
+        "overlayIndex": number;
+        "stopPropagation": boolean;
+        "tappable": boolean;
+        "visible": boolean;
+    }
     interface NoiButton {
         /**
           * If `true`, the user cannot interact with the button.
@@ -162,8 +168,19 @@ export namespace Components {
     }
     interface NoiSearch {
     }
+    interface NoiStationsModal {
+        "overlayIndex": number;
+        "selecting": 'start' | 'end';
+        "visible": boolean;
+    }
 }
 declare global {
+    interface HTMLNoiBackdropElement extends Components.NoiBackdrop, HTMLStencilElement {
+    }
+    var HTMLNoiBackdropElement: {
+        prototype: HTMLNoiBackdropElement;
+        new (): HTMLNoiBackdropElement;
+    };
     interface HTMLNoiButtonElement extends Components.NoiButton, HTMLStencilElement {
     }
     var HTMLNoiButtonElement: {
@@ -200,16 +217,31 @@ declare global {
         prototype: HTMLNoiSearchElement;
         new (): HTMLNoiSearchElement;
     };
+    interface HTMLNoiStationsModalElement extends Components.NoiStationsModal, HTMLStencilElement {
+    }
+    var HTMLNoiStationsModalElement: {
+        prototype: HTMLNoiStationsModalElement;
+        new (): HTMLNoiStationsModalElement;
+    };
     interface HTMLElementTagNameMap {
+        "noi-backdrop": HTMLNoiBackdropElement;
         "noi-button": HTMLNoiButtonElement;
         "noi-card": HTMLNoiCardElement;
         "noi-input": HTMLNoiInputElement;
         "noi-map": HTMLNoiMapElement;
         "noi-mobility-traffic": HTMLNoiMobilityTrafficElement;
         "noi-search": HTMLNoiSearchElement;
+        "noi-stations-modal": HTMLNoiStationsModalElement;
     }
 }
 declare namespace LocalJSX {
+    interface NoiBackdrop {
+        "onNoiBackdropTap"?: (event: CustomEvent<void>) => void;
+        "overlayIndex"?: number;
+        "stopPropagation"?: boolean;
+        "tappable"?: boolean;
+        "visible"?: boolean;
+    }
     interface NoiButton {
         /**
           * If `true`, the user cannot interact with the button.
@@ -320,14 +352,6 @@ declare namespace LocalJSX {
          */
         "name"?: string;
         /**
-          * Emitted when the input has focus.
-         */
-        "onIonFocus"?: (event: CustomEvent<FocusEvent>) => void;
-        /**
-          * Emitted when the styles change.
-         */
-        "onIonStyle"?: (event: CustomEvent<StyleEventDetail>) => void;
-        /**
           * Emitted when the input loses focus.
          */
         "onNoiBlur"?: (event: CustomEvent<FocusEvent>) => void;
@@ -336,9 +360,17 @@ declare namespace LocalJSX {
          */
         "onNoiChange"?: (event: CustomEvent<InputChangeEventDetail>) => void;
         /**
+          * Emitted when the input has focus.
+         */
+        "onNoiFocus"?: (event: CustomEvent<FocusEvent>) => void;
+        /**
           * Emitted when a keyboard input occurred.
          */
         "onNoiInput"?: (event: CustomEvent<KeyboardEvent>) => void;
+        /**
+          * Emitted when the styles change.
+         */
+        "onNoiStyle"?: (event: CustomEvent<StyleEventDetail>) => void;
         /**
           * A regular expression that the value is checked against. The pattern must match the entire value, not just some subset. Use the title attribute to describe the pattern to help the user. This attribute applies when the value of the type attribute is `"text"`, `"search"`, `"tel"`, `"url"`, `"email"`, `"date"`, or `"password"`, otherwise it is ignored. When the type attribute is `"date"`, `pattern` will only be used in browsers that do not support the `"date"` input type natively. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date for more information.
          */
@@ -381,25 +413,35 @@ declare namespace LocalJSX {
     }
     interface NoiSearch {
     }
+    interface NoiStationsModal {
+        "onModalClose"?: (event: CustomEvent<{stationId: string}>) => void;
+        "overlayIndex"?: number;
+        "selecting"?: 'start' | 'end';
+        "visible"?: boolean;
+    }
     interface IntrinsicElements {
+        "noi-backdrop": NoiBackdrop;
         "noi-button": NoiButton;
         "noi-card": NoiCard;
         "noi-input": NoiInput;
         "noi-map": NoiMap;
         "noi-mobility-traffic": NoiMobilityTraffic;
         "noi-search": NoiSearch;
+        "noi-stations-modal": NoiStationsModal;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "noi-backdrop": LocalJSX.NoiBackdrop & JSXBase.HTMLAttributes<HTMLNoiBackdropElement>;
             "noi-button": LocalJSX.NoiButton & JSXBase.HTMLAttributes<HTMLNoiButtonElement>;
             "noi-card": LocalJSX.NoiCard & JSXBase.HTMLAttributes<HTMLNoiCardElement>;
             "noi-input": LocalJSX.NoiInput & JSXBase.HTMLAttributes<HTMLNoiInputElement>;
             "noi-map": LocalJSX.NoiMap & JSXBase.HTMLAttributes<HTMLNoiMapElement>;
             "noi-mobility-traffic": LocalJSX.NoiMobilityTraffic & JSXBase.HTMLAttributes<HTMLNoiMobilityTrafficElement>;
             "noi-search": LocalJSX.NoiSearch & JSXBase.HTMLAttributes<HTMLNoiSearchElement>;
+            "noi-stations-modal": LocalJSX.NoiStationsModal & JSXBase.HTMLAttributes<HTMLNoiStationsModalElement>;
         }
     }
 }

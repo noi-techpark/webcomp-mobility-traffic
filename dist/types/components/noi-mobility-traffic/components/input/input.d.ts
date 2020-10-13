@@ -127,12 +127,12 @@ export declare class Input implements ComponentInterface {
   /**
    * Emitted when the input has focus.
    */
-  ionFocus: EventEmitter<FocusEvent>;
+  noiFocus: EventEmitter<FocusEvent>;
   /**
    * Emitted when the styles change.
    * @internal
    */
-  ionStyle: EventEmitter<StyleEventDetail>;
+  noiStyle: EventEmitter<StyleEventDetail>;
   componentWillLoad(): void;
   connectedCallback(): void;
   disconnectedCallback(): void;

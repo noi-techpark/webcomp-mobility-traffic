@@ -2,6 +2,12 @@
 
 import { Components, JSX } from "../types/components";
 
+interface NoiBackdrop extends Components.NoiBackdrop, HTMLElement {}
+export const NoiBackdrop: {
+  prototype: NoiBackdrop;
+  new (): NoiBackdrop;
+};
+
 interface NoiButton extends Components.NoiButton, HTMLElement {}
 export const NoiButton: {
   prototype: NoiButton;
@@ -36,6 +42,12 @@ interface NoiSearch extends Components.NoiSearch, HTMLElement {}
 export const NoiSearch: {
   prototype: NoiSearch;
   new (): NoiSearch;
+};
+
+interface NoiStationsModal extends Components.NoiStationsModal, HTMLElement {}
+export const NoiStationsModal: {
+  prototype: NoiStationsModal;
+  new (): NoiStationsModal;
 };
 
 /**

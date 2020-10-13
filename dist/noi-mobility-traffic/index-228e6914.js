@@ -1,4 +1,4 @@
-import { e as getRenderingRef, f as forceUpdate } from './index-733fc348.js';
+import { j as getRenderingRef, k as forceUpdate } from './index-13ab5a24.js';
 
 const appendToMap = (map, propName, value) => {
     const items = map.get(propName);
@@ -177,11 +177,14 @@ function orderStations(value) {
     .sort((a, b) => a.position > b.position ? 1 : -1);
 }
 const { state, onChange, set } = createStore({
+  selecting: null,
+  selectedId: '',
+  startId: '',
+  endId: '',
+  stations: undefined,
   start: null,
   end: null,
   selected: null,
-  selectedId: '',
-  stations: undefined,
   stationsList: null,
   loading: true
 });
@@ -196,11 +199,36 @@ onChange('stations', (stations) => {
   }
 });
 onChange('selectedId', (selectedId) => {
+  state.selecting = null;
   if (selectedId) {
     set('selected', state.stations[selectedId]);
   }
   else {
     set('selected', null);
+  }
+});
+onChange('startId', (value) => {
+  state.selecting = null;
+  if (value) {
+    set('start', state.stations[value]);
+    if (state.endId === value) {
+      set('endId', null);
+    }
+  }
+  else {
+    set('start', null);
+  }
+});
+onChange('endId', (value) => {
+  state.selecting = null;
+  if (value) {
+    set('end', state.stations[value]);
+    if (state.startId === value) {
+      set('startId', null);
+    }
+  }
+  else {
+    set('end', null);
   }
 });
 function selectStationsWithSelected() {

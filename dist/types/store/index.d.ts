@@ -1,6 +1,7 @@
 import { NoiHighwayStation } from '../api';
 import { Selectable } from '../utils';
 export interface NoiState {
+  selecting: 'start' | 'end' | null;
   selectedId: string;
   startId: string;
   endId: string;

@@ -206,13 +206,13 @@ export class Input implements ComponentInterface {
   /**
    * Emitted when the input has focus.
    */
-  @Event() ionFocus!: EventEmitter<FocusEvent>;
+  @Event() noiFocus!: EventEmitter<FocusEvent>;
 
   /**
    * Emitted when the styles change.
    * @internal
    */
-  @Event() ionStyle!: EventEmitter<StyleEventDetail>;
+  @Event() noiStyle!: EventEmitter<StyleEventDetail>;
 
   componentWillLoad() {
     // If the ion-input has a tabindex attribute we get the value
@@ -281,7 +281,7 @@ export class Input implements ComponentInterface {
   }
 
   private emitStyle() {
-    this.ionStyle.emit({
+    this.noiStyle.emit({
       'interactive': true,
       'input': true,
       'has-placeholder': this.placeholder != null,
@@ -313,7 +313,7 @@ export class Input implements ComponentInterface {
     this.emitStyle();
 
     if (this.fireFocusEvents) {
-      this.ionFocus.emit(ev);
+      this.noiFocus.emit(ev);
     }
   }
 

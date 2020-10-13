@@ -2,6 +2,8 @@
   --noi-font-family: "Roboto", "Helvetica Neue", sans-serif; 
   --noi-width: 100%;
   --noi-height: 100%;
+  --noi-primary-color: #0068B4;
+  --noi-primary-contrast-color: #ffffff;
 }
 
 * {

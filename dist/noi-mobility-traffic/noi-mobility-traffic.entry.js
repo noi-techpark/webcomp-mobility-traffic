@@ -1,6 +1,6 @@
-import { r as registerInstance, h, g as getElement } from './index-733fc348.js';
-import { M as MapHighwayStation } from './map-entity-2b4ed657.js';
-import { s as state, a as selectStationsWithSelected } from './index-aa360443.js';
+import { r as registerInstance, h, g as getElement } from './index-70bc2936.js';
+import { M as MapHighwayStation } from './map-entity-54acfe22.js';
+import { s as state, a as selectStationsWithSelected } from './index-ff3a88a2.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1400,6 +1400,10 @@ const NoiMobilityTraffic = class {
     const greaterThanSmallLandscape = greaterThanSmall && widthPx > heightPx;
     this.element.classList.toggle('noi-media-gs', greaterThanSmall);
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    if (this.stationsModal) {
+      this.stationsModal.classList.toggle('noi-media-gs', greaterThanSmall);
+      this.stationsModal.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    }
   }
   getHighwayCircles() {
     return selectStationsWithSelected().map(s => {
@@ -1411,8 +1415,11 @@ const NoiMobilityTraffic = class {
       return h("leaflet-geojson", { geometry: JSON.stringify(s.geometry) });
     });
   }
+  onModalClose() {
+    state.selecting = null;
+  }
   render() {
-    return h("div", { class: "wrapper" }, h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
+    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { selecting: state.selecting, ref: el => this.stationsModal = el, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

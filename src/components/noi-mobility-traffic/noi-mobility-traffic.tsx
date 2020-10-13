@@ -23,6 +23,7 @@ const rIC = (callback: () => void) => {
 export class NoiMobilityTraffic {
   private strings: any;
   private resizeObserver: ResizeObserver;
+  private stationsModal: HTMLNoiStationsModalElement;
   
   @Element() element: HTMLElement;
   @State() showSearch: boolean = true;
@@ -64,6 +65,11 @@ export class NoiMobilityTraffic {
     const greaterThanSmallLandscape = greaterThanSmall && widthPx > heightPx;
     this.element.classList.toggle('noi-media-gs', greaterThanSmall);
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    if (this.stationsModal) {
+      this.stationsModal.classList.toggle('noi-media-gs', greaterThanSmall);
+      this.stationsModal.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    }
+
   }
 
   getHighwayCircles() {
@@ -78,12 +84,26 @@ export class NoiMobilityTraffic {
     })
   }
 
+  onModalClose() {
+    noiStore.selecting = null;
+  }
 
   render() {
     return <div class="wrapper">
+      <noi-backdrop
+        overlayIndex={2}
+        visible={!!noiStore.selecting}
+        onNoiBackdropTap={this.onModalClose.bind(this)}>
+      </noi-backdrop>
+      <noi-stations-modal
+        selecting={noiStore.selecting}
+        ref={el => this.stationsModal = el as HTMLNoiStationsModalElement} 
+        onModalClose={this.onModalClose.bind(this)}
+        overlayIndex={2}
+        visible={!!noiStore.selecting}
+      ></noi-stations-modal>
       <noi-card class="search">
-        <noi-search>
-        </noi-search>
+        <noi-search></noi-search>
       </noi-card>
       <noi-map>
         {noiStore.stations ? (this.getHighwayCircles()): null}
