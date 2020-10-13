@@ -60,8 +60,8 @@
 }
 
 .noi-map-station-popup__btn {
-  --background: rgba(87, 173, 57, 1);
-  --color: #fff;
+  --background: var(--noi-action);
+  --color: var(--noi-action-contrast);
   flex: 1;
 }
 

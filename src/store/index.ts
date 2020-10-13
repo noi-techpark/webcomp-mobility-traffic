@@ -45,7 +45,6 @@ onChange('stations', (stations) => {
 });
 
 onChange('selectedId', (selectedId) => {
-  state.selecting = null;
   if (selectedId) {
     set('selected', state.stations[selectedId]);
   } else {
@@ -77,7 +76,7 @@ onChange('endId', (value) => {
   }
 });
 
-export function selectStationsWithSelected(): Selectable<NoiHighwayStation[]> {
+export function selectStationsWithSelected(): Selectable<NoiHighwayStation>[] {
   return !state.stations ? null : state.stationsList.map(s => ({...s, selected: s.id === state.selectedId}));
 } 
 

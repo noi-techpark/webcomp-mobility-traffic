@@ -6,8 +6,14 @@ export declare class StationsModal {
   modalClose: EventEmitter<{
     stationId: string;
   }>;
+  searchText: string;
   onClose(): void;
   getTitle(): "Selezionare la partenza" | "Selezionare la destinazione";
+  onSearchChange(value: CustomEvent<{
+    value: string;
+  }>): void;
+  private stationSelectedToggle;
+  private onSelectStation;
   renderStations(): any[];
   render(): any;
 }

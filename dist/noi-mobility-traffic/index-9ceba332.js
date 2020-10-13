@@ -199,7 +199,6 @@ onChange('stations', (stations) => {
   }
 });
 onChange('selectedId', (selectedId) => {
-  state.selecting = null;
   if (selectedId) {
     set('selected', state.stations[selectedId]);
   }

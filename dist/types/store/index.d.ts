@@ -15,5 +15,5 @@ export interface NoiState {
   readonly loading: boolean;
 }
 declare const state: NoiState;
-export declare function selectStationsWithSelected(): Selectable<NoiHighwayStation[]>;
+export declare function selectStationsWithSelected(): Selectable<NoiHighwayStation>[];
 export default state;

@@ -55,7 +55,7 @@
 }
 
 header {
-  background: var(--noi-primary-color);
+  background: var(--noi-primary);
   min-height: 48px;
   display: flex;
   align-items: center;
@@ -68,7 +68,7 @@ header {
 
 .header__title {
   font-family: var(--noi-font-family);
-  color: var(--noi-primary-contrast-color);
+  color: var(--noi-primary-contrast);
   font-size: 16px;
   flex: 1;
   text-align: center;
@@ -94,6 +94,36 @@ header {
   background: #ffffff;
   font-family: var(--noi-font-family);
   color: var(--noi-primary);
+  display: flex;
+  align-items: center;
+}
+
+.station--selected {
+  background: rgba(var(--noi-primary-rgb), 0.8);
+  color: var(--noi-primary-contrast);
+}
+
+.station--selected > .station__select-btn {
+  display: block;
+}
+
+.station__icon {
+  margin: 0 16px;
+  fill: var(--noi-primary);
+  stroke-width: 2px;
+  stroke: var(--noi-primary);
+}
+
+.station__select-btn {
+  --background: var(--noi-action);
+  --color: var(--noi-action-contrast);
+  margin-left: auto;
+  min-width: 80px;
+  display: none;
+}
+
+.station--selected > .station__icon {
+  fill: var(--noi-primary-contrast);
 }
 
 .station::before {

@@ -1,4 +1,4 @@
-import { h } from './index-13ab5a24.js';
+import { h } from './index-bd60623e.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 

@@ -1,4 +1,4 @@
-import { j as getRenderingRef, k as forceUpdate } from './index-13ab5a24.js';
+import { e as getRenderingRef, f as forceUpdate } from './index-bd60623e.js';
 
 const appendToMap = (map, propName, value) => {
     const items = map.get(propName);
@@ -199,7 +199,6 @@ onChange('stations', (stations) => {
   }
 });
 onChange('selectedId', (selectedId) => {
-  state.selecting = null;
   if (selectedId) {
     set('selected', state.stations[selectedId]);
   }
