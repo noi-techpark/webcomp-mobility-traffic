@@ -1,6 +1,6 @@
 import { createStore } from '@stencil/store';
 import { NoiHighwayStation } from '../api';
-import { Selectable } from '../utils';
+import { Selectable, WithStartEnd } from '../utils';
 
 export interface NoiState {
   selecting: 'start' | 'end' | null;
@@ -78,6 +78,16 @@ onChange('endId', (value) => {
 
 export function selectStationsWithSelected(): Selectable<NoiHighwayStation>[] {
   return !state.stations ? null : state.stationsList.map(s => ({...s, selected: s.id === state.selectedId}));
-} 
+}
+
+export function selectStationsWithSelectedWithStartEnd(): WithStartEnd<Selectable<NoiHighwayStation>>[] {
+  return !state.stations ? null : state.stationsList.map(s =>
+    ({...s,
+      selected: s.id === state.selectedId,
+      isStart: s.id === state.startId,
+      isEnd: s.id === state.endId
+    })
+  );
+}
 
 export default state;

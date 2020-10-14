@@ -1,4 +1,4 @@
-import { r as registerInstance, i as createEvent, h, j as Host } from './index-bd60623e.js';
+import { r as registerInstance, j as createEvent, h, e as Host } from './index-375c0366.js';
 
 const backdropCss = ":host{display:block;position:absolute;top:0;left:0;right:0;bottom:0;transform:translateZ(0);contain:strict;cursor:pointer;touch-action:none;background-color:var(--background, #1b2b34);transition:opacity 0.5s ease-in-out;opacity:var(--opacity, 0.5)}:host(.backdrop-hide){background:transparent;opacity:.1}:host(.backdrop-no-tappable){cursor:auto}";
 

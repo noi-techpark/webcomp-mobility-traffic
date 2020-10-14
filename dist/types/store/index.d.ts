@@ -1,5 +1,5 @@
 import { NoiHighwayStation } from '../api';
-import { Selectable } from '../utils';
+import { Selectable, WithStartEnd } from '../utils';
 export interface NoiState {
   selecting: 'start' | 'end' | null;
   selectedId: string;
@@ -16,4 +16,5 @@ export interface NoiState {
 }
 declare const state: NoiState;
 export declare function selectStationsWithSelected(): Selectable<NoiHighwayStation>[];
+export declare function selectStationsWithSelectedWithStartEnd(): WithStartEnd<Selectable<NoiHighwayStation>>[];
 export default state;

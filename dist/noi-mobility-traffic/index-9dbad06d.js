@@ -1,4 +1,4 @@
-import { e as getRenderingRef, f as forceUpdate } from './index-70bc2936.js';
+import { f as getRenderingRef, i as forceUpdate } from './index-375c0366.js';
 
 const appendToMap = (map, propName, value) => {
     const items = map.get(propName);
@@ -232,6 +232,9 @@ onChange('endId', (value) => {
 });
 function selectStationsWithSelected() {
   return !state.stations ? null : state.stationsList.map(s => (Object.assign(Object.assign({}, s), { selected: s.id === state.selectedId })));
+}
+function selectStationsWithSelectedWithStartEnd() {
+  return !state.stations ? null : state.stationsList.map(s => (Object.assign(Object.assign({}, s), { selected: s.id === state.selectedId, isStart: s.id === state.startId, isEnd: s.id === state.endId })));
 }
 
 export { selectStationsWithSelected as a, state as s };

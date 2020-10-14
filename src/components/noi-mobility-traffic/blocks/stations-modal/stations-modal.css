@@ -64,6 +64,7 @@ header {
 
 .header__icon {
   margin-left: auto;
+  fill: var(--noi-primary-contrast);
 }
 
 .header__title {

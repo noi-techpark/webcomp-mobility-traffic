@@ -1,7 +1,8 @@
 export declare class NoiMobilityTraffic {
   private strings;
   private resizeObserver;
-  private stationsModal;
+  private stationsModalEl;
+  private searchEl;
   element: HTMLElement;
   showSearch: boolean;
   onSelectBrenner(): void;

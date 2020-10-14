@@ -78,7 +78,7 @@ export class StationsModal {
       <div class="wrapper">
         <header>
           <noi-button fill="clear" onClick={this.onClose.bind(this)}>
-            <img slot="icon-only" class="header__icon" src={getAssetPath('./assets/back.svg')} alt="Indietro"/>
+            <svg slot="icon-only" class="header__icon" height="14" viewBox="0 0 10 14" width="10" xmlns="http://www.w3.org/2000/svg"><path d="m0 1.53073535 1.28718658-1.53073535 8.35973178 7.02965056-8.35973178 7.02965054-1.28718658-1.5307353 6.53859329-5.49919813z" transform="matrix(-1 0 0 1 9.646918 0)"/></svg>
           </noi-button>
           <span class="header__title">{this.getTitle()}</span>
         </header>

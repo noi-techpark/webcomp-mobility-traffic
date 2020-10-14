@@ -1,6 +1,6 @@
-import { r as registerInstance, h, g as getElement } from './index-bd60623e.js';
-import { M as MapHighwayStation } from './map-entity-1e77a502.js';
-import { s as state, a as selectStationsWithSelected } from './index-0093c7e4.js';
+import { r as registerInstance, h, g as getElement } from './index-375c0366.js';
+import { M as MapHighwayStation } from './map-entity-be6d8aec.js';
+import { s as state, a as selectStationsWithSelected } from './index-9dbad06d.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1352,7 +1352,7 @@ async function getLocaleComponentStrings(element) {
   return strings;
 }
 
-const noiMobilityTrafficCss = ".sc-noi-mobility-traffic-h{display:block;overflow:hidden;width:var(--noi-width);height:var(--noi-height)}.wrapper.sc-noi-mobility-traffic{position:relative;display:flex;flex-direction:column;height:100%;margin:0}noi-map.sc-noi-mobility-traffic{z-index:0;flex:1}noi-card.search.sc-noi-mobility-traffic{position:absolute;top:10%;width:100%;margin:0;padding:0;z-index:1;overflow:visible;border-radius:0}.noi-media-gs.sc-noi-mobility-traffic-h noi-card.search.sc-noi-mobility-traffic{overflow:hidden;left:5%;right:5%;width:auto;border-radius:5px}.noi-media-gs--landscape.sc-noi-mobility-traffic-h noi-card.search.sc-noi-mobility-traffic{width:37%;max-width:500px;bottom:10%}";
+const noiMobilityTrafficCss = ".sc-noi-mobility-traffic-h{display:block;overflow:hidden;width:var(--noi-width);height:var(--noi-height)}.wrapper.sc-noi-mobility-traffic{position:relative;display:flex;flex-direction:column;height:100%;margin:0}noi-map.sc-noi-mobility-traffic{z-index:0;flex:1}.search.sc-noi-mobility-traffic{background:#fff;position:absolute;height:auto;width:100%;bottom:0;left:0;margin:0;padding:0;z-index:1;overflow:hidden}.noi-media-gs.sc-noi-mobility-traffic-h .search.sc-noi-mobility-traffic{height:100%;width:100%;max-width:360px}.noi-media-gs--landscape.sc-noi-mobility-traffic-h .search.sc-noi-mobility-traffic{height:100%;width:360px}";
 
 const rIC = (callback) => {
   if ('requestIdleCallback' in window) {
@@ -1400,9 +1400,13 @@ const NoiMobilityTraffic = class {
     const greaterThanSmallLandscape = greaterThanSmall && widthPx > heightPx;
     this.element.classList.toggle('noi-media-gs', greaterThanSmall);
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
-    if (this.stationsModal) {
-      this.stationsModal.classList.toggle('noi-media-gs', greaterThanSmall);
-      this.stationsModal.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    if (this.stationsModalEl) {
+      this.stationsModalEl.classList.toggle('noi-media-gs', greaterThanSmall);
+      this.stationsModalEl.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    }
+    if (this.searchEl) {
+      this.searchEl.classList.toggle('noi-media-gs', greaterThanSmall);
+      this.searchEl.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
     }
   }
   getHighwayCircles() {
@@ -1419,7 +1423,7 @@ const NoiMobilityTraffic = class {
     state.selecting = null;
   }
   render() {
-    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { selecting: state.selecting, ref: el => this.stationsModal = el, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-card", { class: "search" }, h("noi-search", null)), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
+    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { selecting: state.selecting, ref: el => this.stationsModalEl = el, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { class: "search", ref: el => this.searchEl = el }), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

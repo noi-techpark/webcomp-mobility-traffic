@@ -23,7 +23,8 @@ const rIC = (callback: () => void) => {
 export class NoiMobilityTraffic {
   private strings: any;
   private resizeObserver: ResizeObserver;
-  private stationsModal: HTMLNoiStationsModalElement;
+  private stationsModalEl: HTMLNoiStationsModalElement;
+  private searchEl: HTMLNoiSearchElement;
   
   @Element() element: HTMLElement;
   @State() showSearch: boolean = true;
@@ -65,15 +66,19 @@ export class NoiMobilityTraffic {
     const greaterThanSmallLandscape = greaterThanSmall && widthPx > heightPx;
     this.element.classList.toggle('noi-media-gs', greaterThanSmall);
     this.element.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
-    if (this.stationsModal) {
-      this.stationsModal.classList.toggle('noi-media-gs', greaterThanSmall);
-      this.stationsModal.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    if (this.stationsModalEl) {
+      this.stationsModalEl.classList.toggle('noi-media-gs', greaterThanSmall);
+      this.stationsModalEl.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
+    }
+    if (this.searchEl) {
+      this.searchEl.classList.toggle('noi-media-gs', greaterThanSmall);
+      this.searchEl.classList.toggle('noi-media-gs--landscape', greaterThanSmallLandscape);
     }
 
   }
 
   getHighwayCircles() {
-    return selectStationsWithSelected().map(s => {
+    return selectStationsWithSelectedWithStartEnd().map(s => {
       return (<MapHighwayStation {...s}></MapHighwayStation>)
     })
   }
@@ -97,14 +102,15 @@ export class NoiMobilityTraffic {
       </noi-backdrop>
       <noi-stations-modal
         selecting={noiStore.selecting}
-        ref={el => this.stationsModal = el as HTMLNoiStationsModalElement} 
+        ref={el => this.stationsModalEl = el as HTMLNoiStationsModalElement} 
         onModalClose={this.onModalClose.bind(this)}
         overlayIndex={2}
         visible={!!noiStore.selecting}
       ></noi-stations-modal>
-      <noi-card class="search">
-        <noi-search></noi-search>
-      </noi-card>
+      <noi-search
+        class="search"
+        ref={el => this.searchEl = el as HTMLNoiSearchElement}>
+      </noi-search>
       <noi-map>
         {noiStore.stations ? (this.getHighwayCircles()): null}
       </noi-map>

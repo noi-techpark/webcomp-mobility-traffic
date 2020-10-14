@@ -3,7 +3,7 @@ import { Browser, CircleMarker, GeoJSON, Map, TileLayer } from 'leaflet';
 
 import {
   highlightHighwayStation,
-  MAP_ENTITY_HIGHWAY_STATION,
+  MAP_ENTITY_STATION,
   renderHighwayStationElement,
   unHighlightHighwayStation,
 } from './map-entity';
@@ -132,7 +132,7 @@ export class NoiMap {
     const id: string = e.getAttribute('entity-id');
     
     // TODO: create a factory
-    if (type === MAP_ENTITY_HIGHWAY_STATION) {
+    if (type === MAP_ENTITY_STATION) {
       const layer = renderHighwayStationElement(e);
       layer.on({
         mouseover: highlightHighwayStation,
@@ -203,7 +203,9 @@ export class NoiMap {
     if (noiStore.selectedId === noiStore.startId) {
       return null;
     }
-    const title = noiStore.startId ? "Change origin" : "Set origin";
+    // const title = noiStore.startId ? "Change origin" : "Set origin";
+    // TODO: get from strings
+    const title = 'Da qui';
     return (
       <noi-button fill="solid" class="button-md noi-map-station-popup__btn" onClick={this.onSetAsStart.bind(this)}>
         {title}
@@ -215,7 +217,9 @@ export class NoiMap {
     if (noiStore.selectedId === noiStore.endId) {
       return null;
     }
-    const title = noiStore.endId ? "Change destination" : "Set destination";
+    // const title = noiStore.endId ? "Change destination" : "Set destination";
+    // TODO: get from strings
+    const title = 'A qua';
     return (
       <noi-button fill="solid" class="button-md noi-map-station-popup__btn" onClick={this.onSetAsEnd.bind(this)}>
         {title}

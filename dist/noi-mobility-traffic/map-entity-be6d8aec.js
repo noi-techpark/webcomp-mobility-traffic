@@ -1,4 +1,4 @@
-import { h } from './index-70bc2936.js';
+import { h } from './index-375c0366.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -14094,8 +14094,8 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 });
 
 const MAP_ENTITY_HIGHWAY_STATION = 'HighwayStation';
-const HIGHWAY_STATION_CIRCLE_RADIUS = 10;
-const MapHighwayStation = (props) => (h("noi-map-entity", { "entity-type": MAP_ENTITY_HIGHWAY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: props.selected ? "noi-highway-station-selected" : "noi-highway-station", style: { display: 'none' } },
+const HIGHWAY_STATION_CIRCLE_RADIUS = 20;
+const MapHighwayStation = (props) => (h("noi-map-entity", { "entity-type": MAP_ENTITY_HIGHWAY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: props.selected ? "noi-highway-station--selected noi-highway-station" : "noi-highway-station", style: { display: 'none' } },
   props.id,
   "-",
   props.name));

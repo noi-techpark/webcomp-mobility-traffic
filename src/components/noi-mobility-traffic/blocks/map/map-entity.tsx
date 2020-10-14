@@ -1,24 +1,25 @@
 import { FunctionalComponent, h } from '@stencil/core';
 import { CircleMarker, FillRule, Browser } from 'leaflet';
 import { NoiHighwayStation } from '../../../../api';
-import { Selectable } from '../../../../utils';
+import { Selectable, WithStartEnd } from '../../../../utils';
 
-export type MapHighwayStationProps = Selectable<NoiHighwayStation>;
+export type MapHighwayStationProps = WithStartEnd<Selectable<NoiHighwayStation>>;
 
-export const MAP_ENTITY_HIGHWAY_STATION = 'HighwayStation';
-const HIGHWAY_STATION_CIRCLE_RADIUS = 10;
+export const MAP_ENTITY_STATION = 'HighwayStation';
+const HIGHWAY_STATION_CIRCLE_RADIUS = 20;
 
-
-export const MapHighwayStation: FunctionalComponent<MapHighwayStationProps> = (props) => (
-  <noi-map-entity
-    entity-type={MAP_ENTITY_HIGHWAY_STATION}
-    entity-id={props.id}
-    lat={props.coordinates.lat}
-    long={props.coordinates.long}
-    class={props.selected ? "noi-highway-station-selected": "noi-highway-station"}
-    style={{display: 'none'}}>
-      {props.id}-{props.name}
-  </noi-map-entity>
+export const MapHighwayStation: FunctionalComponent<MapHighwayStationProps> = (props) => {
+  return (
+    <noi-map-entity
+      entity-type={MAP_ENTITY_STATION}
+      entity-id={props.id}
+      lat={props.coordinates.lat}
+      long={props.coordinates.long}
+      class={props.selected ? "noi-highway-station--selected noi-highway-station": "noi-highway-station"}
+      style={{display: 'none'}}>
+        {props.id}-{props.name}
+    </noi-map-entity>
+  );
 );
 
 export function highlightHighwayStation(e) {
