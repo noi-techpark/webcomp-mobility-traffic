@@ -14093,12 +14093,20 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 
 });
 
-const MAP_ENTITY_HIGHWAY_STATION = 'HighwayStation';
-const HIGHWAY_STATION_CIRCLE_RADIUS = 20;
-const MapHighwayStation = (props) => (h("noi-map-entity", { "entity-type": MAP_ENTITY_HIGHWAY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: props.selected ? "noi-highway-station--selected" : "noi-highway-station", style: { display: 'none' } },
-  props.id,
-  "-",
-  props.name));
+const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
+const STATION_CIRCLE_RADIUS = 10;
+const MapStation = (props) => {
+  const entityClass = {
+    'noi-highway-station': true,
+    'noi-highway-station--selected': props.selected,
+    'noi-highway-station--start': props.isStart,
+    'noi-highway-station--end': props.isEnd,
+  };
+  return (h("noi-map-entity", { "entity-type": MAP_ENTITY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: entityClass, style: { display: 'none' } },
+    props.id,
+    "-",
+    props.name));
+};
 function highlightHighwayStation(e) {
   const layer = e.target;
   layer.getElement().classList.add('noi-highway-station--hover');
@@ -14114,7 +14122,7 @@ function renderHighwayStationElement(e) {
   const lat = +e.getAttribute('lat');
   const long = +e.getAttribute('long');
   const opts = {
-    radius: HIGHWAY_STATION_CIRCLE_RADIUS,
+    radius: STATION_CIRCLE_RADIUS,
     fill: true,
     fillRule: 'nonzero',
     className: e.getAttribute('class'),
@@ -14123,4 +14131,77 @@ function renderHighwayStationElement(e) {
   return new leafletSrc.CircleMarker([lat, long], opts);
 }
 
-export { MapHighwayStation as M, MAP_ENTITY_HIGHWAY_STATION as a, highlightHighwayStation as h, leafletSrc as l, renderHighwayStationElement as r, unHighlightHighwayStation as u };
+const defaultPathOptions = {
+  path: 'm13.0909091.0000002c7.2299094 0 13.0909091 5.86099952 13.0909091 13.0909089 0 10.1818182-13.0909091 18.9090911-13.0909091 18.9090911s-13.0909091-8.7272729-13.0909091-18.9090911c0-7.22990938 5.86099971-13.0909089 13.0909091-13.0909089zm0 8.72727253c-2.4099698 0-4.36363637 1.95366657-4.36363637 4.36363637s1.95366657 4.3636364 4.36363637 4.3636364 4.3636364-1.9536666 4.3636364-4.3636364-1.9536666-4.36363637-4.3636364-4.36363637z',
+  pathTransform: 'translate(1 1)',
+  viewBox: '0 0 29 34',
+  iconSize: [34, 29]
+};
+class SvgPathIcon extends leafletSrc.Icon {
+  constructor(options) {
+    super(options);
+    leafletSrc.Util.setOptions(this, defaultPathOptions);
+    leafletSrc.Util.setOptions(this, options);
+  }
+  createIcon(oldIcon) {
+    const div = (oldIcon && oldIcon.tagName === 'DIV' ? oldIcon : document.createElement('div'));
+    div.innerHTML = `<svg
+      width="${this.options.iconSize[0]}"
+      height="${this.options.iconSize[1]}px"
+      viewBox="${this.options.viewBox}"
+      class="${this.options.className}"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+        <path d="${this.options.path}" transform="${this.options.pathTransform}"></path>
+    </svg>`;
+    this.adjustDivPosition(div);
+    return div;
+  }
+  adjustDivPosition(divEl) {
+    const size = new leafletSrc.Point(this.options.iconSize[0], this.options.iconSize[1]);
+    const anchor = size.divideBy(2);
+    if (anchor) {
+      divEl.style.marginLeft = (-anchor.x) + 'px';
+      divEl.style.marginTop = (-anchor.y) + 'px';
+    }
+    if (size) {
+      divEl.style.width = size.x + 'px';
+      divEl.style.height = size.y + 'px';
+    }
+  }
+}
+
+const MAP_ENTITY_MARKER = 'MAP_ENTITY_MARKER';
+const MARKER_SIZE = 10;
+const MapMarker = (props) => {
+  const entityClass = {
+    'noi-marker': true,
+    'noi-marker--selected': props.selected,
+    'noi-marker--start': props.isStart,
+    'noi-marker--end': props.isEnd,
+  };
+  return (h("noi-map-entity", { "entity-type": MAP_ENTITY_MARKER, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: entityClass, style: { display: 'none' } },
+    props.id,
+    "-",
+    props.name));
+};
+function highlightMarker(e) {
+  const layer = e.target;
+  layer.getElement().classList.add('noi-marker--hover');
+}
+function unHighlightMarker(e) {
+  const layer = e.target;
+  layer.getElement().classList.remove('noi-marker--hover');
+}
+function renderMarkerElement(e) {
+  const lat = +e.getAttribute('lat');
+  const long = +e.getAttribute('long');
+  const icon = new SvgPathIcon({ className: e.getAttribute('class'), });
+  const opts = {
+    icon,
+  };
+  return new leafletSrc.Marker([lat, long], opts);
+}
+
+export { MapStation as M, MapMarker as a, MAP_ENTITY_STATION as b, MAP_ENTITY_MARKER as c, renderMarkerElement as d, highlightMarker as e, unHighlightMarker as f, highlightHighwayStation as h, leafletSrc as l, renderHighwayStationElement as r, unHighlightHighwayStation as u };

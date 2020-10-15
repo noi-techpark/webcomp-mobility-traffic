@@ -1,14 +1,8 @@
 import { Component, Element, Prop, Watch, h } from '@stencil/core';
-import { Browser, CircleMarker, GeoJSON, Map, TileLayer } from 'leaflet';
-
-import {
-  highlightHighwayStation,
-  MAP_ENTITY_STATION,
-  renderHighwayStationElement,
-  unHighlightHighwayStation,
-} from './map-entity';
+import { GeoJSON, Map, TileLayer } from 'leaflet';
 
 import noiStore from '../../../../store';
+import { MapEntity, MapEntityFactory } from './map-entity-factory';
 
 interface LayerObserver<T> {
   layer: T,
@@ -27,9 +21,10 @@ const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 })
 export class NoiMap {
   map: Map = null;
+  entityFactory: MapEntityFactory;
   userMarker: any = null;
   childrenObserver: MutationObserver = null;
-  entityChildren: WeakMap<any, LayerObserver<CircleMarker>> = new WeakMap();
+  entityChildren: WeakMap<any, LayerObserver<MapEntity>> = new WeakMap();
   pathChildren: WeakMap<any, LayerObserver<GeoJSON>> = new WeakMap();
   popupElement!: HTMLElement;
 
@@ -41,6 +36,7 @@ export class NoiMap {
 
   componentDidLoad() {
     this.map = new Map(this.el, { zoomControl: false });
+    this.entityFactory = new MapEntityFactory(this.map);
     this.updateCenterAndZoom();
     new TileLayer(TILE_LAYER).addTo(this.map);
     this.renderChildren();
@@ -88,9 +84,6 @@ export class NoiMap {
         newClasses.forEach(c => {
           layer.getElement().classList.add(c);
         });
-        if (!Browser.ie && !Browser.opera && !Browser.edge) {
-          layer.bringToFront();
-      }
       }
     }
   }
@@ -128,28 +121,13 @@ export class NoiMap {
   }
 
   private renderMapEntity(e: Element) {
-    const type: string = e.getAttribute('entity-type');
-    const id: string = e.getAttribute('entity-id');
-    
-    // TODO: create a factory
-    if (type === MAP_ENTITY_STATION) {
-      const layer = renderHighwayStationElement(e);
-      layer.on({
-        mouseover: highlightHighwayStation,
-        mouseout: unHighlightHighwayStation,
-        click: (e) => {
-          const latLong = (e.target as CircleMarker).getLatLng();
-          this.map.setView(latLong, this.scale);
-          noiStore.selectedId = id;
-        }
-      });
-      const observer = new MutationObserver((mutations: Array<any>, _observer: any) => this.entityAttrsObserver(e, mutations));
-      observer.observe(e, { attributes: true, childList: false, subtree: false });
-      this.entityChildren.set(e, {layer, observer});
-      layer.addTo(this.map);
-      layer.bindPopup(this.popupElement, {minWidth: 350});
-      layer.getPopup().on('remove', () => noiStore.selectedId = '');
-    }
+    const layer = this.entityFactory.createLayer(e);
+    const observer = new MutationObserver((mutations: Array<any>, _observer: any) => this.entityAttrsObserver(e, mutations));
+    observer.observe(e, { attributes: true, childList: false, subtree: false });
+    this.entityChildren.set(e, {layer, observer});
+    layer.addTo(this.map);
+    layer.bindPopup(this.popupElement, {minWidth: 350});
+    layer.getPopup().on('remove', () => noiStore.selectedId = '');
   }
 
   private renderGeoJson(e: Element) {

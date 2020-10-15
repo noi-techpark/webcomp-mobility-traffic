@@ -1,6 +1,6 @@
 import { r as registerInstance, h, g as getElement } from './index-375c0366.js';
-import { M as MapHighwayStation } from './map-entity-be6d8aec.js';
-import { s as state, a as selectStationsWithSelected } from './index-9dbad06d.js';
+import { M as MapStation, a as MapMarker } from './map-marker-a4cefe9e.js';
+import { s as state, a as selectStationsWithSelectedWithStartEnd, b as selectStartEnd } from './index-52f73d64.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -1224,8 +1224,11 @@ class OpenDataHubNoiService {
       throw noiErr;
     }
   }
-  async getLinkStation(id) {
-    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=ecode.eq.${id},eactive.eq.true`);
+  async getLinkStation(id, auth = false) {
+    const where = `ecode.eq.${id}`;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/*?where=${where}`, { headers });
     if (!response || !response.data || response.data.length !== 1) {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, { message: `LinkStation ${id} not found` });
     }
@@ -1248,48 +1251,14 @@ class OpenDataHubNoiService {
     }
     return parseHighwayStations(response.data);
   }
-  async getVMSs() {
+  async getRoute(startId, endId) {
     const accessToken = await NoiAuth.getValidAccessToken();
-    const select = 'sactive,stype,savailable,scoordinate,scode,sname,smetadata';
-    const limit = -1;
-    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/VMS/*?select=${select}&limit=${limit}`, { headers: { 'Authorization': `bearer ${accessToken}` } });
-    const stations = Object.values(response.data)
-      .map((s) => {
-      const code = s.scode.split(':');
-      const highway = code[0];
-      const id = s.scode;
-      const coordinates = parse4326Coordinates(s.scoordinate);
-      if (!coordinates) {
-        return null;
-      }
-      return {
-        id,
-        highway,
-        name: s.sname.slice(0, -13),
-        coordinates,
-        type: 'VMS',
-        position: parseVmsPosition(s),
-        direction: parsVMSDirection(s)
-      };
-    });
-    return stations
-      .filter(s => !!s && !(['A22:2014:2', 'A22:2014:1', 'A22:2014:3'].includes(s.id)))
-      .sort((a, b) => {
-      if (a.position > b.position) {
-        return 1;
-      }
-      if (a.position < b.position) {
-        return -1;
-      }
-      return 0;
-    });
-  }
-  async getTree() {
-    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree`);
-    if (!Array.isArray(response)) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: 'getTree expecting an array response' });
+    const where = `scode.eq.${startId},sactive.eq.true`;
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/LinkStation?where=${where}&limit=-1`, { headers: { 'Authorization': `bearer ${accessToken}` } });
+    if (!response || !response.data || !Array.isArray(response.data)) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, { message: `HighwayStations expecting an array response` });
     }
-    return response;
+    return parseHighwayStations(response.data);
   }
   async getBluetoothStations() {
     const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/
@@ -1410,9 +1379,18 @@ const NoiMobilityTraffic = class {
     }
   }
   getHighwayCircles() {
-    return selectStationsWithSelected().map(s => {
-      return (h(MapHighwayStation, Object.assign({}, s)));
+    if (!state.stations) {
+      return null;
+    }
+    return selectStationsWithSelectedWithStartEnd().map(s => {
+      return (h(MapStation, Object.assign({}, s)));
     });
+  }
+  getHighwayMarkers() {
+    if (!state.startId && !state.endId) {
+      return null;
+    }
+    return selectStartEnd().map(s => (h(MapMarker, Object.assign({}, s))));
   }
   getAllLinkStations(linkStations) {
     return linkStations.map(s => {
@@ -1423,7 +1401,7 @@ const NoiMobilityTraffic = class {
     state.selecting = null;
   }
   render() {
-    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { selecting: state.selecting, ref: el => this.stationsModalEl = el, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { class: "search", ref: el => this.searchEl = el }), h("noi-map", null, state.stations ? (this.getHighwayCircles()) : null));
+    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { selecting: state.selecting, ref: el => this.stationsModalEl = el, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { class: "search", ref: el => this.searchEl = el }), h("noi-map", null, this.getHighwayCircles(), this.getHighwayMarkers()));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

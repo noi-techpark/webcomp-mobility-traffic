@@ -3,24 +3,30 @@ import { CircleMarker, FillRule, Browser } from 'leaflet';
 import { NoiHighwayStation } from '../../../../api';
 import { Selectable, WithStartEnd } from '../../../../utils';
 
-export type MapHighwayStationProps = WithStartEnd<Selectable<NoiHighwayStation>>;
+export type MapStationProps = WithStartEnd<Selectable<NoiHighwayStation>>;
 
-export const MAP_ENTITY_STATION = 'HighwayStation';
-const HIGHWAY_STATION_CIRCLE_RADIUS = 20;
+export const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
+const STATION_CIRCLE_RADIUS = 12;
 
-export const MapHighwayStation: FunctionalComponent<MapHighwayStationProps> = (props) => {
+export const MapStation: FunctionalComponent<MapStationProps> = (props) => {
+  const entityClass = {
+    'noi-highway-station': true,
+    'noi-highway-station--selected': props.selected,
+    'noi-highway-station--start': props.isStart,
+    'noi-highway-station--end': props.isEnd,
+  };
   return (
     <noi-map-entity
       entity-type={MAP_ENTITY_STATION}
       entity-id={props.id}
       lat={props.coordinates.lat}
       long={props.coordinates.long}
-      class={props.selected ? "noi-highway-station--selected noi-highway-station": "noi-highway-station"}
+      class={entityClass}
       style={{display: 'none'}}>
         {props.id}-{props.name}
     </noi-map-entity>
   );
-);
+}
 
 export function highlightHighwayStation(e) {
   const layer: CircleMarker = e.target;
@@ -40,7 +46,7 @@ export function renderHighwayStationElement(e: Element): CircleMarker {
   const lat: number = +e.getAttribute('lat');
   const long: number = +e.getAttribute('long');
   const opts = {
-    radius: HIGHWAY_STATION_CIRCLE_RADIUS,
+    radius: STATION_CIRCLE_RADIUS,
     fill: true,
     fillRule: 'nonzero' as FillRule,
     className: e.getAttribute('class'),

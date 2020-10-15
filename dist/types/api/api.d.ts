@@ -10,11 +10,9 @@ export interface NoiErrorService {
   showError(error: NoiError): any;
 }
 export interface NoiService {
-  getTree(): Promise<any>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
-  getVMSs(): Promise<Array<NoiVMS>>;
-  getLinkStation(id: string): Promise<NoiLinkStation>;
+  getLinkStation(id: string, auth?: boolean): Promise<NoiLinkStation>;
   getLinkStations(): Promise<Array<NoiLinkStation>>;
 }
 export interface NoiLinkStation {
@@ -91,11 +89,10 @@ export declare class OpenDataHubNoiService implements NoiService {
   static BASE_URL: string;
   static VERSION: string;
   request(url: string, init?: RequestInit): Promise<any>;
-  getLinkStation(id: string): Promise<NoiLinkStation>;
+  getLinkStation(id: string, auth?: boolean): Promise<NoiLinkStation>;
   getLinkStations(): Promise<Array<NoiLinkStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
-  getVMSs(): Promise<Array<NoiVMS>>;
-  getTree(): Promise<Array<NoiTreeItem>>;
+  getRoute(startId: string, endId: string): Promise<Array<NoiHighwayStation>>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
 }
 export declare const NoiAPI: NoiService;

@@ -17,4 +17,5 @@ export interface NoiState {
 declare const state: NoiState;
 export declare function selectStationsWithSelected(): Selectable<NoiHighwayStation>[];
 export declare function selectStationsWithSelectedWithStartEnd(): WithStartEnd<Selectable<NoiHighwayStation>>[];
+export declare function selectStartEnd(): WithStartEnd<Selectable<NoiHighwayStation>>[];
 export default state;

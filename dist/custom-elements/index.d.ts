@@ -1,6 +1,6 @@
 /* NoiMobilityTraffic custom elements bundle */
 
-import { Components, JSX } from "../types/components";
+import { Components, JSX } from "../types/index";
 
 interface NoiBackdrop extends Components.NoiBackdrop, HTMLElement {}
 export const NoiBackdrop: {

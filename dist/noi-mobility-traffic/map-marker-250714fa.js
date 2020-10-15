@@ -14093,12 +14093,20 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 
 });
 
-const MAP_ENTITY_HIGHWAY_STATION = 'HighwayStation';
-const HIGHWAY_STATION_CIRCLE_RADIUS = 20;
-const MapHighwayStation = (props) => (h("noi-map-entity", { "entity-type": MAP_ENTITY_HIGHWAY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: props.selected ? "noi-highway-station-selected" : "noi-highway-station", style: { display: 'none' } },
-  props.id,
-  "-",
-  props.name));
+const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
+const STATION_CIRCLE_RADIUS = 10;
+const MapStation = (props) => {
+  const entityClass = {
+    'noi-highway-station': true,
+    'noi-highway-station--selected': props.selected,
+    'noi-highway-station--start': props.isStart,
+    'noi-highway-station--end': props.isEnd,
+  };
+  return (h("noi-map-entity", { "entity-type": MAP_ENTITY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: entityClass, style: { display: 'none' } },
+    props.id,
+    "-",
+    props.name));
+};
 function highlightHighwayStation(e) {
   const layer = e.target;
   layer.getElement().classList.add('noi-highway-station--hover');
@@ -14114,7 +14122,7 @@ function renderHighwayStationElement(e) {
   const lat = +e.getAttribute('lat');
   const long = +e.getAttribute('long');
   const opts = {
-    radius: HIGHWAY_STATION_CIRCLE_RADIUS,
+    radius: STATION_CIRCLE_RADIUS,
     fill: true,
     fillRule: 'nonzero',
     className: e.getAttribute('class'),
@@ -14123,4 +14131,68 @@ function renderHighwayStationElement(e) {
   return new leafletSrc.CircleMarker([lat, long], opts);
 }
 
-export { MapHighwayStation as M, MAP_ENTITY_HIGHWAY_STATION as a, highlightHighwayStation as h, leafletSrc as l, renderHighwayStationElement as r, unHighlightHighwayStation as u };
+const defaultPathOptions = {
+  path: 'm5 .33333333c2.57732883 0 4.66666667 2.08933784 4.66666667 4.66666667 0 1.71821922-1.55555556 4.60710811-4.66666667 8.6666667l-.40559671-.5343372c-2.8407133-3.77969908-4.26106996-6.49047558-4.26106996-8.1323295 0-2.57732883 2.08933784-4.66666667 4.66666667-4.66666667z',
+  // pathTransform: 'translate(7 5)',
+  viewBox: '0 0 24 24',
+  iconSize: [30, 50],
+  iconAnchor: [15, 50],
+  popupAnchor: [2, -40],
+  shadowAnchor: [39, 45],
+  shadowSize: [54, 51]
+};
+class SvgPathIcon extends leafletSrc.Icon {
+  constructor(options) {
+    super(options);
+    leafletSrc.Util.setOptions(this, defaultPathOptions);
+    leafletSrc.Util.setOptions(this, options);
+  }
+  createIcon(oldIcon) {
+    const div = (oldIcon && oldIcon.tagName === 'DIV' ? oldIcon : document.createElement('div'));
+    div.innerHTML = `<svg
+      width="${this.options.iconSize[0]}"
+      height="${this.options.iconSize[1]}px"
+      viewBox="${this.options.viewBox}"
+      class="${this.options.className}"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+        <path d="${this.options.path}" transform="${this.options.pathTransform}"></path>
+    </svg>`;
+    return div;
+  }
+}
+
+const MAP_ENTITY_MARKER = 'MAP_ENTITY_MARKER';
+const MARKER_SIZE = 10;
+const MapMarker = (props) => {
+  const entityClass = {
+    'noi-marker': true,
+    'noi-marker--selected': props.selected,
+    'noi-marker--start': props.isStart,
+    'noi-marker--end': props.isEnd,
+  };
+  return (h("noi-map-entity", { "entity-type": MAP_ENTITY_MARKER, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: entityClass, style: { display: 'none' } },
+    props.id,
+    "-",
+    props.name));
+};
+function highlightMarker(e) {
+  const layer = e.target;
+  layer.getElement().classList.add('noi-highway-station--hover');
+}
+function unHighlightMarker(e) {
+  const layer = e.target;
+  layer.getElement().classList.remove('noi-highway-station--hover');
+}
+function renderMarkerElement(e) {
+  const lat = +e.getAttribute('lat');
+  const long = +e.getAttribute('long');
+  const icon = new SvgPathIcon({});
+  const opts = {
+    icon
+  };
+  return new leafletSrc.Marker([lat, long], opts);
+}
+
+export { MapStation as M, MapMarker as a, MAP_ENTITY_STATION as b, MAP_ENTITY_MARKER as c, renderMarkerElement as d, highlightMarker as e, unHighlightMarker as f, highlightHighwayStation as h, leafletSrc as l, renderHighwayStationElement as r, unHighlightHighwayStation as u };

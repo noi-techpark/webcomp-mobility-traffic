@@ -1,13 +1,15 @@
-import { CircleMarker, GeoJSON, Map } from 'leaflet';
+import { GeoJSON, Map } from 'leaflet';
+import { MapEntity, MapEntityFactory } from './map-entity-factory';
 interface LayerObserver<T> {
   layer: T;
   observer: MutationObserver;
 }
 export declare class NoiMap {
   map: Map;
+  entityFactory: MapEntityFactory;
   userMarker: any;
   childrenObserver: MutationObserver;
-  entityChildren: WeakMap<any, LayerObserver<CircleMarker>>;
+  entityChildren: WeakMap<any, LayerObserver<MapEntity>>;
   pathChildren: WeakMap<any, LayerObserver<GeoJSON>>;
   popupElement: HTMLElement;
   el: HTMLElement;

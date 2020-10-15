@@ -90,4 +90,16 @@ export function selectStationsWithSelectedWithStartEnd(): WithStartEnd<Selectabl
   );
 }
 
+export function selectStartEnd(): WithStartEnd<Selectable<NoiHighwayStation>>[] {
+  return !state.stations ? null : state.stationsList
+    .filter(s => s.id === state.startId || s.id === state.endId)
+    .map(s =>
+      ({...s,
+        selected: s.id === state.selectedId,
+        isStart: s.id === state.startId,
+        isEnd: s.id === state.endId
+      })
+    );
+}
+
 export default state;

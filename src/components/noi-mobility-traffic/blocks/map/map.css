@@ -6,23 +6,46 @@
 
 /* svg entity styles */
 
+.noi-marker {
+  opacity: 1.0;
+  fill-opacity: 1;
+}
+
+.noi-marker--start {
+  fill: var(--noi-primary);
+}
+
+.noi-marker--end {
+  fill: var(--noi-action);
+}
+
 .noi-highway-station {
-  stroke-width: 8;
+  stroke-width: 4;
   stroke: var(--noi-primary);
   fill: var(--noi-primary-contrast);
   opacity: 1.0;
   fill-opacity: 1;
-  transition: fill 0.5s ease-out;
 }
 
 .noi-highway-station--hover {
-  stroke-width: 4;
+  stroke: var(--noi-action);
 }
 
 .noi-highway-station--selected {
   stroke: #fff;
   fill: var(--noi-primary);
-  
+}
+
+.noi-highway-station--start {
+  stroke-width: 4;
+  stroke: var(--noi-primary);
+  fill: var(--noi-primary-contrast);
+}
+
+.noi-highway-station--end {
+  stroke-width: 4;
+  stroke: var(--noi-action);
+  fill: var(--noi-action-contrast);
 }
 
 .noi-map-popup {

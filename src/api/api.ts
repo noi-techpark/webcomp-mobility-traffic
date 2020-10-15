@@ -24,11 +24,9 @@ export interface NoiErrorService {
 }
 
 export interface NoiService {
-  getTree(): Promise<any>;
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
-  getVMSs(): Promise<Array<NoiVMS>>;
-  getLinkStation(id: string): Promise<NoiLinkStation>;
+  getLinkStation(id: string, auth?: boolean): Promise<NoiLinkStation>;
   getLinkStations(): Promise<Array<NoiLinkStation>>
 }
 
@@ -252,9 +250,13 @@ export class OpenDataHubNoiService implements NoiService {
     }
   }
 
-  async getLinkStation(id: string): Promise<NoiLinkStation> {
+  async getLinkStation(id: string, auth = false): Promise<NoiLinkStation> {
+    const where = `ecode.eq.${id}`;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
     const response = await this.request(
-      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=ecode.eq.${id},eactive.eq.true`
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/*?where=${where}`,
+      { headers }
     );
     if (!response || !response.data || response.data.length !== 1) {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${id} not found`});
@@ -286,52 +288,17 @@ export class OpenDataHubNoiService implements NoiService {
     return parseHighwayStations(response.data);
   }
 
-  async getVMSs(): Promise<Array<NoiVMS>> {
+  async getRoute(startId: string, endId: string): Promise<Array<NoiHighwayStation>> {
     const accessToken = await NoiAuth.getValidAccessToken();
-    const select = 'sactive,stype,savailable,scoordinate,scode,sname,smetadata';
-    const limit = -1;
+    const where = `scode.eq.${startId},sactive.eq.true`;
     const response = await this.request(
-      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/VMS/*?select=${select}&limit=${limit}`,
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/LinkStation?where=${where}&limit=-1`,
       { headers: { 'Authorization': `bearer ${accessToken}` } }
     );
-    const stations: Array<NoiVMS> = Object.values(response.data)
-    .map((s: any) => {
-      const code = s.scode.split(':');
-      const highway = code[0];
-      const id = s.scode;
-      const coordinates = parse4326Coordinates(s.scoordinate);
-      if (!coordinates) {
-        return null;
-      }
-      return {
-        id,
-        highway,
-        name: s.sname.slice(0, -13),
-        coordinates,
-        type: 'VMS',
-        position: parseVmsPosition(s),
-        direction: parsVMSDirection(s)
-      };
-    });
-    return stations
-    .filter(s => !!s && !(['A22:2014:2', 'A22:2014:1', 'A22:2014:3'].includes(s.id)))
-    .sort((a, b) => {
-      if (a.position > b.position) {
-        return 1;
-      }
-      if (a.position < b.position) {
-        return -1;
-      }
-      return 0;
-    });
-  }
-
-  async getTree(): Promise<Array<NoiTreeItem>> {
-    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/tree`);
-    if (!Array.isArray(response)) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: 'getTree expecting an array response'});
+    if (!response || !response.data || !Array.isArray(response.data)) {
+      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `HighwayStations expecting an array response`});
     }
-    return response;
+    return parseHighwayStations(response.data);
   }
 
   async getBluetoothStations(): Promise<Array<NoiBTStation>> {

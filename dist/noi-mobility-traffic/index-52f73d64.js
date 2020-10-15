@@ -233,5 +233,13 @@ onChange('endId', (value) => {
 function selectStationsWithSelected() {
   return !state.stations ? null : state.stationsList.map(s => (Object.assign(Object.assign({}, s), { selected: s.id === state.selectedId })));
 }
+function selectStationsWithSelectedWithStartEnd() {
+  return !state.stations ? null : state.stationsList.map(s => (Object.assign(Object.assign({}, s), { selected: s.id === state.selectedId, isStart: s.id === state.startId, isEnd: s.id === state.endId })));
+}
+function selectStartEnd() {
+  return !state.stations ? null : state.stationsList
+    .filter(s => s.id === state.startId || s.id === state.endId)
+    .map(s => (Object.assign(Object.assign({}, s), { selected: s.id === state.selectedId, isStart: s.id === state.startId, isEnd: s.id === state.endId })));
+}
 
-export { selectStationsWithSelected as a, state as s };
+export { selectStationsWithSelectedWithStartEnd as a, selectStartEnd as b, selectStationsWithSelected as c, state as s };

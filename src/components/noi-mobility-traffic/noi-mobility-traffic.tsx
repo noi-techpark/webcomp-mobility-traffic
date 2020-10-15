@@ -2,8 +2,9 @@ import { Component, h, Element, State } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
 import { NoiAPI } from '../../api';
 import { getLocaleComponentStrings } from '../../lang';
-import { MapHighwayStation } from './blocks/map/map-entity';
-import noiStore, { selectStationsWithSelected } from '../../store';
+import { MapStation } from './blocks/map/map-station';
+import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '../../store';
+import { MapMarker } from './blocks/map/map-marker';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -78,9 +79,21 @@ export class NoiMobilityTraffic {
   }
 
   getHighwayCircles() {
+    if (!noiStore.stations) {
+      return null;
+    }
     return selectStationsWithSelectedWithStartEnd().map(s => {
-      return (<MapHighwayStation {...s}></MapHighwayStation>)
+      return (<MapStation {...s}></MapStation>)
     })
+  }
+
+  getHighwayMarkers() {
+    if (!noiStore.startId && !noiStore.endId) {
+      return null;
+    }
+    return selectStartEnd().map(s => (
+      <MapMarker {...s}></MapMarker>
+    ));
   }
 
   getAllLinkStations(linkStations) {
@@ -112,7 +125,8 @@ export class NoiMobilityTraffic {
         ref={el => this.searchEl = el as HTMLNoiSearchElement}>
       </noi-search>
       <noi-map>
-        {noiStore.stations ? (this.getHighwayCircles()): null}
+        {this.getHighwayCircles()}
+        {this.getHighwayMarkers()}
       </noi-map>
     </div>;
   }
