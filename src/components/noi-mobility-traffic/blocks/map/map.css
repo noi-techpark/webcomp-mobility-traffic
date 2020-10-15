@@ -4,9 +4,11 @@
   overflow: hidden;
 }
 
+
 /* svg entity styles */
 
 .noi-marker {
+  position: absolute;
   opacity: 1.0;
   fill-opacity: 1;
 }

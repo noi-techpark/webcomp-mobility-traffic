@@ -14094,7 +14094,7 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 });
 
 const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
-const STATION_CIRCLE_RADIUS = 10;
+const STATION_CIRCLE_RADIUS = 12;
 const MapStation = (props) => {
   const entityClass = {
     'noi-highway-station': true,
@@ -14134,7 +14134,8 @@ function renderHighwayStationElement(e) {
 const defaultPathOptions = {
   path: 'm7.773438.53125c3.988281 0 7.222656 3.101562 7.222656 6.929688 0 5.390624-7.222656 10.007812-7.222656 10.007812s-7.222657-4.617188-7.222657-10.007812c0-3.828126 3.234375-6.929688 7.222657-6.929688zm0 4.617188c-1.328126 0-2.40625 1.035156-2.40625 2.3125 0 1.273437 1.078124 2.308593 2.40625 2.308593 1.332031 0 2.410156-1.035156 2.410156-2.308593 0-1.277344-1.078125-2.3125-2.410156-2.3125zm0 0',
   pathTransform: '',
-  iconSize: [18, 16]
+  iconSize: [18, 16],
+  iconAnchor: [9, 0]
 };
 class SvgPathIcon extends leafletSrc.Icon {
   constructor(options) {

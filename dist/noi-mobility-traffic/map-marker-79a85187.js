@@ -14133,8 +14133,10 @@ function renderHighwayStationElement(e) {
 
 const defaultPathOptions = {
   path: 'm7.773438.53125c3.988281 0 7.222656 3.101562 7.222656 6.929688 0 5.390624-7.222656 10.007812-7.222656 10.007812s-7.222657-4.617188-7.222657-10.007812c0-3.828126 3.234375-6.929688 7.222657-6.929688zm0 4.617188c-1.328126 0-2.40625 1.035156-2.40625 2.3125 0 1.273437 1.078124 2.308593 2.40625 2.308593 1.332031 0 2.410156-1.035156 2.410156-2.308593 0-1.277344-1.078125-2.3125-2.410156-2.3125zm0 0',
-  pathTransform: '',
-  iconSize: [18, 16]
+  iconSize: [18, 16],
+  iconAnchor: [0, 0],
+  shadowSize: [18, 16],
+  shadowAnchor: [0, 0]
 };
 class SvgPathIcon extends leafletSrc.Icon {
   constructor(options) {
@@ -14151,15 +14153,27 @@ class SvgPathIcon extends leafletSrc.Icon {
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
-        <path d="${this.options.path}" transform="${this.options.pathTransform}"></path>
+        <path d="${this.options.path}"></path>
     </svg>`;
     div.className = this.options.className;
-    // this.adjustDivPosition(div);
+    const size = new leafletSrc.Point(this.options.iconSize[0], this.options.iconSize[1]);
+    const anchor = this.options.iconAnchor ?
+      new leafletSrc.Point(this.options.iconAnchor[0], this.options.iconAnchor[1]) :
+      size.divideBy(2);
+    this.setPosition(div, size, anchor);
     return div;
   }
-  adjustDivPosition(divEl) {
-    const size = new leafletSrc.Point(this.options.iconSize[0], this.options.iconSize[1]);
-    const anchor = size.divideBy(2);
+  createShadow() {
+    const div = document.createElement('div');
+    div.className = this.options.className;
+    const size = new leafletSrc.Point(this.options.shadowSize[0], this.options.shadowSize[1]);
+    const anchor = this.options.shadowAnchor ?
+      new leafletSrc.Point(this.options.shadowAnchor[0], this.options.shadowAnchor[1]) :
+      size.divideBy(2);
+    this.setPosition(div, size, anchor);
+    return div;
+  }
+  setPosition(divEl, size, anchor) {
     if (anchor) {
       divEl.style.marginLeft = (-anchor.x) + 'px';
       divEl.style.marginTop = (-anchor.y) + 'px';

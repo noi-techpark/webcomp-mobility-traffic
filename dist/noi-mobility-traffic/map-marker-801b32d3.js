@@ -14094,7 +14094,7 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 });
 
 const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
-const STATION_CIRCLE_RADIUS = 10;
+const STATION_CIRCLE_RADIUS = 12;
 const MapStation = (props) => {
   const entityClass = {
     'noi-highway-station': true,
@@ -14132,14 +14132,11 @@ function renderHighwayStationElement(e) {
 }
 
 const defaultPathOptions = {
-  path: 'm5 .33333333c2.57732883 0 4.66666667 2.08933784 4.66666667 4.66666667 0 1.71821922-1.55555556 4.60710811-4.66666667 8.6666667l-.40559671-.5343372c-2.8407133-3.77969908-4.26106996-6.49047558-4.26106996-8.1323295 0-2.57732883 2.08933784-4.66666667 4.66666667-4.66666667z',
-  pathTransform: 'translate(7 5)',
-  viewBox: '0 0 24 24',
-  iconSize: [30, 50],
-  iconAnchor: [15, 50],
-  popupAnchor: [2, -40],
-  shadowAnchor: [39, 45],
-  shadowSize: [54, 51]
+  path: 'm7.773438.53125c3.988281 0 7.222656 3.101562 7.222656 6.929688 0 5.390624-7.222656 10.007812-7.222656 10.007812s-7.222657-4.617188-7.222657-10.007812c0-3.828126 3.234375-6.929688 7.222657-6.929688zm0 4.617188c-1.328126 0-2.40625 1.035156-2.40625 2.3125 0 1.273437 1.078124 2.308593 2.40625 2.308593 1.332031 0 2.410156-1.035156 2.410156-2.308593 0-1.277344-1.078125-2.3125-2.410156-2.3125zm0 0',
+  iconSize: [18, 16],
+  iconAnchor: [9, 16],
+  shadowSize: [18, 16],
+  shadowAnchor: [9, 16]
 };
 class SvgPathIcon extends leafletSrc.Icon {
   constructor(options) {
@@ -14152,14 +14149,47 @@ class SvgPathIcon extends leafletSrc.Icon {
     div.innerHTML = `<svg
       width="${this.options.iconSize[0]}"
       height="${this.options.iconSize[1]}px"
-      viewBox="${this.options.viewBox}"
-      class="${this.options.className}"
+      viewBox="0 0 ${this.options.iconSize[1]} ${this.options.iconSize[0]}"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
         <path d="${this.options.path}" transform="${this.options.pathTransform}"></path>
     </svg>`;
+    div.className = this.options.className;
+    this.adjustDivPosition(div);
     return div;
+  }
+  createShadow() {
+    const div = document.createElement('div');
+    this.setShadowStyles(div);
+    return div;
+  }
+  setShadowStyles(divEl) {
+    const size = new leafletSrc.Point(this.options.shadowSize[0], this.options.shadowSize[1]);
+    const anchor = this.options.shadowAnchor ?
+      new leafletSrc.Point(this.options.shadowAnchor[0], this.options.shadowAnchor[1]) :
+      size.divideBy(2);
+    divEl.className = this.options.className;
+    if (anchor) {
+      divEl.style.marginLeft = (-anchor.x) + 'px';
+      divEl.style.marginTop = (-anchor.y) + 'px';
+    }
+    if (size) {
+      divEl.style.width = size.x + 'px';
+      divEl.style.height = size.y + 'px';
+    }
+  }
+  adjustDivPosition(divEl) {
+    const size = new leafletSrc.Point(this.options.iconSize[0], this.options.iconSize[1]);
+    const anchor = size.divideBy(2);
+    if (anchor) {
+      divEl.style.marginLeft = (-anchor.x) + 'px';
+      divEl.style.marginTop = (-anchor.y) + 'px';
+    }
+    if (size) {
+      divEl.style.width = size.x + 'px';
+      divEl.style.height = size.y + 'px';
+    }
   }
 }
 
@@ -14179,18 +14209,18 @@ const MapMarker = (props) => {
 };
 function highlightMarker(e) {
   const layer = e.target;
-  layer.getElement().classList.add('noi-highway-station--hover');
+  layer.getElement().classList.add('noi-marker--hover');
 }
 function unHighlightMarker(e) {
   const layer = e.target;
-  layer.getElement().classList.remove('noi-highway-station--hover');
+  layer.getElement().classList.remove('noi-marker--hover');
 }
 function renderMarkerElement(e) {
   const lat = +e.getAttribute('lat');
   const long = +e.getAttribute('long');
-  const icon = new SvgPathIcon({});
+  const icon = new SvgPathIcon({ className: e.getAttribute('class'), });
   const opts = {
-    icon
+    icon,
   };
   return new leafletSrc.Marker([lat, long], opts);
 }
