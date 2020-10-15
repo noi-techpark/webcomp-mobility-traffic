@@ -1386,6 +1386,14 @@ const NoiMobilityTraffic = class {
       return (h(MapStation, Object.assign({}, s)));
     });
   }
+  getPathCircles() {
+    if (!state.stations) {
+      return null;
+    }
+    return selectStationsWithSelectedWithStartEnd().map(s => {
+      return (h(MapStation, Object.assign({}, s)));
+    });
+  }
   getHighwayMarkers() {
     if (!state.startId && !state.endId) {
       return null;

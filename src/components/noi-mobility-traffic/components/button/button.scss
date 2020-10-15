@@ -76,6 +76,22 @@
   --background: transparent;
 }
 
+::slotted(svg[slot="start"]) {
+  position: absolute;
+  left: var(--padding-start, 1.1em);
+}
+
+::slotted(svg[slot="end"]) {
+  position: absolute;
+  right: var(--padding-end, 1.1em);
+}
+
+::slotted(svg[slot="icon-only"]) {
+  @include padding(0);
+}
+
+
+
 // Solid Button
 // --------------------------------------------------
 

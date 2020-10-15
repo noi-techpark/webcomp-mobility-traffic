@@ -87,6 +87,15 @@ export class NoiMobilityTraffic {
     })
   }
 
+  getPathCircles() {
+    if (!noiStore.stations) {
+      return null;
+    }
+    return selectStationsWithSelectedWithStartEnd().map(s => {
+      return (<MapStation {...s}></MapStation>)
+    })
+  }
+
   getHighwayMarkers() {
     if (!noiStore.startId && !noiStore.endId) {
       return null;

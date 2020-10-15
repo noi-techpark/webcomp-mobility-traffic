@@ -115,7 +115,3 @@ $color-contrast: #333;
   font-weight: bold;
 }
 
-::slotted(noi-icon[slot="icon-only"]) {
-  @include padding(0);
-}
-

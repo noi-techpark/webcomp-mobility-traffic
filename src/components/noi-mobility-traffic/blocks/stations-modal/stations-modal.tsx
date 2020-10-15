@@ -53,7 +53,8 @@ export class StationsModal {
       .map(s => {
         const stationClass = {
           station: true,
-          'station--selected': !!s.selected
+          'station--selected': !!s.selected,
+          'station--end': this.selecting === 'end'
         };
         return (
           <article class={stationClass} onClick={this.stationSelectedToggle.bind(this, s.id)}>

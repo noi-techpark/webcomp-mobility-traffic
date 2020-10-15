@@ -88,7 +88,7 @@
   fill: var(--noi-action);
 }
 
-.noi-search__station-btn {
+.station-btn {
   text-transform: uppercase;
   font-size: 13px;
   font-weight: bold;
@@ -107,11 +107,29 @@
   --padding-left: 8px;
   --background-activated: #eee;
   --background-activated-opacity: 0.5;
+  --border-width: 1px;
+  --border-style: solid;
 }
 
-
-.noi-search__station-btn--empty {
+.station-btn--empty {
   font-weight: normal;
   --color: rgba(var(--noi-primary-rgb), 0.5);
 }
+
+.station-btn--start {
+  --border-color: rgba(var(--noi-primary-rgb), 0.5);
+}
+
+.station-btn--end {
+  --border-color: rgba(var(--noi-action-rgb), 0.5);
+}
+
+.station-btn--start > svg {
+  fill: var(--noi-primary);
+}
+
+.station-btn--end > svg {
+  fill: var(--noi-action);
+}
+
 

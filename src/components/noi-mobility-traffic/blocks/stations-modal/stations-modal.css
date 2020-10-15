@@ -127,6 +127,17 @@ header {
   fill: var(--noi-primary-contrast);
 }
 
+.station--end > .station__icon {
+  fill: var(--noi-action);
+  stroke: var(--noi-action);
+}
+
+.station--end.station--selected > .station__icon {
+  fill: var(--noi-action-contrast);
+}
+
+
+
 .station::before {
   content: ' ';
   position: fixed;
