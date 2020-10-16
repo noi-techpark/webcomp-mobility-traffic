@@ -1,8 +1,9 @@
-import { Component, Element, Prop, Watch, h } from '@stencil/core';
+import { Component, Element, Prop, Watch, h, State } from '@stencil/core';
+import noiStore from '@noi/store';
 import { GeoJSON, Map, TileLayer } from 'leaflet';
 
-import noiStore from '../../../../store';
 import { MapEntity, MapEntityFactory } from './map-entity-factory';
+import { fnDebounce } from 'src/utils';
 
 interface LayerObserver<T> {
   layer: T,
@@ -27,9 +28,10 @@ export class NoiMap {
   entityChildren: WeakMap<any, LayerObserver<MapEntity>> = new WeakMap();
   pathChildren: WeakMap<any, LayerObserver<GeoJSON>> = new WeakMap();
   popupElement!: HTMLElement;
+  popupTimer = null;
 
+  @State() showPopup: boolean = false;
   @Element() el: HTMLElement;
-
   @Prop({ mutable: true }) lat: number = 46.4983;
   @Prop({ mutable: true }) long: number = 11.3548;
   @Prop({ mutable: true }) scale: number = 13;
@@ -177,15 +179,35 @@ export class NoiMap {
     this.map.closePopup();
   }
 
+
+  /**
+   * dirty hack to avoid popup container blinking with empty content,
+   * popup container should only be shown (with 1s CSS animation) if the content is rendered.
+   * inverse for hiding, popup content should only be destroyed, when popup container finished hiding 1s CSS animation
+   */
+  updatePopupVisibility(visible: boolean) {
+    clearTimeout(this.popupTimer);
+    if (!visible) {
+      this.popupTimer = window.setTimeout(() => {
+        this.showPopup = false;
+        clearTimeout(this.popupTimer);
+      }, 1000);
+    } else {
+      this.popupTimer = window.setTimeout(() => {
+        this.showPopup = true;
+        clearTimeout(this.popupTimer);
+      }, 500);
+    }
+  }
+
   renderSetAsStartButton() {
     if (noiStore.selectedId === noiStore.startId) {
       return null;
     }
-    // const title = noiStore.startId ? "Change origin" : "Set origin";
     // TODO: get from strings
     const title = 'Da qui';
     return (
-      <noi-button fill="solid" class="button-md noi-map-station-popup__btn" onClick={this.onSetAsStart.bind(this)}>
+      <noi-button fill="solid" class="button-md station-popup__btn" onClick={this.onSetAsStart.bind(this)}>
         {title}
       </noi-button>
     );
@@ -195,11 +217,10 @@ export class NoiMap {
     if (noiStore.selectedId === noiStore.endId) {
       return null;
     }
-    // const title = noiStore.endId ? "Change destination" : "Set destination";
     // TODO: get from strings
     const title = 'A qua';
     return (
-      <noi-button fill="solid" class="button-md noi-map-station-popup__btn" onClick={this.onSetAsEnd.bind(this)}>
+      <noi-button fill="solid" class="button-md station-popup__btn" onClick={this.onSetAsEnd.bind(this)}>
         {title}
       </noi-button>
     );
@@ -207,9 +228,9 @@ export class NoiMap {
 
   renderSelectedStationPopup() {
     return (
-      <div class="noi-map-station-popup">
-        <div class="noi-map-station-popup__header">{noiStore.selected.name}</div>
-        <div class="noi-map-station-popup__content">
+      <div class="station-popup">
+        <div class="station-popup__header">{noiStore.selected.name}</div>
+        <div class="station-popup__content">
           {this.renderSetAsStartButton()}
           {this.renderSetAsEndButton()}
         </div>
@@ -218,8 +239,13 @@ export class NoiMap {
   }
 
   render() {
-    return <div class="noi-map-popup" ref={(el) => this.popupElement= el as HTMLElement}>
-      {noiStore.selectedId ? this.renderSelectedStationPopup() : null}
+    const popupClass = {
+      'map-popup-container': true,
+      'map-popup-container--visible': this.showPopup
+    };
+    this.updatePopupVisibility(!!noiStore.selectedId);
+    return <div class={popupClass} ref={(el) => this.popupElement= el as HTMLElement}>
+      {noiStore.selectedId || this.showPopup ? this.renderSelectedStationPopup() : null}
     </div>
   }
 

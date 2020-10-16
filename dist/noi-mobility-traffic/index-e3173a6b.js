@@ -241,5 +241,41 @@ function selectStartEnd() {
     .filter(s => s.id === state.startId || s.id === state.endId)
     .map(s => (Object.assign(Object.assign({}, s), { selected: s.id === state.selectedId, isStart: s.id === state.startId, isEnd: s.id === state.endId })));
 }
+function selectPathStations() {
+  if (!state.stations || !state.startId || !state.endId) {
+    return null;
+  }
+  const startPos = state.start.position;
+  const endPos = state.end.position;
+  return state.stationsList.reduce((result, i) => {
+    if (startPos < endPos && i.position <= endPos && i.position >= startPos) {
+      result.push(Object.assign({}, i));
+    }
+    if (startPos > endPos && i.position >= endPos && i.position <= startPos) {
+      result.push(Object.assign({}, i));
+    }
+    return result;
+  }, [])
+    .map(s => (Object.assign(Object.assign({}, s), { selected: s.id === state.selectedId, isStart: s.id === state.startId, isEnd: s.id === state.endId })))
+    .sort((a, b) => {
+    if (startPos < endPos && a.position > b.position)
+      return 1;
+    if (startPos > endPos && a.position < b.position)
+      return 1;
+    return -1;
+  });
+}
+function selectPathSegmentsIds() {
+  return selectPathStations().reduce((result, s) => {
+    if (!!result.lastId) {
+      result.data.push(`${result.lastId}-${s.id}`);
+    }
+    result.lastId = s.id;
+    return result;
+  }, { data: [], lastId: '' }).data;
+}
+function selectCanLoadPath() {
+  return !!state.startId && !!state.endId;
+}
 
-export { selectStationsWithSelectedWithStartEnd as a, selectStartEnd as b, selectStationsWithSelected as c, state as s };
+export { selectStationsWithSelectedWithStartEnd as a, selectStartEnd as b, selectPathSegmentsIds as c, selectPathStations as d, selectCanLoadPath as e, selectStationsWithSelected as f, state as s };

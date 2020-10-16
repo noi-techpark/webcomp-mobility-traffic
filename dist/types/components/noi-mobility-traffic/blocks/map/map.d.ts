@@ -12,6 +12,8 @@ export declare class NoiMap {
   entityChildren: WeakMap<any, LayerObserver<MapEntity>>;
   pathChildren: WeakMap<any, LayerObserver<GeoJSON>>;
   popupElement: HTMLElement;
+  popupTimer: any;
+  showPopup: boolean;
   el: HTMLElement;
   lat: number;
   long: number;
@@ -30,6 +32,12 @@ export declare class NoiMap {
   updateCenterAndZoom(): void;
   onSetAsStart(): void;
   onSetAsEnd(): void;
+  /**
+   * dirty hack to avoid popup container blinking with empty content,
+   * popup container should only be shown (with 1s CSS animation) if the content is rendered.
+   * inverse for hiding, popup content should only be destroyed, when popup container finished hiding 1s CSS animation
+   */
+  updatePopupVisibility(visible: boolean): void;
   renderSetAsStartButton(): any;
   renderSetAsEndButton(): any;
   renderSelectedStationPopup(): any;

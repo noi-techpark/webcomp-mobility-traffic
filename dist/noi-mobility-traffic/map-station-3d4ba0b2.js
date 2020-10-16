@@ -14093,48 +14093,10 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 
 });
 
-const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
-const STATION_CIRCLE_RADIUS = 12;
-const MapStation = (props) => {
-  const entityClass = {
-    'noi-highway-station': true,
-    'noi-highway-station--selected': props.selected,
-    'noi-highway-station--start': props.isStart,
-    'noi-highway-station--end': props.isEnd,
-  };
-  return (h("noi-map-entity", { "entity-type": MAP_ENTITY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: entityClass, style: { display: 'none' } },
-    props.id,
-    "-",
-    props.name));
-};
-function highlightHighwayStation(e) {
-  const layer = e.target;
-  layer.getElement().classList.add('noi-highway-station--hover');
-  if (!leafletSrc.Browser.ie && !leafletSrc.Browser.opera && !leafletSrc.Browser.edge) {
-    layer.bringToFront();
-  }
-}
-function unHighlightHighwayStation(e) {
-  const layer = e.target;
-  layer.getElement().classList.remove('noi-highway-station--hover');
-}
-function renderHighwayStationElement(e) {
-  const lat = +e.getAttribute('lat');
-  const long = +e.getAttribute('long');
-  const opts = {
-    radius: STATION_CIRCLE_RADIUS,
-    fill: true,
-    fillRule: 'nonzero',
-    className: e.getAttribute('class'),
-    bubblingMouseEvents: false
-  };
-  return new leafletSrc.CircleMarker([lat, long], opts);
-}
-
 const defaultPathOptions = {
-  path: 'm8.746094.519531c4.484375 0 8.125 3.035157 8.125 6.777344 0 5.273437-8.125 9.792969-8.125 9.792969s-8.125-4.519532-8.125-9.792969c0-3.742187 3.636718-6.777344 8.125-6.777344zm0 4.515625c-1.496094 0-2.707032 1.015625-2.707032 2.261719s1.210938 2.261719 2.707032 2.261719 2.710937-1.015625 2.710937-2.261719-1.214843-2.261719-2.710937-2.261719zm0 0',
-  iconSize: [18, 18],
-  shadowSize: [18, 18],
+  path: 'm7.773438.53125c3.988281 0 7.222656 3.101562 7.222656 6.929688 0 5.390624-7.222656 10.007812-7.222656 10.007812s-7.222657-4.617188-7.222657-10.007812c0-3.828126 3.234375-6.929688 7.222657-6.929688zm0 4.617188c-1.328126 0-2.40625 1.035156-2.40625 2.3125 0 1.273437 1.078124 2.308593 2.40625 2.308593 1.332031 0 2.410156-1.035156 2.410156-2.308593 0-1.277344-1.078125-2.3125-2.410156-2.3125zm0 0',
+  iconSize: [18, 16],
+  shadowSize: [18, 16],
 };
 class SvgPathIcon extends leafletSrc.Icon {
   constructor(options) {
@@ -14213,6 +14175,44 @@ function renderMarkerElement(e) {
     icon,
   };
   return new leafletSrc.Marker([lat, long], opts);
+}
+
+const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
+const STATION_CIRCLE_RADIUS = 12;
+const MapStation = (props) => {
+  const entityClass = {
+    'noi-highway-station': true,
+    'noi-highway-station--selected': props.selected,
+    'noi-highway-station--start': props.isStart,
+    'noi-highway-station--end': props.isEnd,
+  };
+  return (h("noi-map-entity", { "entity-type": MAP_ENTITY_STATION, "entity-id": props.id, lat: props.coordinates.lat, long: props.coordinates.long, class: entityClass, style: { display: 'none' } },
+    props.id,
+    "-",
+    props.name));
+};
+function highlightHighwayStation(e) {
+  const layer = e.target;
+  layer.getElement().classList.add('noi-highway-station--hover');
+  if (!leafletSrc.Browser.ie && !leafletSrc.Browser.opera && !leafletSrc.Browser.edge) {
+    layer.bringToFront();
+  }
+}
+function unHighlightHighwayStation(e) {
+  const layer = e.target;
+  layer.getElement().classList.remove('noi-highway-station--hover');
+}
+function renderHighwayStationElement(e) {
+  const lat = +e.getAttribute('lat');
+  const long = +e.getAttribute('long');
+  const opts = {
+    radius: STATION_CIRCLE_RADIUS,
+    fill: true,
+    fillRule: 'nonzero',
+    className: e.getAttribute('class'),
+    bubblingMouseEvents: false
+  };
+  return new leafletSrc.CircleMarker([lat, long], opts);
 }
 
 export { MapStation as M, MapMarker as a, MAP_ENTITY_STATION as b, MAP_ENTITY_MARKER as c, renderMarkerElement as d, highlightMarker as e, unHighlightMarker as f, highlightHighwayStation as h, leafletSrc as l, renderHighwayStationElement as r, unHighlightHighwayStation as u };

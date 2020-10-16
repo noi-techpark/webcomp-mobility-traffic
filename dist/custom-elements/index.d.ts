@@ -38,10 +38,22 @@ export const NoiMobilityTraffic: {
   new (): NoiMobilityTraffic;
 };
 
+interface NoiPathDetails extends Components.NoiPathDetails, HTMLElement {}
+export const NoiPathDetails: {
+  prototype: NoiPathDetails;
+  new (): NoiPathDetails;
+};
+
 interface NoiSearch extends Components.NoiSearch, HTMLElement {}
 export const NoiSearch: {
   prototype: NoiSearch;
   new (): NoiSearch;
+};
+
+interface NoiStationItem extends Components.NoiStationItem, HTMLElement {}
+export const NoiStationItem: {
+  prototype: NoiStationItem;
+  new (): NoiStationItem;
 };
 
 interface NoiStationsModal extends Components.NoiStationsModal, HTMLElement {}

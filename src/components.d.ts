@@ -166,7 +166,14 @@ export namespace Components {
     }
     interface NoiMobilityTraffic {
     }
+    interface NoiPathDetails {
+    }
     interface NoiSearch {
+    }
+    interface NoiStationItem {
+        "arrival": Date;
+        "name": string;
+        "position": number;
     }
     interface NoiStationsModal {
         "overlayIndex": number;
@@ -211,11 +218,23 @@ declare global {
         prototype: HTMLNoiMobilityTrafficElement;
         new (): HTMLNoiMobilityTrafficElement;
     };
+    interface HTMLNoiPathDetailsElement extends Components.NoiPathDetails, HTMLStencilElement {
+    }
+    var HTMLNoiPathDetailsElement: {
+        prototype: HTMLNoiPathDetailsElement;
+        new (): HTMLNoiPathDetailsElement;
+    };
     interface HTMLNoiSearchElement extends Components.NoiSearch, HTMLStencilElement {
     }
     var HTMLNoiSearchElement: {
         prototype: HTMLNoiSearchElement;
         new (): HTMLNoiSearchElement;
+    };
+    interface HTMLNoiStationItemElement extends Components.NoiStationItem, HTMLStencilElement {
+    }
+    var HTMLNoiStationItemElement: {
+        prototype: HTMLNoiStationItemElement;
+        new (): HTMLNoiStationItemElement;
     };
     interface HTMLNoiStationsModalElement extends Components.NoiStationsModal, HTMLStencilElement {
     }
@@ -230,7 +249,9 @@ declare global {
         "noi-input": HTMLNoiInputElement;
         "noi-map": HTMLNoiMapElement;
         "noi-mobility-traffic": HTMLNoiMobilityTrafficElement;
+        "noi-path-details": HTMLNoiPathDetailsElement;
         "noi-search": HTMLNoiSearchElement;
+        "noi-station-item": HTMLNoiStationItemElement;
         "noi-stations-modal": HTMLNoiStationsModalElement;
     }
 }
@@ -411,7 +432,14 @@ declare namespace LocalJSX {
     }
     interface NoiMobilityTraffic {
     }
+    interface NoiPathDetails {
+    }
     interface NoiSearch {
+    }
+    interface NoiStationItem {
+        "arrival"?: Date;
+        "name": string;
+        "position": number;
     }
     interface NoiStationsModal {
         "onModalClose"?: (event: CustomEvent<{stationId: string}>) => void;
@@ -426,7 +454,9 @@ declare namespace LocalJSX {
         "noi-input": NoiInput;
         "noi-map": NoiMap;
         "noi-mobility-traffic": NoiMobilityTraffic;
+        "noi-path-details": NoiPathDetails;
         "noi-search": NoiSearch;
+        "noi-station-item": NoiStationItem;
         "noi-stations-modal": NoiStationsModal;
     }
 }
@@ -440,7 +470,9 @@ declare module "@stencil/core" {
             "noi-input": LocalJSX.NoiInput & JSXBase.HTMLAttributes<HTMLNoiInputElement>;
             "noi-map": LocalJSX.NoiMap & JSXBase.HTMLAttributes<HTMLNoiMapElement>;
             "noi-mobility-traffic": LocalJSX.NoiMobilityTraffic & JSXBase.HTMLAttributes<HTMLNoiMobilityTrafficElement>;
+            "noi-path-details": LocalJSX.NoiPathDetails & JSXBase.HTMLAttributes<HTMLNoiPathDetailsElement>;
             "noi-search": LocalJSX.NoiSearch & JSXBase.HTMLAttributes<HTMLNoiSearchElement>;
+            "noi-station-item": LocalJSX.NoiStationItem & JSXBase.HTMLAttributes<HTMLNoiStationItemElement>;
             "noi-stations-modal": LocalJSX.NoiStationsModal & JSXBase.HTMLAttributes<HTMLNoiStationsModalElement>;
         }
     }

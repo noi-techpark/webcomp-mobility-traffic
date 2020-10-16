@@ -16,7 +16,7 @@ export declare class NoiAuthService implements AuthService {
   private static encodeFormData;
   private static parseToken;
   getToken(): AuthToken;
-  getValidAccessToken(): Promise<string>;
+  getValidAccessToken: () => Promise<string>;
   private static isAuthTokenExpired;
   private static isRefreshTokenExpired;
   static refresh(refreshToken: string): Promise<AuthToken>;

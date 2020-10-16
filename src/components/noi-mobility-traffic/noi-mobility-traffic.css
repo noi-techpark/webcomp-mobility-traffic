@@ -13,12 +13,14 @@
   margin: 0;
 }
 
+/* map */
 noi-map {
   z-index: 0;
   flex: 1;
 }
 
-.search {
+/* search panel */
+noi-search {
   background: #fff;
   position: absolute;
   height: auto;
@@ -31,14 +33,13 @@ noi-map {
   overflow: hidden;
 }
 
-
-:host.noi-media-gs .search {
+:host.noi-media-gs noi-search {
   height: 100%;
   width: 100%;
   max-width: 360px;
 }
 
-:host.noi-media-gs--landscape  .search {
+:host.noi-media-gs--landscape noi-search {
   height: 100%;
   width: 360px;
 }

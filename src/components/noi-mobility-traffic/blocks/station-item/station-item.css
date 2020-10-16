@@ -1,0 +1,25 @@
+:host {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 48px;
+  margin: 0 16px;
+  background: #ffffff;
+  font-family: var(--noi-font-family);
+  color: var(--noi-primary);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+h3 {
+  font-family: var(--noi-font-family);
+  margin-left: 16px;
+}
+
+svg {
+  margin: 0 16px;
+  fill: var(--noi-primary-contrast);
+  stroke-width: 4px;
+  stroke: var(--noi-primary);
+}

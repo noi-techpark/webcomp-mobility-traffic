@@ -1,10 +1,11 @@
-import { Component, h, Element, State } from '@stencil/core';
+import { NoiAPI } from '@noi/api';
+import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '@noi/store';
+import { Component, Element, State, h } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
-import { NoiAPI } from '../../api';
+
 import { getLocaleComponentStrings } from '../../lang';
-import { MapStation } from './blocks/map/map-station';
-import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '../../store';
 import { MapMarker } from './blocks/map/map-marker';
+import { MapStation } from './blocks/map/map-station';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -44,7 +45,7 @@ export class NoiMobilityTraffic {
       const stations = await NoiAPI.getHighwayStations();
       noiStore.stations = stations.reduce((result, s) => { result[s.id] = s; return result;}, {})
     } catch (error) {
-      // TODO:
+      alert('TODO: ERROR!');
     }
   }
 
@@ -123,15 +124,13 @@ export class NoiMobilityTraffic {
         onNoiBackdropTap={this.onModalClose.bind(this)}>
       </noi-backdrop>
       <noi-stations-modal
-        selecting={noiStore.selecting}
         ref={el => this.stationsModalEl = el as HTMLNoiStationsModalElement} 
+        selecting={noiStore.selecting}
         onModalClose={this.onModalClose.bind(this)}
         overlayIndex={2}
         visible={!!noiStore.selecting}
       ></noi-stations-modal>
-      <noi-search
-        class="search"
-        ref={el => this.searchEl = el as HTMLNoiSearchElement}>
+      <noi-search ref={el => this.searchEl = el as HTMLNoiSearchElement}>
       </noi-search>
       <noi-map>
         {this.getHighwayCircles()}

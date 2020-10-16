@@ -1,7 +1,9 @@
+import { notConcurrent } from "src/utils";
 import { NoiError } from "./error";
 
 export const AUTH_SERVICE_ERR_UNKNOWN = 'error.auth-service.unknown';
 export const AUTH_SERVICE_ERR_OFFLINE = 'error.auth-service.offline';
+
 
 export interface AuthService {
   getValidAccessToken(): Promise<string>;
@@ -17,7 +19,7 @@ export interface AuthToken {
 
 export class NoiAuthService implements AuthService {
   private token: AuthToken = null;
-
+  
   constructor() {
   }
 
@@ -43,7 +45,7 @@ export class NoiAuthService implements AuthService {
     return this.token;
   }
 
-  public async getValidAccessToken(): Promise<string> {
+  public getValidAccessToken = notConcurrent(async () => {
     if (!NoiAuthService.isAuthTokenExpired(this.token)) {
       return this.token.accessToken;
     }
@@ -56,7 +58,7 @@ export class NoiAuthService implements AuthService {
     const newToken = await NoiAuthService.login();
     this.token = newToken;
     return newToken.accessToken;
-  }
+  });
 
   private static isAuthTokenExpired(token: AuthToken) {
     if (!token || !token.accessToken) {

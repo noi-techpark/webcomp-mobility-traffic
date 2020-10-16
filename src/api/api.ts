@@ -26,7 +26,8 @@ export interface NoiErrorService {
 export interface NoiService {
   getBluetoothStations(): Promise<Array<NoiBTStation>>;
   getHighwayStations(): Promise<Array<NoiHighwayStation>>;
-  getLinkStation(id: string, auth?: boolean): Promise<NoiLinkStation>;
+  getLinkStationAvgTime(id: string, auth?: boolean): Promise<number>;
+  getSegmentsAvgTime(ids: string[], auth?: boolean): Promise<Array<{id: string, timeSec: number}>>;
   getLinkStations(): Promise<Array<NoiLinkStation>>
 }
 
@@ -85,10 +86,7 @@ export function parseHighwayStations(linkStations: Array<any>): Array<NoiHighway
     if (ids.length !== 2) {
       return result;
     }
-    const names: string[] = s.sname.split(' - ').map(n => {
-      let withoutStart = n.replace('INIZIO ', '');
-      return withoutStart.replace('FINE ', '');
-    });
+    const names: string[] = s.sname.split(' - ');
     if (names.length !== 2) {
       return result;
     }
@@ -128,18 +126,6 @@ export function parseHighwayStations(linkStations: Array<any>): Array<NoiHighway
     });
 }
 
-export interface NoiVMS {
-  type: 'VMS';
-  id: string;
-  name: string;
-  coordinates: {lat: number; long: number};
-  highway: string;
-  position: number;
-  direction: NoiVMSDirection;
-};
-
-export type NoiVMSDirection = 'north' | 'south' | 'vehicle' | 'unknown';
-
 export function parse4326Coordinates(value: {x: number, y: number; srid: number}): {lat: number; long: number} {
   if (!value || value.srid !== 4326) {
     return null;
@@ -150,22 +136,6 @@ export function parse4326Coordinates(value: {x: number, y: number; srid: number}
     return {lat, long};
   } catch (error) {
     return null;
-  }
-}
-
-export function parsVMSDirection(s: any): NoiVMSDirection {
-  if (!s || !s.smetadata || !s.smetadata.direction_id) {
-    return 'unknown';
-  }
-  switch (s.smetadata.direction_id) {
-    case '1':
-      return 'north';
-    case '2':
-      return 'south';
-    case '3':
-      return 'vehicle';
-    default:
-      return 'unknown';
   }
 }
 
@@ -203,30 +173,6 @@ export function parseLinkStation(s): NoiLinkStation {
   };
 }
 
-export function parseVmsPosition(s: {scode: string, smetadata: any}): number {
-  if (s.scode.startsWith('A22:5515')) {
-    return 33000;
-  }
-  if (s.scode.startsWith('A22:5514')) {
-    return 119600;
-  }
-  if (s.scode.startsWith('A22:5514')) {
-    return 119600;
-  }
-  if (s.scode.startsWith('A22:2014')) {
-    return 136500;
-  }
-  if (s.scode.startsWith('A22:2015')) {
-    return 136500;
-  }
-  if (s.scode.startsWith('A22:2018')) {
-    return 136500;
-  }
-  if (s.scode.startsWith('A22:2020')) {
-    return 136500;
-  }
-  return s.smetadata ? +s.smetadata.position_m : 0;
-}
 
 export class OpenDataHubNoiService implements NoiService {
   static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
@@ -250,19 +196,36 @@ export class OpenDataHubNoiService implements NoiService {
     }
   }
 
-  async getLinkStation(id: string, auth = false): Promise<NoiLinkStation> {
-    const where = `ecode.eq.${id}`;
+  async getLinkStationAvgTime(id: string, auth = false): Promise<number> {
+    const where = `scode.eq.${id}`;
+    const select = `sdatatypes.tempo`;
     const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
     const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
     const response = await this.request(
-      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/*?where=${where}`,
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/tempo/latest?limit=-1&select=${select}&where=${where}&distinct=true`,
       { headers }
     );
-    if (!response || !response.data || response.data.length !== 1) {
-      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${id} not found`});
+    if (!response || !response.data) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
     }
-    return parseLinkStation(response.data[0]);
+    return response.data.reduce((result, t) => {result += t.mvalue; return result}, 0);
   }
+
+  async getSegmentsAvgTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number}>> {
+    const where = `scode.in.(${ids.join(',')})`;
+    const select = `scode,sdatatypes.tempo`;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/tempo/latest?limit=-1&select=${select}&where=${where}&distinct=true`,
+      { headers }
+    );
+    if (!response || !response.data) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
+    }
+    return response.data.map(s => ({value: s.mvalue, id: s.scode}));
+  }
+
 
   async getLinkStations(): Promise<Array<NoiLinkStation>> {
     const where = 'egeometry.neq.null,eactive.eq.true';

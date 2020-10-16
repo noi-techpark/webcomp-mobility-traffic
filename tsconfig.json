@@ -14,7 +14,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "jsx": "react",
-    "jsxFactory": "h"
+    "jsxFactory": "h",
+    "baseUrl": ".",
+    "paths": {
+      "@noi/api/*": ["src/api/*"],
+      "@noi/api": ["src/api"],
+      "@noi/store": ["src/store"]
+    }
   },
   "include": [
     "src"
