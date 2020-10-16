@@ -39,10 +39,12 @@ export class PathDetails {
           </div>
           <div class="header__urban"></div>
         </header>
-        {stations.map(s => <noi-station-item
-          name={s.name}
-          position={Math.abs(startPos - s.position)}
-        ></noi-station-item>)}
+        <div class="content">
+          {stations.map(s => <noi-station-item
+            name={s.name}
+            position={Math.abs(startPos - s.position)}
+          ></noi-station-item>)}
+        </div>
       </Host>
     );
   }

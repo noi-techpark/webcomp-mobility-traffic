@@ -133,3 +133,7 @@ footer {
 .search-station-btn--end > svg {
   fill: var(--noi-action);
 }
+
+noi-path-details {
+  flex: 1;
+}

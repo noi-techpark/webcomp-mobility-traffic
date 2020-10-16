@@ -223,7 +223,7 @@ export class OpenDataHubNoiService implements NoiService {
     if (!response || !response.data) {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
     }
-    return response.data.map(s => ({value: s.mvalue, id: s.scode}));
+    return response.data.map(s => ({timeSec: s.mvalue, id: s.scode}));
   }
 
 

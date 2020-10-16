@@ -10,8 +10,6 @@ class NoiError extends Error {
   }
 }
 
-const AUTH_SERVICE_ERR_UNKNOWN = 'error.auth-service.unknown';
-const AUTH_SERVICE_ERR_OFFLINE = 'error.auth-service.offline';
 /**
  * getting a valid token should be not concurrent, so if one token request is being processed,
  * another one should wait, in order not to send multiple "login" or "refresh" requests to thew auth server
@@ -32,6 +30,20 @@ const notConcurrent = (proc) => {
     return inFlight;
   };
 };
+const fnDebounce = (wait, fn) => {
+  let timer = undefined;
+  return function (...args) {
+    if (timer === undefined) {
+      fn.apply(this, args);
+    }
+    clearTimeout(timer);
+    timer = window.setTimeout(() => fn.apply(this, args), wait);
+    return timer;
+  };
+};
+
+const AUTH_SERVICE_ERR_UNKNOWN = 'error.auth-service.unknown';
+const AUTH_SERVICE_ERR_OFFLINE = 'error.auth-service.offline';
 class NoiAuthService {
   constructor() {
     this.token = null;
@@ -290,7 +302,7 @@ class OpenDataHubNoiService {
     if (!response || !response.data) {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, { message: `LinkStation ${name} not found` });
     }
-    return response.data.map(s => ({ value: s.mvalue, id: s.scode }));
+    return response.data.map(s => ({ timeSec: s.mvalue, id: s.scode }));
   }
   async getLinkStations() {
     const where = 'egeometry.neq.null,eactive.eq.true';

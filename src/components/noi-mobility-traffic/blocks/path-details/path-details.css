@@ -1,0 +1,24 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: rgba(var(--noi-primary-rgb), 0.3);
+  display: flex;
+  width: 100%;
+  height: 48px;
+  padding: 8px;
+  margin-bottom: auto;
+}
+
+.header__section {
+  background: var(--noi-primary-contrast);
+  flex: 1
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+}
+
