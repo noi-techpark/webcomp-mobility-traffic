@@ -137,4 +137,5 @@ footer {
 noi-path-details {
   flex: 1;
   overflow: hidden;
+  width: 100%;
 }

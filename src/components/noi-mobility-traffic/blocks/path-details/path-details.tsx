@@ -18,11 +18,12 @@ export class PathDetails {
 
   @State()
   segmentsTime: {[id: string]: number} = null;
-
+  @State()
+  activePath: 'highway' | 'urban' = 'highway';
   @State()
   highwayTimeMin: number = undefined;
   @State()
-  urbanTimeMin: number = undefined;
+  urbanTimeMin: number = 121;
 
   async componentDidLoad() {
     const ids = selectPathSegmentsIds();
@@ -35,22 +36,36 @@ export class PathDetails {
     }
   }
 
+  onActivatePath(value: 'highway' | 'urban') {
+    this.activePath = value;
+  }
+
   render() {
     const hostClass = {
     };
     const stations = selectPathStations();
     const startPos = stations[0].position; 
+    const highwayHeaderClass = {
+      'header__section': true,
+      'header__section--active': this.activePath === 'highway'
+    };
+    const urbanHeaderClass = {
+      'header__section': true,
+      'header__section--active': this.activePath === 'urban'
+    };
     return (
       <Host class={hostClass}>
         <header>
           {this.highwayTimeMin ?
-            <div class="header__section">
-                <span class="header-highway__title">A22</span> {formatDuration(this.highwayTimeMin)}
-            </div>
+            <noi-button class={highwayHeaderClass} onClick={this.onActivatePath.bind(this, 'highway')}>
+              <p><span class="header-highway__title">A22</span> {formatDuration(this.highwayTimeMin)}</p>
+            </noi-button>
             : null
           }
-          {this.urbanTimeMin ?
-            <div class="header__section"></div>
+          {this.urbanTimeMin !== undefined  ?
+            <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
+              <span class="header-highway__title">SS</span> {formatDuration(this.urbanTimeMin)}
+            </noi-button>
             : null
           }
         </header>

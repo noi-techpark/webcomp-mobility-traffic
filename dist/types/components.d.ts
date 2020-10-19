@@ -171,7 +171,6 @@ export namespace Components {
     interface NoiSearch {
     }
     interface NoiStationItem {
-        "arrival": Date;
         "name": string;
         "position": number;
     }
@@ -429,7 +428,6 @@ declare namespace LocalJSX {
     interface NoiSearch {
     }
     interface NoiStationItem {
-        "arrival"?: Date;
         "name": string;
         "position": number;
     }
