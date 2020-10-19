@@ -1,0 +1,38 @@
+{
+  "title": "Noi Mobility Traffic Web Component",
+  "description": "Noi Mobility Traffic Web Component",
+  "descriptionAbstract": "Noi Mobility Traffic Web Component",
+  "license": "AGPL-3.0",
+  "repositoryUrl": "https://github.com/noi-techpark/webcomp-mobility-traffic",
+  "authors": [
+    {
+      "name": "NOI",
+      "email": "info@noi.bz.it",
+      "organization": "NOI S.p.A",
+      "organizationUrl": "https://noi.bz.it"
+    }
+  ],
+  "image": null,
+  "searchTags": [],
+  "dist": {
+    "basePath": "build",
+    "files": [
+      "noi-mobility-traffic.js"
+    ]
+  },
+  "configuration": {
+    "tagName": "noi-mobility-traffic",
+    "options": [
+      {
+        "key": "lang",
+        "type": "select",
+        "label": "Two letter key for the language to be used, if omitted the widget will use the lang attribute of the closest parent element. Fallback is `en`",
+        "required": false,
+        "options": {
+          "values": ["en", "de", "it"],
+          "default": "en"
+        }
+      }
+    ]
+  }
+}

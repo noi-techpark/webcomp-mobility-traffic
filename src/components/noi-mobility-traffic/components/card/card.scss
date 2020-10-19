@@ -1,0 +1,61 @@
+
+@import "../mixins";
+@import "card-vars";
+
+
+// Card
+// --------------------------------------------------
+
+:host {
+  /**
+   * @prop --background: Background of the card
+   */
+  
+  @include font-smoothing();
+  @include margin($card-md-margin-top, $card-md-margin-end, $card-md-margin-bottom, $card-md-margin-start);
+  @include border-radius($card-md-border-radius);
+
+  display: block;
+  position: relative;
+  background: var(--background, #fff);
+  font-family: var(--noi-font-family);
+  overflow: hidden;
+  font-size: $card-md-font-size;
+  box-shadow: $card-md-box-shadow;
+}
+
+
+// Native
+// --------------------------------------------------
+
+.noi-card__native {
+  @include text-inherit();
+  @include padding(0);
+  @include margin(0);
+
+  display: block;
+
+  width: 100%;
+  min-height: var(--min-height);
+
+  transition: var(--transition);
+
+  border-width: var(--border-width);
+  border-style: var(--border-style);
+  border-color: var(--border-color);
+
+  outline: none;
+
+  background: inherit;
+}
+
+.card-native::-moz-focus-inner {
+  border: 0;
+}
+
+button, a {
+  cursor: pointer;
+  user-select: none;
+
+  -webkit-user-drag: none;
+}
