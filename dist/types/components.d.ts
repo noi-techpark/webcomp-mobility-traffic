@@ -167,10 +167,14 @@ export namespace Components {
     interface NoiMobilityTraffic {
     }
     interface NoiPathDetails {
+        "endId": string;
+        "startId": string;
     }
     interface NoiSearch {
     }
     interface NoiStationItem {
+        "isEnd": boolean;
+        "isStart": boolean;
         "name": string;
         "position": number;
     }
@@ -424,10 +428,14 @@ declare namespace LocalJSX {
     interface NoiMobilityTraffic {
     }
     interface NoiPathDetails {
+        "endId": string;
+        "startId": string;
     }
     interface NoiSearch {
     }
     interface NoiStationItem {
+        "isEnd"?: boolean;
+        "isStart"?: boolean;
         "name": string;
         "position": number;
     }

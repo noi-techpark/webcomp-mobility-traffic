@@ -46,3 +46,6 @@ noi-button.header__section--active {
   text-shadow: none;
 }
 
+noi-station-item:last-of-type {
+  margin-bottom: 48px;
+}

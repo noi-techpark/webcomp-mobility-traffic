@@ -10,8 +10,14 @@ export class StationItem {
   name!: string;
   @Prop()
   position!: number;
+  @Prop()
+  isStart: boolean = false;
+  @Prop()
+  isEnd: boolean = false;
   render() {
     const hostClass = {
+      'station-item--end': this.isEnd,
+      'station-item--start': this.isStart,
     };
     return (
       <Host class={hostClass}>

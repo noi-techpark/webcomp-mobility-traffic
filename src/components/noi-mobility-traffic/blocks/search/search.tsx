@@ -68,7 +68,11 @@ export class Search {
           </noi-button>
         </div>
       </div>
-      {selectCanLoadPath() ? <noi-path-details></noi-path-details> : null}
+    {selectCanLoadPath() ? <noi-path-details
+      startId={noiStore.startId}
+      endId={noiStore.endId}
+    >
+      </noi-path-details> : null}
       <footer>
         {selectCanLoadPath() ?
           <img class="search-footer__img" src={getAssetPath('./assets/mountains.svg')} alt=""/>

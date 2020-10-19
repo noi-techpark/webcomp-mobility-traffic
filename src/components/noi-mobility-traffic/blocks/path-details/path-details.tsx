@@ -1,4 +1,4 @@
-import { Component, h, Host, State } from '@stencil/core';
+import { Component, h, Host, Prop, State, Watch } from '@stencil/core';
 import { NoiAPI } from '@noi/api';
 import { selectPathSegmentsIds, selectPathStations } from '@noi/store';
 
@@ -15,9 +15,13 @@ function  formatDuration(valueMin: number): string {
   scoped: true,
 })
 export class PathDetails {
+  @Prop()
+  startId!: string;
+  @Prop()
+  endId!: string;
 
   @State()
-  segmentsTime: {[id: string]: number} = null;
+  segmentsTime: {[id: string]: number} = undefined;
   @State()
   activePath: 'highway' | 'urban' = 'highway';
   @State()
@@ -26,6 +30,20 @@ export class PathDetails {
   urbanTimeMin: number = 121;
 
   async componentDidLoad() {
+    await this.updateState();
+  }
+
+  @Watch('startId')
+  @Watch('endId')
+  async updateStartStop(_, oldValue) {
+    if (!!oldValue) {
+      await this.updateState();
+    }
+  }
+
+  async updateState() {
+    this.highwayTimeMin = undefined;
+    this.segmentsTime = undefined;
     const ids = selectPathSegmentsIds();
     try {
       const segmentsTime = await NoiAPI.getSegmentsAvgTime(ids, true);
@@ -73,6 +91,8 @@ export class PathDetails {
           {stations.map(s => <noi-station-item
             name={s.name}
             position={Math.abs(startPos - s.position)}
+            isStart={!!s.isStart}
+            isEnd={!!s.isEnd}
           ></noi-station-item>)}
         </div>
       </Host>

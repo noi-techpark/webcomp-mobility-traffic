@@ -20,6 +20,7 @@
 footer {
   display: none;
   height: 0;
+  z-index: 999;
 }
 
 :host.noi-media-gs footer {
@@ -138,4 +139,6 @@ noi-path-details {
   flex: 1;
   overflow: hidden;
   width: 100%;
+  margin-bottom: -48px;
+  /* to le the list slide-out under the mountains ;) */
 }
