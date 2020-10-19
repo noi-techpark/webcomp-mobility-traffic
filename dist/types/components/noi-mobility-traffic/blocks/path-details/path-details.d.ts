@@ -2,7 +2,8 @@ export declare class PathDetails {
   segmentsTime: {
     [id: string]: number;
   };
-  highwayTime: number;
+  highwayTimeMin: number;
+  urbanTimeMin: number;
   componentDidLoad(): Promise<void>;
   render(): any;
 }
