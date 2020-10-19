@@ -140,7 +140,7 @@ Build and start the project:
 npm run start
 ```
 
-The application will be served and can be accessed at [http://localhost:8080](http://localhost:8080).
+The application will be served and can be accessed at [http://localhost:3333](http://localhost:3333).
 
 ## Tests and linting
 
