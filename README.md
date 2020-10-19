@@ -1,6 +1,6 @@
 # noi-mobility-traffic
 
-ToDo: Description of the project.
+A responsive Web-component "tempi di percorrenza"
 
 ## Table of contents
 
@@ -13,26 +13,80 @@ ToDo: Description of the project.
 
 ## Usage
 
-ToDo: Include the webcompscript file `dist/webcomp-boilerplate.min.js` in your HTML and define the web component like this:
+Please, follow the example in `src/index.html`. You will need to include the web-component JS wile located in `/build` folder (either module or nomodule  version):
 
 ```html
-<webcomp-boilerplate xxx="test" yyy="2"></webcomp-boilerplate>
+<script type="module" src="/build/noi-mobility-traffic.esm.js"></script>
+<script nomodule src="/build/noi-mobility-traffic.js"></script>
+```
+
+Secondly, you'll need to include the component stylesheet:
+```html
+  <link rel="stylesheet" href="/build/noi-mobility-traffic.css">
+```
+    
+Now, define the web component like this:
+
+```html
+  <noi-mobility-traffic lang="it"></noi-mobility-traffic>
 ```
 
 ### Attributes
 
-#### xxxx
+We tried to comply as much as possible the HTML/CSS spec so the only attribute that is standard is `lang` which is passed as component attribute. The rest of the properties are declared as CSS custom properties and can be defined either inline or in css header. The default values are given below:
 
-The description of the parameter xxx.
+```css
+noi-mobility-traffic {
+  --noi-font-family: "Roboto", "Helvetica Neue", sans-serif; 
+  --noi-width: 100%;
+  --noi-height: 100%;
+  --noi-primary: #0068B4;
+  --noi-primary-rgb: 0, 104, 180;
+  --noi-primary-contrast: #ffffff;
+  --noi-action: #339966;
+  --noi-action-rgb: 87, 173, 57;
+  --noi-action-contrast: #ffffff;
+}
+```
 
-Type: string
-Options: "test", "123"
+#### --noi-font-family
 
-#### yyy
+Main font that will be use across all the projects. Should comply to the css `font-family` property. Default is Roboto.
 
-The description of the parameter yyy.
+#### --noi-width, --noi-height
 
-Type: int
+Width/Height of the web-component. Should comply the width/height css attribute. Can be fixed or percent (or any other valid css width value). Default is 100%
+
+
+#### --noi-primary, --noi-primary-rgb
+
+Primary color to be used all across the web-component and it's rgb representation (should correspond to the first value). Default is:
+```css
+  --noi-primary: #0068B4;
+  --noi-primary-rgb: 0, 104, 180;
+```
+
+#### --noi-primary-contrast
+
+Primary contrast color color. Used to distinguish the text font on elements that have `background: var(--noi-primary)`. Default is white.
+```css
+  --noi-primary-contrast: #000000;
+```
+
+#### --noi-action, --noi-action-rgb
+
+Action color to be used all across the web-component and it's rgb representation (should correspond to the first value). Default is:
+```css
+  --noi-action: #339966;
+  --noi-action-rgb: 87, 173, 57;
+```
+
+#### --noi-action-contrast
+
+Action contrast color color. Used to distinguish the text font on elements that have `background: var(--noi-action)`. Default is white.
+```css
+  --noi-action-contrast: #000000;
+```
 
 ## Getting started
 
@@ -40,6 +94,14 @@ These instructions will get you a copy of the project up and running
 on your local machine for development and testing purposes.
 
 ### Prerequisites
+
+Before building/starting the project one will need to add a `.env` file in the root prj dir wit following secrets:
+
+```
+CLIENT_SECRET=???
+CLIENT_ID=it.bz.opendatahub.webcomponents.mobility-traffic
+TOKEN_URL="https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
+```
 
 To build the project, the following prerequisites must be met:
 
@@ -53,21 +115,21 @@ For a ready to use Docker environment with all prerequisites already installed a
 Get a copy of the repository:
 
 ```bash
-ToDo: git clone https://github.com/noi-techpark/project-name.git
+ToDo: git clone https://github.com/noi-techpark/webcomp-mobility-traffic.git
 ```
 
 Change directory:
 
 ```bash
-ToDo: cd project-name/
+ToDo: cd webcomp-mobility-traffic/
 ```
 
 ### Dependencies
 
-Download all dependencies:
+Download all dependencies (please, do clean install (ci), to respect the `package-lock.json`):
 
 ```bash
-npm install
+npm ci
 ```
 
 ### Build
