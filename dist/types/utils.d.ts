@@ -11,3 +11,4 @@ export declare type WithStartEnd<T> = T & {
  */
 export declare const notConcurrent: <T>(proc: () => PromiseLike<T>) => () => Promise<T>;
 export declare const fnDebounce: (wait: number, fn: (...params: any[]) => any) => (this: any, ...args: any[]) => number;
+export declare function formatDuration(valueMin: number): string;

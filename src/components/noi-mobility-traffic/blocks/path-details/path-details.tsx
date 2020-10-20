@@ -1,13 +1,8 @@
-import { Component, h, Host, Prop, State, Watch } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Host, Prop, State, Watch } from '@stencil/core';
 import { NoiAPI } from '@noi/api';
 import { selectPathSegmentsIds, selectPathStations } from '@noi/store';
+import { formatDuration } from 'src/utils';
 
-
-function  formatDuration(valueMin: number): string {
-  const h = Math.floor(valueMin / 60);
-  const min = (valueMin % 60);
-  return h ? `${h} h ${min} min` : `${min} min`;
-}
 
 @Component({
   tag: 'noi-path-details',
@@ -17,6 +12,7 @@ function  formatDuration(valueMin: number): string {
 export class PathDetails {
   @Prop()
   startId!: string;
+
   @Prop()
   endId!: string;
 
@@ -29,13 +25,22 @@ export class PathDetails {
   @State()
   urbanTimeMin: number = 121;
 
+  @Event()
+  toggleActive: EventEmitter<void>;
+
   async componentDidLoad() {
     await this.updateState();
   }
 
   @Watch('startId')
+  async updateStart(_, oldValue) {
+    if (!!oldValue) {
+      await this.updateState();
+    }
+  }
+
   @Watch('endId')
-  async updateStartStop(_, oldValue) {
+  async updateStop(_, oldValue) {
     if (!!oldValue) {
       await this.updateState();
     }
@@ -55,6 +60,7 @@ export class PathDetails {
   }
 
   onActivatePath(value: 'highway' | 'urban') {
+    this.toggleActive.emit();
     this.activePath = value;
   }
 

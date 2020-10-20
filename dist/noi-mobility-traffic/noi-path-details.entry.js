@@ -1,17 +1,13 @@
-import { r as registerInstance, h, e as Host } from './index-375c0366.js';
-import { N as NoiAPI } from './index-942666ae.js';
+import { r as registerInstance, j as createEvent, h, e as Host } from './index-375c0366.js';
+import { N as NoiAPI, f as formatDuration } from './index-4017f423.js';
 import { e as selectPathSegmentsIds, f as selectPathStations } from './index-2a350c08.js';
 
 const pathDetailsCss = ".sc-noi-path-details-h{display:flex;flex-direction:column}header.sc-noi-path-details{display:flex;width:100%;height:48px;line-height:48px;margin-bottom:auto;text-align:center}noi-button.header__section.sc-noi-path-details{flex:1;justify-content:center;--background:rgba(var(--noi-primary-rgb), 0.3);--color:var(--noi-primary-contrast);font-weight:bold;text-shadow:1px 1px rgb(0,0,0,0.3)}noi-button.header__section--active.sc-noi-path-details{--background:rgba(var(--noi-primary-rgb), 0.5)}.content.sc-noi-path-details{flex:1;overflow-y:auto;overflow-x:hidden}.header-highway__title.sc-noi-path-details{background:var(--noi-primary-contrast);color:var(--noi-primary);border-radius:4px;padding:4px;margin-right:8px;font-weight:normal;text-shadow:none}noi-station-item.sc-noi-path-details:last-of-type{margin-bottom:48px}";
 
-function formatDuration(valueMin) {
-  const h = Math.floor(valueMin / 60);
-  const min = (valueMin % 60);
-  return h ? `${h} h ${min} min` : `${min} min`;
-}
 const PathDetails = class {
   constructor(hostRef) {
     registerInstance(this, hostRef);
+    this.toggleActive = createEvent(this, "toggleActive", 7);
     this.segmentsTime = undefined;
     this.activePath = 'highway';
     this.highwayTimeMin = undefined;
@@ -20,7 +16,12 @@ const PathDetails = class {
   async componentDidLoad() {
     await this.updateState();
   }
-  async updateStartStop(_, oldValue) {
+  async updateStart(_, oldValue) {
+    if (!!oldValue) {
+      await this.updateState();
+    }
+  }
+  async updateStop(_, oldValue) {
     if (!!oldValue) {
       await this.updateState();
     }
@@ -39,6 +40,7 @@ const PathDetails = class {
     }
   }
   onActivatePath(value) {
+    this.toggleActive.emit();
     this.activePath = value;
   }
   render() {
@@ -60,8 +62,8 @@ const PathDetails = class {
       : null), h("div", { class: "content" }, stations.map(s => h("noi-station-item", { name: s.name, position: Math.abs(startPos - s.position), isStart: !!s.isStart, isEnd: !!s.isEnd })))));
   }
   static get watchers() { return {
-    "startId": ["updateStartStop"],
-    "endId": ["updateStartStop"]
+    "startId": ["updateStart"],
+    "endId": ["updateStop"]
   }; }
 };
 PathDetails.style = pathDetailsCss;

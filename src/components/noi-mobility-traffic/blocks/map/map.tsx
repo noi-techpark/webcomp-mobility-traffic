@@ -229,7 +229,7 @@ export class NoiMap {
   renderSelectedStationPopup() {
     return (
       <div class="station-popup">
-        <div class="station-popup__header">{noiStore.selected.name}</div>
+        <div class="station-popup__header">{noiStore.selectedId ? noiStore.selected.name : ''}</div>
         <div class="station-popup__content">
           {this.renderSetAsStartButton()}
           {this.renderSetAsEndButton()}
@@ -239,6 +239,7 @@ export class NoiMap {
   }
 
   render() {
+    console.log('map render');
     const popupClass = {
       'map-popup-container': true,
       'map-popup-container--visible': this.showPopup

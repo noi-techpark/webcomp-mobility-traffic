@@ -1,18 +1,102 @@
 :host {
+  --height: 210px;
+  position: absolute;
+  background: #fff;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  overflow: hidden;
+  transform: translateY(calc(100% - var(--height)));
+  -webkit-transform: translateY(calc(100% - var(--height)));
+  will-change: transform;
+}
+
+:host:not(.noi-media-gs).slide-in {
+  animation: search-slide-in 0.5s forwards;
+  -webkit-animation: search-slide-in 0.5s forwards;
+}
+
+:host:not(.noi-media-gs).slide-out {
+  animation: search-slide-out 0.5s forwards;
+  -webkit-animation: search-slide-out 0.5s forwards;
+}
+
+:host.noi-media-gs {
+  height: auto;
+  height: 100%;
+  max-width: 360px;
+  transform: translateY(0);
+  -webkit-transform: translateY(0);
+}
+
+
+:host.noi-media-gs--landscape {
+  height: 100%;
+  width: 360px;
+}
+
+@keyframes search-slide-in {
+  100% {
+    transform: translateY(0);
+    -webkit-transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes search-slide-in {
+  100% {
+    transform: translateY(0);
+    -webkit-transform: translateY(0);
+  }
+}
+
+@keyframes search-slide-out {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(100% - var(--height))); }
+}
+
+@-webkit-keyframes search-slide-out {
+  0% { -webkit-transform: translateY(0%); }
+  100% { -webkit-transform: translateY(calc(100% - var(--height))); }
+}
+
+/* header */
+header {
+  display: flex;
+  margin: 16px 0 8px 0;
+  min-height: 36px;
+}
+
+.header__back-btn {
+  margin-right: auto;
+  min-width: 48px;
+  fill: var(--noi-primary);
+}
+
+:host.noi-media-gs.header__back-btn {
+  visibility: hidden;
+}
+
+:host:not(.slide-in) .header__back-btn {
+  visibility: hidden;
+}
+
+
+/* content */
+.content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  height: 100%;
 }
+
 
 /* logo */
 .search__logo {
-  margin: 16px 0 8px 0;
-  min-height: 36px;
-  display: none;
-}
-
-:host.noi-media-gs .search__logo {
-  display: block;
+  flex: 1;
+  margin-right: 16px;
 }
 
 
@@ -21,6 +105,11 @@ footer {
   display: none;
   height: 0;
   z-index: 999;
+}
+
+:host.slide-in footer {
+  display: block;
+  height: auto;
 }
 
 :host.noi-media-gs footer {

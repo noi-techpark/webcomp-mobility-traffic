@@ -1,3 +1,4 @@
+import { EventEmitter } from '../../../../stencil-public-runtime';
 export declare class PathDetails {
   startId: string;
   endId: string;
@@ -7,8 +8,10 @@ export declare class PathDetails {
   activePath: 'highway' | 'urban';
   highwayTimeMin: number;
   urbanTimeMin: number;
+  toggleActive: EventEmitter<void>;
   componentDidLoad(): Promise<void>;
-  updateStartStop(_: any, oldValue: any): Promise<void>;
+  updateStart(_: any, oldValue: any): Promise<void>;
+  updateStop(_: any, oldValue: any): Promise<void>;
   updateState(): Promise<void>;
   onActivatePath(value: 'highway' | 'urban'): void;
   render(): any;

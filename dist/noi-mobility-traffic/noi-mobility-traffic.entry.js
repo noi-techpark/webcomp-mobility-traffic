@@ -1,5 +1,5 @@
 import { r as registerInstance, h, g as getElement } from './index-375c0366.js';
-import { N as NoiAPI } from './index-942666ae.js';
+import { N as NoiAPI } from './index-4017f423.js';
 import { s as state, a as selectStationsWithSelectedWithStartEnd, b as selectStartEnd } from './index-2a350c08.js';
 import { M as MapStation, a as MapMarker } from './map-station-3d4ba0b2.js';
 
@@ -973,7 +973,7 @@ async function getLocaleComponentStrings(element) {
   return strings;
 }
 
-const noiMobilityTrafficCss = ".sc-noi-mobility-traffic-h{display:block;overflow:hidden;width:var(--noi-width);height:var(--noi-height)}.wrapper.sc-noi-mobility-traffic{position:relative;display:flex;flex-direction:column;height:100%;margin:0}noi-map.sc-noi-mobility-traffic{z-index:0;flex:1}noi-search.sc-noi-mobility-traffic{background:#fff;position:absolute;height:auto;width:100%;bottom:0;left:0;margin:0;padding:0;z-index:1;overflow:hidden}.noi-media-gs.sc-noi-mobility-traffic-h noi-search.sc-noi-mobility-traffic{height:100%;width:100%;max-width:360px}.noi-media-gs--landscape.sc-noi-mobility-traffic-h noi-search.sc-noi-mobility-traffic{height:100%;width:360px}";
+const noiMobilityTrafficCss = ".sc-noi-mobility-traffic-h{display:block;overflow:hidden;width:var(--noi-width);height:var(--noi-height)}.wrapper.sc-noi-mobility-traffic{position:relative;display:flex;flex-direction:column;height:100%;margin:0}noi-map.sc-noi-mobility-traffic{z-index:0;flex:1}";
 
 const rIC = (callback) => {
   if ('requestIdleCallback' in window) {

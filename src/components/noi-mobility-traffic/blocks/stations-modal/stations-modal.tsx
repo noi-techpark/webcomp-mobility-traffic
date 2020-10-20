@@ -1,5 +1,5 @@
-import { Host, Component, h, Prop, getAssetPath, Event, EventEmitter, State } from '@stencil/core';
-import noiStore, { selectStationsWithSelected } from '../../../../store';
+import { Host, Component, h, Prop, Event, EventEmitter, State } from '@stencil/core';
+import noiStore, { selectStationsWithSelected } from '@noi/store';
 
 @Component({
   tag: 'noi-stations-modal',

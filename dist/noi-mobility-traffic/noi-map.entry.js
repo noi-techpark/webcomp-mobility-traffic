@@ -229,9 +229,10 @@ const NoiMap = class {
     return (h("noi-button", { fill: "solid", class: "button-md station-popup__btn", onClick: this.onSetAsEnd.bind(this) }, title));
   }
   renderSelectedStationPopup() {
-    return (h("div", { class: "station-popup" }, h("div", { class: "station-popup__header" }, state.selected.name), h("div", { class: "station-popup__content" }, this.renderSetAsStartButton(), this.renderSetAsEndButton())));
+    return (h("div", { class: "station-popup" }, h("div", { class: "station-popup__header" }, state.selectedId ? state.selected.name : ''), h("div", { class: "station-popup__content" }, this.renderSetAsStartButton(), this.renderSetAsEndButton())));
   }
   render() {
+    console.log('map render');
     const popupClass = {
       'map-popup-container': true,
       'map-popup-container--visible': this.showPopup

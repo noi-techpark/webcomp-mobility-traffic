@@ -34,3 +34,9 @@ export const fnDebounce = (wait: number, fn: (...params: any[]) => any) => {
     return timer;
   }
 };
+
+export function formatDuration(valueMin: number): string {
+  const h = Math.floor(valueMin / 60);
+  const min = (valueMin % 60);
+  return h ? `${h} h ${min} min` : `${min} min`;
+}

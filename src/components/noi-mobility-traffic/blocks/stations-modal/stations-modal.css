@@ -8,6 +8,7 @@
   background: var(--background, #fff);
   transform: translateX(-100%);
   -webkit-transform: translateX(-100%);
+  will-change: transform;
 }
 
 :host.noi-media-gs {

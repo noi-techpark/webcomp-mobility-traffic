@@ -18,28 +18,3 @@ noi-map {
   z-index: 0;
   flex: 1;
 }
-
-/* search panel */
-noi-search {
-  background: #fff;
-  position: absolute;
-  height: auto;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
-  z-index: 1;
-  overflow: hidden;
-}
-
-:host.noi-media-gs noi-search {
-  height: 100%;
-  width: 100%;
-  max-width: 360px;
-}
-
-:host.noi-media-gs--landscape noi-search {
-  height: 100%;
-  width: 360px;
-}
