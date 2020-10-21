@@ -184,8 +184,6 @@ export namespace Components {
         "visible": boolean;
     }
     interface NoiUrbanPath {
-        "endId": string;
-        "startId": string;
     }
 }
 declare global {
@@ -466,8 +464,6 @@ declare namespace LocalJSX {
         "visible"?: boolean;
     }
     interface NoiUrbanPath {
-        "endId": string;
-        "startId": string;
     }
     interface IntrinsicElements {
         "noi-backdrop": NoiBackdrop;

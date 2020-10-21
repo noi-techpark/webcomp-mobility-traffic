@@ -1,4 +1,5 @@
 import { l as leafletSrc } from './leaflet-src-ee2a66f1.js';
+import { c as createStore } from './index-6ba5ef25.js';
 
 const NOI_ERR_UNKNOWN = 'noi.error.unknown';
 class NoiError extends Error {
@@ -389,4 +390,83 @@ OpenDataHubNoiService.BASE_URL = 'https://mobility.api.opendatahub.bz.it';
 OpenDataHubNoiService.VERSION = 'v2';
 const NoiAPI = new OpenDataHubNoiService();
 
-export { NoiAPI as N, NoiError as a, NOI_ERR_UNKNOWN as b, formatDuration as f };
+const urbanPathStore = createStore({
+  startId: undefined,
+  endId: undefined,
+  loading: false,
+  errorCode: undefined,
+  path: undefined,
+  stations: undefined,
+  duration: undefined,
+  distance: undefined
+});
+const urbanPathState = setupPathStore(urbanPathStore, loadUrbanPathEffect);
+function setupPathStore(store, effect) {
+  const { onChange, set, state } = store;
+  onChange('path', (path) => {
+    if (!path || !path.length) {
+      set('stations', undefined);
+      return;
+    }
+    const stations = path.reduce((result, i) => {
+      result.push({
+        position: result[result.length - 1].position + i.distance,
+        id: i.end.id,
+        name: i.end.name
+      });
+      return result;
+    }, [{ position: 0, name: path[0].start.name, id: path[0].start.id }]);
+    set('stations', stations);
+  });
+  onChange('stations', (value) => {
+    const distance = value && value.length ? value[value.length - 1].position : undefined;
+    set('distance', Math.round(distance));
+  });
+  onChange('startId', (value) => {
+    set('path', undefined);
+    set('errorCode', undefined);
+    if (!!value && state.endId) {
+      // FIXME: unsubscribe from hanging promise if it's still loading
+      loadUrbanPath(value, state.endId);
+    }
+  });
+  onChange('endId', (value) => {
+    set('path', undefined);
+    set('errorCode', undefined);
+    if (!!value && state.startId) {
+      // FIXME: unsubscribe from hanging promise if it's still loading
+      loadUrbanPath(state.startId, value);
+    }
+  });
+  function loadUrbanPath(startId, endId) {
+    set('loading', true);
+    set('errorCode', undefined);
+    effect(startId, endId)
+      .then(path => {
+      set('path', path);
+    })
+      .catch(err => {
+      if (err instanceof NoiError) {
+        set('errorCode', err.code);
+      }
+      else {
+        set('errorCode', NOI_ERR_UNKNOWN);
+      }
+    })
+      .finally(() => {
+      set('loading', false);
+    });
+  }
+  return store.state;
+}
+/**
+ * it's like a Redux Effect to load external data in async way
+ */
+async function loadUrbanPathEffect(startId, endId) {
+  const urbanPath = (await NoiAPI.getUrbanSegmentsIds(startId, endId));
+  return urbanPath
+    ? await NoiAPI.getLinkStationsByIds(urbanPath, { calcGeometryDistance: true })
+    : undefined;
+}
+
+export { NoiAPI as N, formatDuration as f, urbanPathState as u };

@@ -13,5 +13,6 @@ export declare class PathDetails {
   updateStop(_: any, oldValue: any): Promise<void>;
   updateState(): Promise<void>;
   onActivatePath(value: 'highway' | 'urban'): void;
+  renderPath(): any;
   render(): any;
 }

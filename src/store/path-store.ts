@@ -24,13 +24,15 @@ const urbanPathStore = createStore<NoiPathState>({
   distance: undefined
 });
 
-export const urbanPathState = setupPathStore(urbanPathStore);
+type PathStationsEffect = (startId: string, endId: string) => Promise<Array<NoiLinkStation>>;
 
-function setupPathStore(store: ObservableMap<NoiPathState>) {
+export const urbanPathState = setupPathStore(urbanPathStore, loadUrbanPathEffect);
+
+
+function setupPathStore(store: ObservableMap<NoiPathState>, effect: PathStationsEffect) {
   const { onChange, set, state } = store;
 
   onChange('path', (path) => {
-    debugger;
     if (!path || !path.length) {
       set('stations', undefined);
       return;
@@ -47,13 +49,11 @@ function setupPathStore(store: ObservableMap<NoiPathState>) {
   });
 
   onChange('stations', (value) => {
-    debugger;
     const distance = value && value.length ? value[value.length-1].position : undefined;
-    set('distance', distance);
+    set('distance', Math.round(distance));
   })
 
   onChange('startId', (value) => {
-    debugger;
     set('path', undefined);
     set('errorCode', undefined);
     if (!!value && state.endId) {
@@ -63,7 +63,6 @@ function setupPathStore(store: ObservableMap<NoiPathState>) {
   });
 
   onChange('endId', (value) => {
-    debugger;
     set('path', undefined);
     set('errorCode', undefined);
     if (!!value && state.startId) {
@@ -74,16 +73,13 @@ function setupPathStore(store: ObservableMap<NoiPathState>) {
 
 
   function loadUrbanPath(startId: string, endId: string): void {
-    debugger;
     set('loading', true);
     set('errorCode', undefined);
-    loadUrbanPathEffect(startId, endId)
+    effect(startId, endId)
       .then(path => {
-        debugger;
         set('path', path);
       })
       .catch(err => {
-        debugger;
         if (err instanceof NoiError) {
           set('errorCode', (err as NoiError).code);
         } else {
@@ -91,7 +87,6 @@ function setupPathStore(store: ObservableMap<NoiPathState>) {
         }
       })
       .finally(() => {
-        debugger;
         set('loading', false);
       });
   }
@@ -107,5 +102,4 @@ async function loadUrbanPathEffect(startId: string, endId: string): Promise<Arra
     ? await NoiAPI.getLinkStationsByIds(urbanPath, {calcGeometryDistance: true})
     : undefined;
 }
-
 

@@ -1,7 +1,5 @@
-import { Component, h, Host, Prop, State, Watch } from '@stencil/core';
-import { NoiAPI, NoiLinkStation } from '@noi/api';
-import noiStore from '@noi/store';
-import { NoiError } from '@noi/api/error';
+import { Component, h, Host } from '@stencil/core';
+import { urbanPathState } from '@noi/store/path-store';
 
 @Component({
   tag: 'noi-urban-path',
@@ -9,19 +7,25 @@ import { NoiError } from '@noi/api/error';
   scoped: true,
 })
 export class UrbanPathDetails {
-  @Prop()
-  startId!: string;
-  @Prop()
-  endId!: string;
 
-  @State()
-  urbanPath: string[] = undefined;
-  @State()
-  errorCode: string = undefined;
-  @State()
-  urbanStations: NoiLinkStation[] = undefined;
-  @State()
-  segments: {name: string, position: number}[] = undefined;
+  renderContent() {
+    if (urbanPathState.loading) {
+      return (<div>Loading...</div>);
+      // TODO:
+    }
+    if (urbanPathState.errorCode) {
+      return (<div>Error {urbanPathState.errorCode}</div>);
+      // TODO:
+    }
+    if (!urbanPathState.stations || !urbanPathState.stations.length) {
+      return (<div>No path</div>)
+    }
+    return urbanPathState.stations.map((s, i) => <noi-station-item
+      name={s.name}
+      position={s.position}
+      isStart={i === 0}
+    ></noi-station-item>)
+  }
 
   render() {
     const hostClass = {
@@ -29,12 +33,7 @@ export class UrbanPathDetails {
     return (
       <Host class={hostClass}>
         <div class="content">
-          {this.segments.map((s, i) => <noi-station-item
-            name={s.name}
-            position={s.position}
-            isStart={i === 0}
-            isEnd={i === this.segments.length-1}
-          ></noi-station-item>)}
+          {this.renderContent()}
         </div>
       </Host>
     );

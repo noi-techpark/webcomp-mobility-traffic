@@ -59,16 +59,33 @@ export class PathDetails {
 
 
   onActivatePath(value: 'highway' | 'urban') {
-    this.toggleActive.emit();
+    if (this.activePath === value) {
+      this.toggleActive.emit();
+    }
     this.activePath = value;
+  }
+
+  renderPath() {
+    if (this.activePath === 'urban') {
+      return <noi-urban-path></noi-urban-path>
+    }
+    const stations = selectPathStations();
+    const startPos = stations[0].position; 
+    return <div class="content">
+      {stations.map(s => <noi-station-item
+        name={s.name}
+        position={Math.abs(startPos - s.position)}
+        isStart={!!s.isStart}
+        isEnd={!!s.isEnd}
+      ></noi-station-item>)}
+    </div>;
   }
 
 
   render() {
     const hostClass = {
     };
-    const stations = selectPathStations();
-    const startPos = stations[0].position; 
+    
     const highwayHeaderClass = {
       'header__section': true,
       'header__section--active': this.activePath === 'highway'
@@ -88,19 +105,12 @@ export class PathDetails {
           }
           {urbanPathState.distance !== undefined  ?
             <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
-              <span class="header-highway__title">SS</span> {urbanPathState.distance}
+              <span class="header-highway__title">SS</span> {(urbanPathState.distance / 1000).toFixed(1) + 'km'}
             </noi-button>
             : null
           }
         </header>
-        <div class="content">
-          {stations.map(s => <noi-station-item
-            name={s.name}
-            position={Math.abs(startPos - s.position)}
-            isStart={!!s.isStart}
-            isEnd={!!s.isEnd}
-          ></noi-station-item>)}
-        </div>
+        {this.renderPath()}
       </Host>
     );
   }
