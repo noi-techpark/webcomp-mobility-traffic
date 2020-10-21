@@ -19,6 +19,7 @@
     "paths": {
       "@noi/api/*": ["src/api/*"],
       "@noi/api": ["src/api"],
+      "@noi/store/*": ["src/store/*"],
       "@noi/store": ["src/store"]
     }
   },

@@ -1,8 +1,8 @@
 import { Component, Event, EventEmitter, h, Host, Prop, State, Watch } from '@stencil/core';
 import { NoiAPI } from '@noi/api';
 import { selectPathSegmentsIds, selectPathStations } from '@noi/store';
+import { urbanPathState } from '@noi/store/path-store';
 import { formatDuration } from 'src/utils';
-
 
 @Component({
   tag: 'noi-path-details',
@@ -22,8 +22,6 @@ export class PathDetails {
   activePath: 'highway' | 'urban' = 'highway';
   @State()
   highwayTimeMin: number = undefined;
-  @State()
-  urbanTimeMin: number = 121;
 
   @Event()
   toggleActive: EventEmitter<void>;
@@ -49,9 +47,9 @@ export class PathDetails {
   async updateState() {
     this.highwayTimeMin = undefined;
     this.segmentsTime = undefined;
-    const ids = selectPathSegmentsIds();
+    const highwayPath = selectPathSegmentsIds();
     try {
-      const segmentsTime = await NoiAPI.getSegmentsAvgTime(ids, true);
+      const segmentsTime = await NoiAPI.getLinkStationsTime(highwayPath, true);
       this.segmentsTime = segmentsTime.reduce((result, i) => { result[i.id] = i.timeSec; return result;}, {});
       this.highwayTimeMin = Math.round(segmentsTime.reduce((result, i) => { result += i.timeSec; return result;}, 0) / 60);
     } catch (error) {
@@ -59,10 +57,12 @@ export class PathDetails {
     }
   }
 
+
   onActivatePath(value: 'highway' | 'urban') {
     this.toggleActive.emit();
     this.activePath = value;
   }
+
 
   render() {
     const hostClass = {
@@ -86,9 +86,9 @@ export class PathDetails {
             </noi-button>
             : null
           }
-          {this.urbanTimeMin !== undefined  ?
+          {urbanPathState.distance !== undefined  ?
             <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
-              <span class="header-highway__title">SS</span> {formatDuration(this.urbanTimeMin)}
+              <span class="header-highway__title">SS</span> {urbanPathState.distance}
             </noi-button>
             : null
           }

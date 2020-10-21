@@ -183,6 +183,10 @@ export namespace Components {
         "selecting": 'start' | 'end';
         "visible": boolean;
     }
+    interface NoiUrbanPath {
+        "endId": string;
+        "startId": string;
+    }
 }
 declare global {
     interface HTMLNoiBackdropElement extends Components.NoiBackdrop, HTMLStencilElement {
@@ -245,6 +249,12 @@ declare global {
         prototype: HTMLNoiStationsModalElement;
         new (): HTMLNoiStationsModalElement;
     };
+    interface HTMLNoiUrbanPathElement extends Components.NoiUrbanPath, HTMLStencilElement {
+    }
+    var HTMLNoiUrbanPathElement: {
+        prototype: HTMLNoiUrbanPathElement;
+        new (): HTMLNoiUrbanPathElement;
+    };
     interface HTMLElementTagNameMap {
         "noi-backdrop": HTMLNoiBackdropElement;
         "noi-button": HTMLNoiButtonElement;
@@ -256,6 +266,7 @@ declare global {
         "noi-search": HTMLNoiSearchElement;
         "noi-station-item": HTMLNoiStationItemElement;
         "noi-stations-modal": HTMLNoiStationsModalElement;
+        "noi-urban-path": HTMLNoiUrbanPathElement;
     }
 }
 declare namespace LocalJSX {
@@ -454,6 +465,10 @@ declare namespace LocalJSX {
         "selecting"?: 'start' | 'end';
         "visible"?: boolean;
     }
+    interface NoiUrbanPath {
+        "endId": string;
+        "startId": string;
+    }
     interface IntrinsicElements {
         "noi-backdrop": NoiBackdrop;
         "noi-button": NoiButton;
@@ -465,6 +480,7 @@ declare namespace LocalJSX {
         "noi-search": NoiSearch;
         "noi-station-item": NoiStationItem;
         "noi-stations-modal": NoiStationsModal;
+        "noi-urban-path": NoiUrbanPath;
     }
 }
 export { LocalJSX as JSX };
@@ -481,6 +497,7 @@ declare module "@stencil/core" {
             "noi-search": LocalJSX.NoiSearch & JSXBase.HTMLAttributes<HTMLNoiSearchElement>;
             "noi-station-item": LocalJSX.NoiStationItem & JSXBase.HTMLAttributes<HTMLNoiStationItemElement>;
             "noi-stations-modal": LocalJSX.NoiStationsModal & JSXBase.HTMLAttributes<HTMLNoiStationsModalElement>;
+            "noi-urban-path": LocalJSX.NoiUrbanPath & JSXBase.HTMLAttributes<HTMLNoiUrbanPathElement>;
         }
     }
 }

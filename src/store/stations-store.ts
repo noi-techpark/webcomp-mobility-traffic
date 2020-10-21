@@ -1,6 +1,4 @@
-import { Event } from '@stencil/core';
 import { createStore } from '@stencil/store';
-import { EventEmitter } from 'events';
 import { NoiHighwayStation } from '../api';
 import { Selectable, WithStartEnd } from '../utils';
 

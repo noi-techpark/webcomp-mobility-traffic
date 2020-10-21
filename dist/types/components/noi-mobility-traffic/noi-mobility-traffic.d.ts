@@ -5,8 +5,6 @@ export declare class NoiMobilityTraffic {
   private searchEl;
   element: HTMLElement;
   showSearch: boolean;
-  onSelectBrenner(): void;
-  onUnSelectBrenner(): void;
   componentWillLoad(): Promise<void>;
   componentDidLoad(): Promise<void>;
   disconnectedCallback(): void;

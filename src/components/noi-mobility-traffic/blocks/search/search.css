@@ -76,7 +76,7 @@ header {
   fill: var(--noi-primary);
 }
 
-:host.noi-media-gs.header__back-btn {
+:host.noi-media-gs .header__back-btn {
   visibility: hidden;
 }
 

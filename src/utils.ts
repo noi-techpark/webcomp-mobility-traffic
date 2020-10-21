@@ -1,3 +1,5 @@
+import { LatLng } from 'leaflet';
+
 export type Selectable<T> = T & {selected?: boolean};
 
 export type WithStartEnd<T> = T & {isStart?: boolean, isEnd?: boolean};
@@ -40,3 +42,37 @@ export function formatDuration(valueMin: number): string {
   const min = (valueMin % 60);
   return h ? `${h} h ${min} min` : `${min} min`;
 }
+
+export interface NoiCoordinate {
+  lat: number;
+  long: number;
+}
+
+export type HasCoordinates<Q extends {coordinates: NoiCoordinate}> = Array<Q>;
+
+export function getAround<T extends {coordinates: NoiCoordinate}>(points: HasCoordinates<T>, center: NoiCoordinate, distanceMeters: number): HasCoordinates<T> {
+  const c = new LatLng(center.lat, center.long);
+  return points.filter(p => {
+    return c.distanceTo(new LatLng(p.coordinates.lat, p.coordinates.long)) < distanceMeters;
+  });
+}
+
+export function getClosestTo<T extends {coordinates: NoiCoordinate}>(points: HasCoordinates<T>, center: NoiCoordinate) {
+  const c = new LatLng(center.lat, center.long);
+  return points.map(point=> {
+    const distance = c.distanceTo(new LatLng(point.coordinates.lat, point.coordinates.long));
+    return {point, distance};
+  }).sort((a, b) => {
+    return a.distance < b.distance ? 1 : -1;
+  })[0].point;
+}
+
+export function getDistance<Q extends {coordinates: NoiCoordinate}>(from: Q, center: NoiCoordinate) {
+  const c = new LatLng(center.lat, center.long);
+  return c.distanceTo(new LatLng(from.coordinates.lat, from.coordinates.long));
+}
+
+export function getPointsDistance(from: [number, number], to: [number, number]) {
+  return (new LatLng(from[1], from[0])).distanceTo(new LatLng(to[1], to[0]));
+}
+

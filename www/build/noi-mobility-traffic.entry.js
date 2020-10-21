@@ -1,7 +1,8 @@
 import { r as registerInstance, h, g as getElement } from './index-375c0366.js';
-import { N as NoiAPI } from './index-4017f423.js';
-import { s as state, a as selectStationsWithSelectedWithStartEnd, b as selectStartEnd } from './index-2a350c08.js';
-import { M as MapStation, a as MapMarker } from './map-station-3d4ba0b2.js';
+import { N as NoiAPI, u as urbanPathState } from './path-store-90ebdc75.js';
+import './leaflet-src-ee2a66f1.js';
+import { s as state, a as selectStationsWithSelectedWithStartEnd, b as selectStartEnd } from './index-460f7ef6.js';
+import { M as MapStation, a as MapMarker } from './map-station-6dee1a6a.js';
 
 /**
  * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -988,12 +989,6 @@ const NoiMobilityTraffic = class {
     registerInstance(this, hostRef);
     this.showSearch = true;
   }
-  onSelectBrenner() {
-    state.selectedId = '1840';
-  }
-  onUnSelectBrenner() {
-    state.selectedId = null;
-  }
   async componentWillLoad() {
     this.strings = await getLocaleComponentStrings(this.element);
     try {
@@ -1061,6 +1056,8 @@ const NoiMobilityTraffic = class {
     state.selecting = null;
   }
   render() {
+    urbanPathState.startId = state.startId;
+    urbanPathState.endId = state.endId;
     return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { ref: el => this.stationsModalEl = el, selecting: state.selecting, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { ref: el => this.searchEl = el }), h("noi-map", null, this.getHighwayCircles(), this.getHighwayMarkers()));
   }
   static get assetsDirs() { return ["assets"]; }

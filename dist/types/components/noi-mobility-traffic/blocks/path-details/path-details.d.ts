@@ -7,7 +7,6 @@ export declare class PathDetails {
   };
   activePath: 'highway' | 'urban';
   highwayTimeMin: number;
-  urbanTimeMin: number;
   toggleActive: EventEmitter<void>;
   componentDidLoad(): Promise<void>;
   updateStart(_: any, oldValue: any): Promise<void>;

@@ -278,4 +278,4 @@ function selectCanLoadPath() {
   return !!state.startId && !!state.endId;
 }
 
-export { selectStationsWithSelectedWithStartEnd as a, selectStartEnd as b, selectCanLoadPath as c, selectStationsWithSelected as d, selectPathSegmentsIds as e, selectPathStations as f, state as s };
+export { selectStationsWithSelectedWithStartEnd as a, selectStartEnd as b, selectCanLoadPath as c, selectStationsWithSelected as d, createStore as e, selectPathSegmentsIds as f, selectPathStations as g, state as s };

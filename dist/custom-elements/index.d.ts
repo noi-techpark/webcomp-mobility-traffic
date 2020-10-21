@@ -62,6 +62,12 @@ export const NoiStationsModal: {
   new (): NoiStationsModal;
 };
 
+interface NoiUrbanPath extends Components.NoiUrbanPath, HTMLElement {}
+export const NoiUrbanPath: {
+  prototype: NoiUrbanPath;
+  new (): NoiUrbanPath;
+};
+
 /**
  * Utility to define all custom elements within this package using the tag name provided in the component's source. 
  * When defining each custom element, it will also check it's safe to define by:

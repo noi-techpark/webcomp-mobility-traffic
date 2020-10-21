@@ -1,4 +1,5 @@
 import { NoiAPI } from '@noi/api';
+import { urbanPathState } from '@noi/store/path-store';
 import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '@noi/store';
 import { Component, Element, State, h } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
@@ -30,14 +31,6 @@ export class NoiMobilityTraffic {
   
   @Element() element: HTMLElement;
   @State() showSearch: boolean = true;
-  
-  onSelectBrenner() {
-    noiStore.selectedId = '1840';
-  }
-
-  onUnSelectBrenner() {
-    noiStore.selectedId = null;
-  }
 
   async componentWillLoad(): Promise<void> {
     this.strings = await getLocaleComponentStrings(this.element);
@@ -117,6 +110,8 @@ export class NoiMobilityTraffic {
   }
 
   render() {
+    urbanPathState.startId = noiStore.startId;
+    urbanPathState.endId = noiStore.endId;
     return <div class="wrapper">
       <noi-backdrop
         overlayIndex={2}
