@@ -3,7 +3,6 @@ import noiStore from '@noi/store';
 import { GeoJSON, Map, TileLayer } from 'leaflet';
 
 import { MapEntity, MapEntityFactory } from './map-entity-factory';
-import { fnDebounce } from 'src/utils';
 
 interface LayerObserver<T> {
   layer: T,

@@ -1042,6 +1042,12 @@ const NoiMobilityTraffic = class {
       return (h(MapStation, Object.assign({}, s)));
     });
   }
+  getUrbanPath() {
+    if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+      return null;
+    }
+    return urbanPathState.path.map(s => (h("noi-map-route", { geometry: JSON.stringify(s.geometry) })));
+  }
   getHighwayMarkers() {
     if (!state.startId && !state.endId) {
       return null;
@@ -1059,7 +1065,7 @@ const NoiMobilityTraffic = class {
   render() {
     urbanPathState.startId = state.startId;
     urbanPathState.endId = state.endId;
-    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { ref: el => this.stationsModalEl = el, selecting: state.selecting, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { ref: el => this.searchEl = el }), h("noi-map", null, this.getHighwayCircles(), this.getHighwayMarkers()));
+    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { ref: el => this.stationsModalEl = el, selecting: state.selecting, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { ref: el => this.searchEl = el }), h("noi-map", null, this.getHighwayCircles(), this.getHighwayMarkers(), this.getUrbanPath()));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

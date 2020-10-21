@@ -90,6 +90,13 @@ export class NoiMobilityTraffic {
     })
   }
 
+  getUrbanPath() {
+    if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+      return null;
+    }
+    return urbanPathState.path.map(s => (<noi-map-route geometry={JSON.stringify(s.geometry)}></noi-map-route>));
+  }
+
   getHighwayMarkers() {
     if (!noiStore.startId && !noiStore.endId) {
       return null;
@@ -130,6 +137,7 @@ export class NoiMobilityTraffic {
       <noi-map>
         {this.getHighwayCircles()}
         {this.getHighwayMarkers()}
+        {this.getUrbanPath()}
       </noi-map>
     </div>;
   }

@@ -11,6 +11,7 @@ export declare class NoiMobilityTraffic {
   applyMediaClasses(widthPx: number, heightPx: number): void;
   getHighwayCircles(): any[];
   getPathCircles(): any[];
+  getUrbanPath(): any[];
   getHighwayMarkers(): any[];
   getAllLinkStations(linkStations: any): any;
   onModalClose(): void;
