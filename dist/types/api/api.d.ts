@@ -4,6 +4,7 @@ export declare const NOI_SERVICE_ERR_OFFLINE = "error.noi-service.offline";
 export declare const NOI_SERVICE_ERR_DATA_FORMAT = "error.noi-service.data-format";
 export declare const LINK_STATION_ERR_NOT_FOUND = "error.link-station.not-found";
 export declare const LINK_STATION_PATH_ERR_NOT_FOUND = "error.link-station-path.not-found";
+export declare const LINK_STATION_VELOCITY_ERR_NOT_FOUND = "error.link-station-velocity.not-found";
 export declare function getErrByServiceError(_: Error): NoiError;
 export declare function getErrByStatus(status: number): NoiError;
 export interface NoiErrorService {
@@ -65,6 +66,10 @@ export declare class OpenDataHubNoiService {
   getLinkStationsTime(ids: Array<string>, auth?: boolean): Promise<Array<{
     id: string;
     timeSec: number;
+  }>>;
+  getLinkStationsVelocity(ids: Array<string>, auth?: boolean): Promise<Array<{
+    id: string;
+    velocityKmH: number;
   }>>;
   getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>>;
   getLinkStationsByIds(ids: Array<string>, options?: {

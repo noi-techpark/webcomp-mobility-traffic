@@ -105,9 +105,9 @@ export class PathDetails {
             </noi-button>
             : null
           }
-          {urbanPathState.distance !== undefined  ?
+          {urbanPathState.durationMin !== undefined  ?
             <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
-              <span class="header-highway__title">{strings.get('path-details.urban-name')}</span> {(urbanPathState.distance / 1000).toFixed(1) + 'km'}
+              <span class="header-highway__title">{strings.get('path-details.urban-name')}</span> {formatDuration(urbanPathState.durationMin)}
             </noi-button>
             : null
           }

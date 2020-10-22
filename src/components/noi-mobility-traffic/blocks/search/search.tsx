@@ -1,6 +1,5 @@
-import { Host, Component, h, getAssetPath, State, Watch } from '@stencil/core';
+import { Host, Component, h, getAssetPath, State } from '@stencil/core';
 import noiStore, { selectCanLoadPath } from '@noi/store';
-import { PathDetails } from '../path-details/path-details';
 
 @Component({
   tag: 'noi-search',

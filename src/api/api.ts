@@ -7,6 +7,7 @@ export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
 export const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
 export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
 export const LINK_STATION_PATH_ERR_NOT_FOUND = 'error.link-station-path.not-found';
+export const LINK_STATION_VELOCITY_ERR_NOT_FOUND = 'error.link-station-velocity.not-found';
 
 
 export function getErrByServiceError(_: Error): NoiError {
@@ -218,6 +219,24 @@ export class OpenDataHubNoiService {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
     }
     return response.data.map(s => ({timeSec: s.mvalue, id: s.scode}));
+  }
+
+  async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number}>> {
+    const where = `scode.in.(${ids.join(',')}),mperiod.eq.3600`;
+    const select = `mvalue,scode`;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/velocita'/latest?limit=-1&select=${select}&where=${where}&distinct=true`,
+      { headers }
+    );
+    if (!response || !response.data) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
+    }
+    if (response.data.length !== ids.length) {
+      throw new NoiError(LINK_STATION_VELOCITY_ERR_NOT_FOUND, {message: `Some of LinkStation ids=${ids.join(',')} are not found`});
+    }
+    return response.data.map(s => ({velocityKmH: s.mvalue, id: s.scode}));
   }
 
   async getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>> {

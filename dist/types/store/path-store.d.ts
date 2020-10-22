@@ -10,7 +10,7 @@ export interface NoiPathState {
     id: string;
     name: string;
   }>;
-  readonly duration: number;
+  readonly durationMin: number;
   readonly distance: number;
 }
 export declare const urbanPathState: NoiPathState;

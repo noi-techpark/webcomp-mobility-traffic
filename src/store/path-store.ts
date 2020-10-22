@@ -1,5 +1,5 @@
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
-import { createStore, ObservableMap } from '@stencil/store';
+import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise } from 'src/utils';
 import { NoiAPI, NoiLinkStation } from '../api';
 
@@ -10,7 +10,7 @@ export interface NoiPathState {
   readonly loading: boolean;
   readonly errorCode: string;
   readonly stations: Array<{position: number, id: string, name: string}>;
-  readonly duration: number;
+  readonly durationMin: number;
   readonly distance: number;
 }
 
@@ -21,93 +21,101 @@ const urbanPathStore = createStore<NoiPathState>({
   errorCode: undefined,
   path: undefined,
   stations: undefined,
-  duration: undefined,
+  durationMin: undefined,
   distance: undefined
 });
 
-type PathStationsEffect = (startId: string, endId: string) => Promise<Array<NoiLinkStation>>;
+const { onChange, set, state } = urbanPathStore;
+let effectPromise: CancellablePromise<{path: Array<NoiLinkStation>, timeMin: number}> = undefined;
 
-export const urbanPathState = setupPathStore(urbanPathStore, loadUrbanPathEffect);
-
-
-function setupPathStore(store: ObservableMap<NoiPathState>, effect: PathStationsEffect) {
-  const { onChange, set, state } = store;
-  let effectPromise: CancellablePromise<Array<NoiLinkStation>> = undefined;
-
-  onChange('path', (path) => {
-    if (!path || !path.length) {
-      set('stations', undefined);
-      return;
-    }
-    const stations = path.reduce((result, i) => {
-      result.push({
-        position: result[result.length-1].position + i.distance,
-        id: i.end.id,
-        name: i.end.name
-      });
-      return result;
-    }, [{position: 0, name: path[0].start.name, id: path[0].start.id}]);
-    set('stations', stations);
-  });
-
-  onChange('stations', (value) => {
-    const distance = value && value.length ? value[value.length-1].position : undefined;
-    set('distance', Math.round(distance));
-  })
-
-  onChange('startId', (value) => {
-    set('path', undefined);
-    set('errorCode', undefined);
-    if (!!value && state.endId) {
-      loadUrbanPath(value, state.endId);
-    }
-  });
-
-  onChange('endId', (value) => {
-    set('path', undefined);
-    set('errorCode', undefined);
-    if (!!value && state.startId) {
-      loadUrbanPath(state.startId, value);
-    }
-  });
-
-
-  function loadUrbanPath(startId: string, endId: string): void {
-    set('loading', true);
-    set('errorCode', undefined);
-    if (effectPromise) {
-      effectPromise.cancel()
-    }
-    effectPromise = cancellablePromise(effect(startId, endId));
-    effectPromise.promise
-      .then(path => {
-        set('path', path);
-        set('loading', false);
-        effectPromise = undefined;
-      })
-      .catch(err => {
-        if (err.isCancelled) {
-          return;
-        }
-        effectPromise = undefined;
-        set('loading', false);
-        if (err instanceof NoiError) {
-          set('errorCode', (err as NoiError).code);
-        } else {
-          set('errorCode', NOI_ERR_UNKNOWN);
-        }
-      });
+onChange('path', (path) => {
+  if (!path || !path.length) {
+    set('stations', undefined);
+    return;
   }
-  return store.state;
+  const stations = path.reduce((result, i) => {
+    result.push({
+      position: result[result.length-1].position + i.distance,
+      id: i.end.id,
+      name: i.end.name
+    });
+    return result;
+  }, [{position: 0, name: path[0].start.name, id: path[0].start.id}]);
+  set('stations', stations);
+});
+
+onChange('stations', (value) => {
+  const distance = value && value.length ? value[value.length-1].position : undefined;
+  set('distance', Math.round(distance));
+})
+
+onChange('startId', (value) => {
+  set('path', undefined);
+  set('durationMin', undefined);
+  set('errorCode', undefined);
+  if (!!value && state.endId) {
+    loadUrbanPath(value, state.endId);
+  }
+});
+
+onChange('endId', (value) => {
+  set('path', undefined);
+  set('durationMin', undefined);
+  set('errorCode', undefined);
+  if (!!value && state.startId) {
+    loadUrbanPath(state.startId, value);
+  }
+});
+
+
+function loadUrbanPath(startId: string, endId: string): void {
+  set('loading', true);
+  set('errorCode', undefined);
+  if (effectPromise) {
+    effectPromise.cancel()
+  }
+  effectPromise = cancellablePromise(loadUrbanPathEffect(startId, endId));
+  effectPromise.promise
+    .then(data => {
+      set('path', data.path);
+      set('durationMin', data.timeMin);
+      set('loading', false);
+      effectPromise = undefined;
+    })
+    .catch(err => {
+      if (err.isCancelled) {
+        return;
+      }
+      effectPromise = undefined;
+      set('loading', false);
+      if (err instanceof NoiError) {
+        set('errorCode', (err as NoiError).code);
+      } else {
+        set('errorCode', NOI_ERR_UNKNOWN);
+      }
+    });
 }
+
+export const urbanPathState = state;
 
 /**
  * it's like a Redux Effect to load external data in async way
  */
-async function loadUrbanPathEffect(startId: string, endId: string): Promise<Array<NoiLinkStation>> {
-  const urbanPath = (await NoiAPI.getUrbanSegmentsIds(startId, endId));
-  return urbanPath
-    ? await NoiAPI.getLinkStationsByIds(urbanPath, {calcGeometryDistance: true})
-    : undefined;
+async function loadUrbanPathEffect(startId: string, endId: string): Promise<{path: Array<NoiLinkStation>, timeMin: number}> {
+  const segmentsIds = (await NoiAPI.getUrbanSegmentsIds(startId, endId));
+  if (!segmentsIds) {
+    return undefined;
+  }
+  const path =  await NoiAPI.getLinkStationsByIds(segmentsIds, {calcGeometryDistance: true});
+  const velocityMap = (await NoiAPI.getLinkStationsVelocity(path.map(i => i.id))).reduce(
+    (result, i) => { result[i.id] = i.velocityKmH; return result;},
+    {}
+  );
+  const timeMin = path.reduce((result, i) => {
+    const timeMin = Math.round((i.distance / (1000 * velocityMap[i.id])) * 60);
+    result += timeMin;
+    return result;
+  }, 0);
+  return {path, timeMin}
 }
 
