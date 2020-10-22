@@ -1,8 +1,9 @@
 import { r as registerInstance, h, g as getElement } from './index-375c0366.js';
-import { N as NoiAPI, u as urbanPathState } from './path-store-6e850e3c.js';
+import { N as NoiAPI, u as urbanPathState } from './path-store-8eb83bb9.js';
 import './leaflet-src-ee2a66f1.js';
 import './index-6ba5ef25.js';
 import { s as state, a as selectStationsWithSelectedWithStartEnd, b as selectStartEnd } from './index-606d4fed.js';
+import { g as getLocaleComponentStrings } from './locale-0c668b5d.js';
 import { M as MapStation, a as MapMarker } from './map-station-6dee1a6a.js';
 
 /**
@@ -932,49 +933,6 @@ var index = (function () {
     return ResizeObserver;
 })();
 
-var SupportedLangs;
-(function (SupportedLangs) {
-  SupportedLangs["it"] = "it";
-  SupportedLangs["en"] = "en";
-  SupportedLangs["de"] = "de";
-})(SupportedLangs || (SupportedLangs = {}));
-function getNavigatorLang() {
-  const lang = navigator.language ? navigator.language.split('-')[0] : 'en';
-  return SupportedLangs[lang] ? SupportedLangs[lang] : SupportedLangs.en;
-}
-function getComponentClosestLang(element) {
-  let closestElement = element.closest('[lang]');
-  if (closestElement && closestElement.lang && SupportedLangs[closestElement.lang]) {
-    return SupportedLangs[closestElement.lang];
-  }
-  else {
-    return getNavigatorLang();
-  }
-}
-function fetchLocaleStringsForComponent(componentName, locale) {
-  return new Promise((resolve, reject) => {
-    fetch(`/i18n/${componentName}.i18n.${locale}.json`).then(result => {
-      if (result.ok)
-        resolve(result.json());
-      else
-        reject();
-    }, () => reject());
-  });
-}
-async function getLocaleComponentStrings(element) {
-  let componentName = element.tagName.toLowerCase();
-  let componentLanguage = getComponentClosestLang(element);
-  let strings;
-  try {
-    strings = await fetchLocaleStringsForComponent(componentName, componentLanguage);
-  }
-  catch (e) {
-    console.warn(`No locale for ${componentName} (${componentLanguage}) loading default locale en.`);
-    strings = await fetchLocaleStringsForComponent(componentName, 'en');
-  }
-  return strings;
-}
-
 const noiMobilityTrafficCss = ".sc-noi-mobility-traffic-h{display:block;overflow:hidden;width:var(--noi-width);height:var(--noi-height)}.wrapper.sc-noi-mobility-traffic{position:relative;display:flex;flex-direction:column;height:100%;margin:0}noi-map.sc-noi-mobility-traffic{z-index:0;flex:1}";
 
 const rIC = (callback) => {
@@ -991,12 +949,13 @@ const NoiMobilityTraffic = class {
     this.showSearch = true;
   }
   async componentWillLoad() {
-    this.strings = await getLocaleComponentStrings(this.element);
     try {
+      await getLocaleComponentStrings(this.element);
       const stations = await NoiAPI.getHighwayStations();
       state.stations = stations.reduce((result, s) => { result[s.id] = s; return result; }, {});
     }
     catch (error) {
+      // TODO: here we have a fatal error - can't load the app, show global error
       alert('TODO: ERROR!');
     }
   }
@@ -1043,7 +1002,7 @@ const NoiMobilityTraffic = class {
     });
   }
   getUrbanPath() {
-    if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+    if (state.activePath !== 'urban' || urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
       return null;
     }
     return urbanPathState.path.map(s => (h("noi-map-route", { geometry: JSON.stringify(s.geometry) })));

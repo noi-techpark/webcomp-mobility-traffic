@@ -1,5 +1,5 @@
 import { r as registerInstance, h, e as Host } from './index-375c0366.js';
-import { u as urbanPathState } from './path-store-6e850e3c.js';
+import { u as urbanPathState } from './path-store-8eb83bb9.js';
 import './leaflet-src-ee2a66f1.js';
 import './index-6ba5ef25.js';
 

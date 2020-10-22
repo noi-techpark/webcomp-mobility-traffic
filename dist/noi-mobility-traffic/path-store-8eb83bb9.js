@@ -2,6 +2,7 @@ import { l as leafletSrc } from './leaflet-src-ee2a66f1.js';
 import { c as createStore } from './index-6ba5ef25.js';
 
 const NOI_ERR_UNKNOWN = 'noi.error.unknown';
+const NOI_ERR_NO_LOCALE = 'noi.error.no-locale';
 class NoiError extends Error {
   constructor(code, options = {}) {
     super(options.message ? options.message : code);
@@ -469,4 +470,4 @@ async function loadUrbanPathEffect(startId, endId) {
     : undefined;
 }
 
-export { NoiAPI as N, formatDuration as f, urbanPathState as u };
+export { NoiAPI as N, NoiError as a, NOI_ERR_NO_LOCALE as b, formatDuration as f, urbanPathState as u };

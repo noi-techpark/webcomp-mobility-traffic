@@ -1,5 +1,4 @@
 export declare class NoiMobilityTraffic {
-  private strings;
   private resizeObserver;
   private stationsModalEl;
   private searchEl;

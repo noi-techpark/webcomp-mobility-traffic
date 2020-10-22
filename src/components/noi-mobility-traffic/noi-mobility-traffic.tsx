@@ -24,7 +24,6 @@ const rIC = (callback: () => void) => {
   assetsDirs: ['assets']
 })
 export class NoiMobilityTraffic {
-  private strings: any;
   private resizeObserver: ResizeObserver;
   private stationsModalEl: HTMLNoiStationsModalElement;
   private searchEl: HTMLNoiSearchElement;
@@ -33,11 +32,12 @@ export class NoiMobilityTraffic {
   @State() showSearch: boolean = true;
 
   async componentWillLoad(): Promise<void> {
-    this.strings = await getLocaleComponentStrings(this.element);
     try {
+      await getLocaleComponentStrings(this.element);
       const stations = await NoiAPI.getHighwayStations();
       noiStore.stations = stations.reduce((result, s) => { result[s.id] = s; return result;}, {})
     } catch (error) {
+      // TODO: here we have a fatal error - can't load the app, show global error
       alert('TODO: ERROR!');
     }
   }
@@ -91,7 +91,7 @@ export class NoiMobilityTraffic {
   }
 
   getUrbanPath() {
-    if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+    if (noiStore.activePath !== 'urban' || urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
       return null;
     }
     return urbanPathState.path.map(s => (<noi-map-route geometry={JSON.stringify(s.geometry)}></noi-map-route>));
