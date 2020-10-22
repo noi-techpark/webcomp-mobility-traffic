@@ -39,12 +39,20 @@ export class Search {
     }
   }
 
-  onToggleActive() {
-    if (this.hostClass.slideIn) {
-      this.hostClass = {slideOut: true};
+  onToggleActive(active: 'highway' | 'urban') {
+    if (!this.hostClass.slideIn) {
+      noiStore.activePath = active;
+      this.hostClass = {slideIn: true};
       return;
     }
-    this.hostClass = {slideIn: true};
+    const toggle = noiStore.activePath === active;
+    if (toggle && this.hostClass.slideIn) {
+      this.hostClass = {slideOut: true};
+    }
+  }
+
+  onSlideOut() {
+    this.hostClass = {slideOut: true};
   }
 
   renderDetails() {
@@ -91,7 +99,7 @@ export class Search {
     return (<Host class={hostClass}>
       <div class="content">
         <header>
-          <noi-button class="header__back-btn" fill="clear" onClick={this.onToggleActive.bind(this)}>
+          <noi-button class="header__back-btn" fill="clear" onClick={this.onSlideOut.bind(this)}>
             <svg slot="icon-only" class="header__icon" height="14" viewBox="0 0 10 14" width="10" xmlns="http://www.w3.org/2000/svg"><path d="m0 1.53073535 1.28718658-1.53073535 8.35973178 7.02965056-8.35973178 7.02965054-1.28718658-1.5307353 6.53859329-5.49919813z" transform="matrix(-1 0 0 1 9.646918 0)"/></svg>
           </noi-button>
           <img class="search__logo" src={getAssetPath('./assets/logo.svg')} alt="BrennerLec"/>

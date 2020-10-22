@@ -8,7 +8,8 @@ export declare class Search {
   getEnd(): string;
   onInputClick(what: 'start' | 'end'): void;
   onReorderClick(): void;
-  onToggleActive(): void;
+  onToggleActive(active: 'highway' | 'urban'): void;
+  onSlideOut(): void;
   renderDetails(): any;
   renderFooter(): any;
   render(): any;

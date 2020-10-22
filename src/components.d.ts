@@ -446,7 +446,7 @@ declare namespace LocalJSX {
     }
     interface NoiPathDetails {
         "endId": string;
-        "onToggleActive"?: (event: CustomEvent<void>) => void;
+        "onToggleActive"?: (event: CustomEvent<'urban' | 'highway'>) => void;
         "startId": string;
     }
     interface NoiSearch {

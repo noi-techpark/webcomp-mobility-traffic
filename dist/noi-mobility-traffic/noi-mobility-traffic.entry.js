@@ -2,7 +2,7 @@ import { r as registerInstance, h, g as getElement } from './index-375c0366.js';
 import { N as NoiAPI, u as urbanPathState } from './path-store-6e850e3c.js';
 import './leaflet-src-ee2a66f1.js';
 import './index-6ba5ef25.js';
-import { s as state, a as selectStationsWithSelectedWithStartEnd, b as selectStartEnd } from './index-ccdc1066.js';
+import { s as state, a as selectStationsWithSelectedWithStartEnd, b as selectStartEnd } from './index-606d4fed.js';
 import { M as MapStation, a as MapMarker } from './map-station-6dee1a6a.js';
 
 /**
@@ -1065,7 +1065,7 @@ const NoiMobilityTraffic = class {
   render() {
     urbanPathState.startId = state.startId;
     urbanPathState.endId = state.endId;
-    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { ref: el => this.stationsModalEl = el, selecting: state.selecting, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { ref: el => this.searchEl = el }), h("noi-map", null, this.getHighwayCircles(), this.getHighwayMarkers(), this.getUrbanPath()));
+    return h("div", { class: "wrapper" }, h("noi-backdrop", { overlayIndex: 2, visible: !!state.selecting, onNoiBackdropTap: this.onModalClose.bind(this) }), h("noi-stations-modal", { ref: el => this.stationsModalEl = el, selecting: state.selecting, onModalClose: this.onModalClose.bind(this), overlayIndex: 2, visible: !!state.selecting }), h("noi-search", { ref: el => this.searchEl = el }), h("noi-map", null, this.getUrbanPath(), this.getHighwayCircles(), this.getHighwayMarkers()));
   }
   static get assetsDirs() { return ["assets"]; }
   get element() { return getElement(this); }

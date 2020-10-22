@@ -24,7 +24,7 @@ export class PathDetails {
   highwayTimeMin: number = undefined;
 
   @Event()
-  toggleActive: EventEmitter<void>;
+  toggleActive: EventEmitter<'urban' | 'highway'>;
 
   async componentDidLoad() {
     await this.updateState();
@@ -59,9 +59,7 @@ export class PathDetails {
 
 
   onActivatePath(value: 'highway' | 'urban') {
-    if (this.activePath === value) {
-      this.toggleActive.emit();
-    }
+    this.toggleActive.emit(value);
     this.activePath = value;
   }
 

@@ -54,6 +54,12 @@
   flex: 1;
 }
 
+/* noi-path */
+.noi-map-path {
+  stroke: var(--noi-action);
+  stroke-dasharray: 6px;
+  stroke-width: 5px;
+}
 
 /* start-end marker */
 .noi-marker {

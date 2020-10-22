@@ -135,9 +135,9 @@ export class NoiMobilityTraffic {
       <noi-search ref={el => this.searchEl = el as HTMLNoiSearchElement}>
       </noi-search>
       <noi-map>
+        {this.getUrbanPath()}
         {this.getHighwayCircles()}
         {this.getHighwayMarkers()}
-        {this.getUrbanPath()}
       </noi-map>
     </div>;
   }
