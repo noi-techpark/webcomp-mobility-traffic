@@ -1,5 +1,6 @@
 import { Host, Component, h, getAssetPath, State, Watch } from '@stencil/core';
 import noiStore, { selectCanLoadPath } from '@noi/store';
+import { PathDetails } from '../path-details/path-details';
 
 @Component({
   tag: 'noi-search',
@@ -39,13 +40,14 @@ export class Search {
     }
   }
 
-  onToggleActive(active: 'highway' | 'urban') {
+  onToggleActive(event: CustomEvent<'urban' | 'highway'>) {
     if (!this.hostClass.slideIn) {
-      noiStore.activePath = active;
+      noiStore.activePath = event.detail;
       this.hostClass = {slideIn: true};
       return;
     }
-    const toggle = noiStore.activePath === active;
+    const toggle = noiStore.activePath === event.detail;
+    noiStore.activePath = event.detail;
     if (toggle && this.hostClass.slideIn) {
       this.hostClass = {slideOut: true};
     }

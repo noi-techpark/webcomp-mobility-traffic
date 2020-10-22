@@ -1,5 +1,6 @@
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { createStore, ObservableMap } from '@stencil/store';
+import { CancellablePromise, cancellablePromise } from 'src/utils';
 import { NoiAPI, NoiLinkStation } from '../api';
 
 export interface NoiPathState {
@@ -31,6 +32,7 @@ export const urbanPathState = setupPathStore(urbanPathStore, loadUrbanPathEffect
 
 function setupPathStore(store: ObservableMap<NoiPathState>, effect: PathStationsEffect) {
   const { onChange, set, state } = store;
+  let effectPromise: CancellablePromise<Array<NoiLinkStation>> = undefined;
 
   onChange('path', (path) => {
     if (!path || !path.length) {
@@ -57,7 +59,6 @@ function setupPathStore(store: ObservableMap<NoiPathState>, effect: PathStations
     set('path', undefined);
     set('errorCode', undefined);
     if (!!value && state.endId) {
-      // FIXME: unsubscribe from hanging promise if it's still loading
       loadUrbanPath(value, state.endId);
     }
   });
@@ -66,7 +67,6 @@ function setupPathStore(store: ObservableMap<NoiPathState>, effect: PathStations
     set('path', undefined);
     set('errorCode', undefined);
     if (!!value && state.startId) {
-      // FIXME: unsubscribe from hanging promise if it's still loading
       loadUrbanPath(state.startId, value);
     }
   });
@@ -75,19 +75,27 @@ function setupPathStore(store: ObservableMap<NoiPathState>, effect: PathStations
   function loadUrbanPath(startId: string, endId: string): void {
     set('loading', true);
     set('errorCode', undefined);
-    effect(startId, endId)
+    if (effectPromise) {
+      effectPromise.cancel()
+    }
+    effectPromise = cancellablePromise(effect(startId, endId));
+    effectPromise.promise
       .then(path => {
         set('path', path);
+        set('loading', false);
+        effectPromise = undefined;
       })
       .catch(err => {
+        if (err.isCancelled) {
+          return;
+        }
+        effectPromise = undefined;
+        set('loading', false);
         if (err instanceof NoiError) {
           set('errorCode', (err as NoiError).code);
         } else {
           set('errorCode', NOI_ERR_UNKNOWN);
         }
-      })
-      .finally(() => {
-        set('loading', false);
       });
   }
   return store.state;

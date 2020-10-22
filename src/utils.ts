@@ -1,4 +1,5 @@
 import { LatLng } from 'leaflet';
+import { NoiError } from './api/error';
 
 export type Selectable<T> = T & {selected?: boolean};
 
@@ -75,4 +76,19 @@ export function getDistance<Q extends {coordinates: NoiCoordinate}>(from: Q, cen
 export function getPointsDistance(from: [number, number], to: [number, number]) {
   return (new LatLng(from[1], from[0])).distanceTo(new LatLng(to[1], to[0]));
 }
+
+export type CancellablePromise<T> = {promise: Promise<T>, cancel: () => void};
+
+export function cancellablePromise<T>(from: Promise<T>): CancellablePromise<T> {
+  let isCancelled = false;
+  const promise = new Promise<T>((resolve, reject) => {
+    from
+    .then(d => isCancelled ? reject({isCancelled: true}) : resolve(d))
+    .catch(e => reject(isCancelled ? {isCancelled: true} : e));
+  });
+  function cancel() {
+    isCancelled = true;
+  }
+  return {promise, cancel};
+};
 

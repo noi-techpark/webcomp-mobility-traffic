@@ -1,4 +1,4 @@
-import { a as NoiError, b as NOI_ERR_NO_LOCALE } from './path-store-8eb83bb9.js';
+import { a as NoiError, b as NOI_ERR_NO_LOCALE } from './path-store-f23d8079.js';
 
 var SupportedLangs;
 (function (SupportedLangs) {
@@ -42,9 +42,7 @@ async function getLocaleComponentStrings(element) {
   }
   try {
     locale = locale || await fetchLocaleStringsForComponent(componentName, 'en');
-    debugger;
     Object.keys(locale).forEach(key => strings.set(key, locale[key]));
-    alert(strings.get('path-details.highway-name'));
   }
   catch (error) {
     throw new NoiError(NOI_ERR_NO_LOCALE, { message: 'Unable to fetch any language' });

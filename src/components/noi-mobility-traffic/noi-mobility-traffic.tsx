@@ -91,7 +91,10 @@ export class NoiMobilityTraffic {
   }
 
   getUrbanPath() {
-    if (noiStore.activePath !== 'urban' || urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+    if (noiStore.activePath !== 'urban') {
+      return null;
+    }
+    if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
       return null;
     }
     return urbanPathState.path.map(s => (<noi-map-route geometry={JSON.stringify(s.geometry)}></noi-map-route>));

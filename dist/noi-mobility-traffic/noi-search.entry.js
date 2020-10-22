@@ -31,13 +31,14 @@ const Search = class {
       state.startId = endId;
     }
   }
-  onToggleActive(active) {
+  onToggleActive(event) {
     if (!this.hostClass.slideIn) {
-      state.activePath = active;
+      state.activePath = event.detail;
       this.hostClass = { slideIn: true };
       return;
     }
-    const toggle = state.activePath === active;
+    const toggle = state.activePath === event.detail;
+    state.activePath = event.detail;
     if (toggle && this.hostClass.slideIn) {
       this.hostClass = { slideOut: true };
     }

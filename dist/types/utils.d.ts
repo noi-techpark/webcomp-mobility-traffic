@@ -29,3 +29,8 @@ export declare function getDistance<Q extends {
   coordinates: NoiCoordinate;
 }>(from: Q, center: NoiCoordinate): number;
 export declare function getPointsDistance(from: [number, number], to: [number, number]): number;
+export declare type CancellablePromise<T> = {
+  promise: Promise<T>;
+  cancel: () => void;
+};
+export declare function cancellablePromise<T>(from: Promise<T>): CancellablePromise<T>;
