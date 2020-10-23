@@ -3,6 +3,7 @@ pipeline {
         dockerfile {
             filename 'infrastructure/docker/Dockerfile'
             additionalBuildArgs '--build-arg JENKINS_USER_ID=`id -u jenkins` --build-arg JENKINS_GROUP_ID=`id -g jenkins`'
+            args '--cap-add=SYS_ADMIN'
         }
     }
     environment{
