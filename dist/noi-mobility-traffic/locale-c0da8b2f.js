@@ -1,4 +1,4 @@
-import { c as createStore, N as NoiError, b as NOI_ERR_NO_LOCALE } from './index-ba94aa95.js';
+import { c as createStore, a as NoiError, b as NOI_ERR_NO_LOCALE } from './index-7315d9b4.js';
 
 function orderStations(value) {
   return Object.keys(value)
@@ -16,7 +16,8 @@ const { state, onChange, set } = createStore({
   end: null,
   selected: null,
   stationsList: null,
-  loading: true
+  loading: true,
+  mapCenter: { lat: 46.4983, long: 11.3548 }
 });
 onChange('stations', (stations) => {
   if (stations) {
@@ -34,6 +35,11 @@ onChange('selectedId', (selectedId) => {
   }
   else {
     set('selected', null);
+  }
+});
+onChange('selected', (selected) => {
+  if (selected) {
+    set('mapCenter', Object.assign({}, selected.coordinates));
   }
 });
 onChange('startId', (value) => {
@@ -163,4 +169,4 @@ function translate(code) {
   return code;
 }
 
-export { selectStationsWithSelectedWithStartEnd as a, selectStartEnd as b, selectCanLoadPath as c, selectStationsWithSelected as d, selectPathSegmentsIds as e, selectPathStations as f, getLocaleComponentStrings as g, state as s, translate as t };
+export { selectStationsWithSelectedWithStartEnd as a, selectStartEnd as b, selectCanLoadPath as c, selectStationsWithSelected as d, selectPathSegmentsIds as e, selectPathStations as f, state as s, translate as t };
