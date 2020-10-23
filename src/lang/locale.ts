@@ -7,6 +7,7 @@ export enum SupportedLangs {
 }
 
 const strings = new Map<string, string>();
+let locale = undefined;
 
 export function getNavigatorLang(): SupportedLangs {
   const lang = navigator.language ? navigator.language.split('-')[0] : 'en';
@@ -38,7 +39,6 @@ export function fetchLocaleStringsForComponent(componentName: string, locale: st
 export async function getLocaleComponentStrings(element: HTMLElement): Promise<void> {
   let componentName = element.tagName.toLowerCase();
   let componentLanguage = getComponentClosestLang(element);
-  let locale = undefined;
   try {
     locale = await fetchLocaleStringsForComponent(componentName, componentLanguage);
   } catch (e) {
@@ -53,6 +53,12 @@ export async function getLocaleComponentStrings(element: HTMLElement): Promise<v
   }
 }
 
-export default strings;
+export function translate(code: string) {
+  if (strings.has(code)) {
+    return strings.get(code);
+  }
+  return code;
+}
+
 
 

@@ -1,4 +1,4 @@
-import { r as registerInstance, h, e as Host } from './index-375c0366.js';
+import { r as registerInstance, h, e as Host } from './index-5dc3e2b7.js';
 
 const stationItemCss = ".sc-noi-station-item-h{width:100%;overflow:hidden;position:relative;height:48px;margin:0 16px;background:transparent;font-family:var(--noi-font-family);color:rgba(var(--noi-primary-rgb), 0.7);display:flex;flex-direction:row;align-items:center}h3.sc-noi-station-item{font-family:var(--noi-font-family);margin-left:8px}.station-item--start.sc-noi-station-item-h h3.sc-noi-station-item{color:var(--noi-primary)}.station-item--end.sc-noi-station-item-h h3.sc-noi-station-item{color:var(--noi-action)}svg.sc-noi-station-item{margin:0 16px;fill:var(--noi-primary-contrast);stroke-width:4px;stroke:rgba(var(--noi-primary-rgb), 0.7)}.station-item--start.sc-noi-station-item-h svg.sc-noi-station-item{color:var(--noi-primary)}.station-item--end.sc-noi-station-item-h svg.sc-noi-station-item{color:var(--noi-action)}";
 

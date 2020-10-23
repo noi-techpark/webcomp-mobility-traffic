@@ -1,5 +1,6 @@
 import { Host, Component, h, getAssetPath, State } from '@stencil/core';
 import noiStore, { selectCanLoadPath } from '@noi/store';
+import { translate } from 'src/lang';
 
 @Component({
   tag: 'noi-search',
@@ -15,13 +16,11 @@ export class Search {
   hostClass: {slideIn?: boolean, slideOut?: boolean} = {}
 
   getStart() {
-    // TODO: get placeholder from strings
-    return noiStore.start ? noiStore.start.name : 'Partenza?'
+    return noiStore.start ? noiStore.start.name : translate('search.start-placeholder')
   }
 
   getEnd() {
-    // TODO: get placeholder from strings
-    return noiStore.end ? noiStore.end.name : 'Destinazione?'
+    return noiStore.end ? noiStore.end.name : translate('search.end-placeholder')
   }
 
   onInputClick(what: 'start' | 'end') {

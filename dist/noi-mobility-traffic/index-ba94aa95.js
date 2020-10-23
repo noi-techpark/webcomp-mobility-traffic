@@ -1,4 +1,17 @@
-import { f as getRenderingRef, i as forceUpdate } from './index-375c0366.js';
+import { i as getRenderingRef, j as forceUpdate } from './index-5dc3e2b7.js';
+
+const NOI_ERR_UNKNOWN = 'noi.error.unknown';
+const NOI_ERR_NO_LOCALE = 'noi.error.no-locale';
+class NoiError extends Error {
+  constructor(code, options = {}) {
+    super(options.message ? options.message : code);
+    this.code = code;
+    this.options = options;
+    // see: typescriptlang.org/docs/handbook/release-notes/typescript-2-2.html
+    Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+    this.name = NoiError.name; // stack traces display correctly now
+  }
+}
 
 const appendToMap = (map, propName, value) => {
     const items = map.get(propName);
@@ -171,4 +184,4 @@ const createStore = (defaultState, shouldUpdate) => {
     return map;
 };
 
-export { createStore as c };
+export { NoiError as N, NOI_ERR_UNKNOWN as a, NOI_ERR_NO_LOCALE as b, createStore as c };

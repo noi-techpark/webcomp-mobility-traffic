@@ -1,5 +1,5 @@
 import { createStore } from '@stencil/store';
-import { NoiAPI, NoiHighwayStation } from '../api';
+import { NoiHighwayStation } from '../api';
 import { Selectable, WithStartEnd } from '../utils';
 
 export interface NoiState {
@@ -9,6 +9,7 @@ export interface NoiState {
   startId: string;
   endId: string;
   stations: {[id: string]: NoiHighwayStation},
+  readonly mapCenter: {lat: number, long: number};
   readonly start: NoiHighwayStation,
   readonly end: NoiHighwayStation,
   readonly selected: NoiHighwayStation,
@@ -33,7 +34,8 @@ const { state, onChange, set } = createStore<NoiState>({
   end: null,
   selected: null,
   stationsList: null,
-  loading: true
+  loading: true,
+  mapCenter: {lat: 46.4983, long: 11.3548}
 });
 
 onChange('stations', (stations) => {
@@ -51,6 +53,12 @@ onChange('selectedId', (selectedId) => {
     set('selected', state.stations[selectedId]);
   } else {
     set('selected', null);
+  }
+});
+
+onChange('selected', (selected) => {
+  if (selected) {
+    set('mapCenter', {...selected.coordinates});
   }
 });
 
@@ -146,16 +154,5 @@ export function selectPathSegmentsIds() {
 export function selectCanLoadPath(): boolean {
   return !!state.startId && !!state.endId;
 }
-
-/**
- * it's like a Redux Effect to load external data in async way
- */
-// async function loadPathEffect(pathIds: string[]): Promise<Array<NoiLinkStation>> {
-//   const segmentsTime = await NoiAPI.getLinkStationsTime(pathIds, true);
-//   const pathTimeMap = segmentsTime.reduce<{[id: string]: number}>((result, i) => { result[i.id] = i.timeSec; return result;}, {});
-//   const totalTime = Math.round(segmentsTime.reduce((result, i) => { result += i.timeSec; return result;}, 0) / 60);
-// }
-
-// 'TODO: Unable to load A22 path duration'
 
 export default state;

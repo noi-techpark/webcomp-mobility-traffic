@@ -1,12 +1,13 @@
 import { NoiAPI } from '@noi/api';
 import { urbanPathState } from '@noi/store/path-store';
 import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '@noi/store';
-import { Component, Element, State, h } from '@stencil/core';
+import { Component, Element, State, h, getAssetPath } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
 
-import { getLocaleComponentStrings } from '../../lang';
+import { getLocaleComponentStrings, translate } from '../../lang';
 import { MapMarker } from './blocks/map/map-marker';
 import { MapStation } from './blocks/map/map-station';
+import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -30,19 +31,29 @@ export class NoiMobilityTraffic {
   
   @Element() element: HTMLElement;
   @State() showSearch: boolean = true;
+  @State() errorCode: string = undefined;
+  @State() loading: boolean = true;
 
-  async componentWillLoad(): Promise<void> {
+  async loadLocaleAndStations() {
+    this.errorCode = undefined;
+    this.loading = true;
     try {
       await getLocaleComponentStrings(this.element);
       const stations = await NoiAPI.getHighwayStations();
       noiStore.stations = stations.reduce((result, s) => { result[s.id] = s; return result;}, {})
+      this.loading = false;
     } catch (error) {
-      // TODO: here we have a fatal error - can't load the app, show global error
-      alert('TODO: ERROR!');
+      if (error instanceof NoiError) {
+        this.errorCode = error.code;
+      } else {
+        this.errorCode = NOI_ERR_UNKNOWN;
+      }
+      this.loading = false;
     }
   }
 
   async componentDidLoad(): Promise<void> {
+    await this.loadLocaleAndStations();
     rIC(() => {
       import('./components/tap-click').then(module => module.startTapClick());
     });
@@ -120,6 +131,23 @@ export class NoiMobilityTraffic {
   }
 
   render() {
+    if (this.loading) {
+      return (<div class="wrapper">
+        <div class="loading">
+          <div class="loading-img">
+            <img src={getAssetPath('./assets/search.svg')} alt=""/>
+          </div>
+        </div>
+      </div>);
+    }
+    if (this.errorCode) {
+      return (<div class="wrapper">
+        <div class="error">
+          <h2>{translate(this.errorCode)}</h2>
+          <noi-button fill="solid" class="button-md error-btn" onClick={this.loadLocaleAndStations.bind(this)}>Retry</noi-button>
+        </div>
+      </div>)
+    }
     urbanPathState.startId = noiStore.startId;
     urbanPathState.endId = noiStore.endId;
     return <div class="wrapper">
@@ -137,7 +165,9 @@ export class NoiMobilityTraffic {
       ></noi-stations-modal>
       <noi-search ref={el => this.searchEl = el as HTMLNoiSearchElement}>
       </noi-search>
-      <noi-map>
+      <noi-map
+        lat={noiStore.mapCenter.lat}
+        long={noiStore.mapCenter.long}>
         {this.getUrbanPath()}
         {this.getHighwayCircles()}
         {this.getHighwayMarkers()}

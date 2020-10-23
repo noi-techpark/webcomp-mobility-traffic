@@ -8,7 +8,7 @@ export declare class StationsModal {
   }>;
   searchText: string;
   onClose(): void;
-  getTitle(): "Selezionare la partenza" | "Selezionare la destinazione";
+  getTitle(): string;
   onSearchChange(value: CustomEvent<{
     value: string;
   }>): void;

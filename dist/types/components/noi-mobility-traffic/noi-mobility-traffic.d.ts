@@ -4,7 +4,9 @@ export declare class NoiMobilityTraffic {
   private searchEl;
   element: HTMLElement;
   showSearch: boolean;
-  componentWillLoad(): Promise<void>;
+  errorCode: string;
+  loading: boolean;
+  loadLocaleAndStations(): Promise<void>;
   componentDidLoad(): Promise<void>;
   disconnectedCallback(): void;
   applyMediaClasses(widthPx: number, heightPx: number): void;

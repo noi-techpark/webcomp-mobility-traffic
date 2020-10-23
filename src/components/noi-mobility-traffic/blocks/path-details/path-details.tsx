@@ -3,7 +3,7 @@ import { NoiAPI } from '@noi/api';
 import { selectPathSegmentsIds, selectPathStations } from '@noi/store';
 import { urbanPathState } from '@noi/store/path-store';
 import { formatDuration } from 'src/utils';
-import strings from 'src/lang/locale';
+import { translate } from 'src/lang/locale';
 
 @Component({
   tag: 'noi-path-details',
@@ -101,13 +101,13 @@ export class PathDetails {
         <header>
           {this.highwayTimeMin ?
             <noi-button class={highwayHeaderClass} onClick={this.onActivatePath.bind(this, 'highway')}>
-              <p><span class="header-highway__title">{strings.get('path-details.highway-name')}</span> {formatDuration(this.highwayTimeMin)}</p>
+              <p><span class="header-highway__title">{translate('path-details.highway-name')}</span> {formatDuration(this.highwayTimeMin)}</p>
             </noi-button>
             : null
           }
           {urbanPathState.durationMin !== undefined  ?
             <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
-              <span class="header-highway__title">{strings.get('path-details.urban-name')}</span> {formatDuration(urbanPathState.durationMin)}
+              <span class="header-highway__title">{translate('path-details.urban-name')}</span> {formatDuration(urbanPathState.durationMin)}
             </noi-button>
             : null
           }

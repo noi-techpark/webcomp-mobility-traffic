@@ -9,6 +9,10 @@ export interface NoiState {
   stations: {
     [id: string]: NoiHighwayStation;
   };
+  readonly mapCenter: {
+    lat: number;
+    long: number;
+  };
   readonly start: NoiHighwayStation;
   readonly end: NoiHighwayStation;
   readonly selected: NoiHighwayStation;
@@ -22,7 +26,4 @@ export declare function selectStartEnd(): WithStartEnd<Selectable<NoiHighwayStat
 export declare function selectPathStations(): WithStartEnd<Selectable<NoiHighwayStation>>[];
 export declare function selectPathSegmentsIds(): any[];
 export declare function selectCanLoadPath(): boolean;
-/**
- * it's like a Redux Effect to load external data in async way
- */
 export default state;

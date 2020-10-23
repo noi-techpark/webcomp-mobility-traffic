@@ -3,6 +3,7 @@ import noiStore from '@noi/store';
 import { GeoJSON, Map, TileLayer } from 'leaflet';
 
 import { MapEntity, MapEntityFactory } from './map-entity-factory';
+import { translate } from 'src/lang';
 
 interface LayerObserver<T> {
   layer: T,
@@ -53,13 +54,17 @@ export class NoiMap {
 
   @Watch('lat')
   latHandler(newValue: number, _oldValue: number): void {
-    this.lat = newValue;
+    if (isNotAssigned(newValue)) {
+      return;
+    }
     this.updateCenterAndZoom();
   }
 
   @Watch('long')
   longHandler(newValue: number, _oldValue: number): void {
-    this.long = newValue;
+    if (isNotAssigned(newValue)) {
+      return;
+    }
     this.updateCenterAndZoom();
   }
 
@@ -207,11 +212,9 @@ export class NoiMap {
     if (noiStore.selectedId === noiStore.startId) {
       return null;
     }
-    // TODO: get from strings
-    const title = 'Da qui';
     return (
       <noi-button fill="solid" class="button-md station-popup__btn" onClick={this.onSetAsStart.bind(this)}>
-        {title}
+        {translate('map-popup.from')}
       </noi-button>
     );
   }
@@ -220,11 +223,9 @@ export class NoiMap {
     if (noiStore.selectedId === noiStore.endId) {
       return null;
     }
-    // TODO: get from strings
-    const title = 'A qua';
     return (
       <noi-button fill="solid" class="button-md station-popup__btn" onClick={this.onSetAsEnd.bind(this)}>
-        {title}
+        {translate('map-popup.to')}
       </noi-button>
     );
   }

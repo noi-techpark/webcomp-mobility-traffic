@@ -1,18 +1,5 @@
+import { N as NoiError, c as createStore, a as NOI_ERR_UNKNOWN } from './index-ba94aa95.js';
 import { l as leafletSrc } from './leaflet-src-ee2a66f1.js';
-import { c as createStore } from './index-6ba5ef25.js';
-
-const NOI_ERR_UNKNOWN = 'noi.error.unknown';
-const NOI_ERR_NO_LOCALE = 'noi.error.no-locale';
-class NoiError extends Error {
-  constructor(code, options = {}) {
-    super(options.message ? options.message : code);
-    this.code = code;
-    this.options = options;
-    // see: typescriptlang.org/docs/handbook/release-notes/typescript-2-2.html
-    Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
-    this.name = NoiError.name; // stack traces display correctly now
-  }
-}
 
 /**
  * getting a valid token should be not concurrent, so if one token request is being processed,
@@ -47,7 +34,7 @@ const fnDebounce = (wait, fn) => {
 };
 function formatDuration(valueMin) {
   const h = Math.floor(valueMin / 60);
-  const min = (valueMin % 60);
+  const min = Math.round(valueMin % 60);
   return h ? `${h} h ${min} min` : `${min} min`;
 }
 function getAround(points, center, distanceMeters) {
@@ -200,6 +187,7 @@ const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
 const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
 const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
 const LINK_STATION_PATH_ERR_NOT_FOUND = 'error.link-station-path.not-found';
+const LINK_STATION_VELOCITY_ERR_NOT_FOUND = 'error.link-station-velocity.not-found';
 function getErrByServiceError(_) {
   return new NoiError(NOI_SERVICE_ERR_OFFLINE);
 }
@@ -355,6 +343,20 @@ class OpenDataHubNoiService {
     }
     return response.data.map(s => ({ timeSec: s.mvalue, id: s.scode }));
   }
+  async getLinkStationsVelocity(ids, auth = false) {
+    const where = `scode.in.(${ids.join(',')}),mperiod.eq.3600`;
+    const select = `mvalue,scode`;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
+    const response = await this.request(`${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/velocita'/latest?limit=-1&select=${select}&where=${where}&distinct=true`, { headers });
+    if (!response || !response.data) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, { message: `LinkStation ${name} not found` });
+    }
+    if (response.data.length !== ids.length) {
+      throw new NoiError(LINK_STATION_VELOCITY_ERR_NOT_FOUND, { message: `Some of LinkStation ids=${ids.join(',')} are not found` });
+    }
+    return response.data.map(s => ({ velocityKmH: s.mvalue, id: s.scode }));
+  }
   async getUrbanSegmentsIds(startId, endId) {
     if (startId === '1854' && endId === '1853') {
       // BZ SÜD -> BZ NORD
@@ -411,83 +413,91 @@ const urbanPathStore = createStore({
   errorCode: undefined,
   path: undefined,
   stations: undefined,
-  duration: undefined,
+  durationMin: undefined,
   distance: undefined
 });
-const urbanPathState = setupPathStore(urbanPathStore, loadUrbanPathEffect);
-function setupPathStore(store, effect) {
-  const { onChange, set, state } = store;
-  let effectPromise = undefined;
-  onChange('path', (path) => {
-    if (!path || !path.length) {
-      set('stations', undefined);
+const { onChange, set, state } = urbanPathStore;
+let effectPromise = undefined;
+onChange('path', (path) => {
+  if (!path || !path.length) {
+    set('stations', undefined);
+    return;
+  }
+  const stations = path.reduce((result, i) => {
+    result.push({
+      position: result[result.length - 1].position + i.distance,
+      id: i.end.id,
+      name: i.end.name
+    });
+    return result;
+  }, [{ position: 0, name: path[0].start.name, id: path[0].start.id }]);
+  set('stations', stations);
+});
+onChange('stations', (value) => {
+  const distance = value && value.length ? value[value.length - 1].position : undefined;
+  set('distance', Math.round(distance));
+});
+onChange('startId', (value) => {
+  set('path', undefined);
+  set('durationMin', undefined);
+  set('errorCode', undefined);
+  if (!!value && state.endId) {
+    loadUrbanPath(value, state.endId);
+  }
+});
+onChange('endId', (value) => {
+  set('path', undefined);
+  set('durationMin', undefined);
+  set('errorCode', undefined);
+  if (!!value && state.startId) {
+    loadUrbanPath(state.startId, value);
+  }
+});
+function loadUrbanPath(startId, endId) {
+  set('loading', true);
+  set('errorCode', undefined);
+  if (effectPromise) {
+    effectPromise.cancel();
+  }
+  effectPromise = cancellablePromise(loadUrbanPathEffect(startId, endId));
+  effectPromise.promise
+    .then(data => {
+    set('path', data.path);
+    set('durationMin', data.timeMin);
+    set('loading', false);
+    effectPromise = undefined;
+  })
+    .catch(err => {
+    if (err.isCancelled) {
       return;
     }
-    const stations = path.reduce((result, i) => {
-      result.push({
-        position: result[result.length - 1].position + i.distance,
-        id: i.end.id,
-        name: i.end.name
-      });
-      return result;
-    }, [{ position: 0, name: path[0].start.name, id: path[0].start.id }]);
-    set('stations', stations);
-  });
-  onChange('stations', (value) => {
-    const distance = value && value.length ? value[value.length - 1].position : undefined;
-    set('distance', Math.round(distance));
-  });
-  onChange('startId', (value) => {
-    set('path', undefined);
-    set('errorCode', undefined);
-    if (!!value && state.endId) {
-      loadUrbanPath(value, state.endId);
+    effectPromise = undefined;
+    set('loading', false);
+    if (err instanceof NoiError) {
+      set('errorCode', err.code);
+    }
+    else {
+      set('errorCode', NOI_ERR_UNKNOWN);
     }
   });
-  onChange('endId', (value) => {
-    set('path', undefined);
-    set('errorCode', undefined);
-    if (!!value && state.startId) {
-      loadUrbanPath(state.startId, value);
-    }
-  });
-  function loadUrbanPath(startId, endId) {
-    set('loading', true);
-    set('errorCode', undefined);
-    if (effectPromise) {
-      effectPromise.cancel();
-    }
-    effectPromise = cancellablePromise(effect(startId, endId));
-    effectPromise.promise
-      .then(path => {
-      set('path', path);
-      set('loading', false);
-      effectPromise = undefined;
-    })
-      .catch(err => {
-      if (err.isCancelled) {
-        return;
-      }
-      effectPromise = undefined;
-      set('loading', false);
-      if (err instanceof NoiError) {
-        set('errorCode', err.code);
-      }
-      else {
-        set('errorCode', NOI_ERR_UNKNOWN);
-      }
-    });
-  }
-  return store.state;
 }
+const urbanPathState = state;
 /**
  * it's like a Redux Effect to load external data in async way
  */
 async function loadUrbanPathEffect(startId, endId) {
-  const urbanPath = (await NoiAPI.getUrbanSegmentsIds(startId, endId));
-  return urbanPath
-    ? await NoiAPI.getLinkStationsByIds(urbanPath, { calcGeometryDistance: true })
-    : undefined;
+  const segmentsIds = (await NoiAPI.getUrbanSegmentsIds(startId, endId));
+  if (!segmentsIds) {
+    return undefined;
+  }
+  const path = await NoiAPI.getLinkStationsByIds(segmentsIds, { calcGeometryDistance: true });
+  const velocityMap = (await NoiAPI.getLinkStationsVelocity(path.map(i => i.id))).reduce((result, i) => { result[i.id] = i.velocityKmH; return result; }, {});
+  const timeMin = path.reduce((result, i) => {
+    const timeMin = Math.round((i.distance / (1000 * velocityMap[i.id])) * 60);
+    result += timeMin;
+    return result;
+  }, 0);
+  return { path, timeMin };
 }
 
-export { NoiAPI as N, NoiError as a, NOI_ERR_NO_LOCALE as b, formatDuration as f, urbanPathState as u };
+export { NoiAPI as N, formatDuration as f, urbanPathState as u };

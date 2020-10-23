@@ -1,9 +1,8 @@
-import { r as registerInstance, j as createEvent, h, e as Host } from './index-375c0366.js';
-import { N as NoiAPI, f as formatDuration, u as urbanPathState } from './path-store-3d830b03.js';
+import { r as registerInstance, k as createEvent, h, e as Host } from './index-5dc3e2b7.js';
+import './index-ba94aa95.js';
 import './leaflet-src-ee2a66f1.js';
-import './index-6ba5ef25.js';
-import { e as selectPathSegmentsIds, f as selectPathStations } from './index-606d4fed.js';
-import { s as strings } from './locale-ff5c266f.js';
+import { N as NoiAPI, f as formatDuration, u as urbanPathState } from './path-store-f0a9cb54.js';
+import { e as selectPathSegmentsIds, f as selectPathStations, t as translate } from './locale-8acd63dc.js';
 
 const pathDetailsCss = ".sc-noi-path-details-h{display:flex;flex-direction:column}header.sc-noi-path-details{display:flex;width:100%;height:48px;line-height:48px;margin-bottom:auto;text-align:center}noi-button.header__section.sc-noi-path-details{flex:1;justify-content:center;--background:rgba(var(--noi-primary-rgb), 0.3);--color:var(--noi-primary-contrast);font-weight:bold;text-shadow:1px 1px rgb(0,0,0,0.3)}noi-button.header__section--active.sc-noi-path-details{--background:rgba(var(--noi-primary-rgb), 0.5)}.content.sc-noi-path-details{flex:1;overflow-y:auto;overflow-x:hidden}.header-highway__title.sc-noi-path-details{background:var(--noi-primary-contrast);color:var(--noi-primary);border-radius:4px;padding:4px;margin-right:8px;font-weight:normal;text-shadow:none}noi-station-item.sc-noi-path-details:last-of-type{margin-bottom:48px}noi-urban-path.sc-noi-path-details{height:100%;display:block}";
 
@@ -67,9 +66,9 @@ const PathDetails = class {
       'header__section--active': this.activePath === 'urban'
     };
     return (h(Host, { class: hostClass }, h("header", null, this.highwayTimeMin ?
-      h("noi-button", { class: highwayHeaderClass, onClick: this.onActivatePath.bind(this, 'highway') }, h("p", null, h("span", { class: "header-highway__title" }, strings.get('path-details.highway-name')), " ", formatDuration(this.highwayTimeMin)))
+      h("noi-button", { class: highwayHeaderClass, onClick: this.onActivatePath.bind(this, 'highway') }, h("p", null, h("span", { class: "header-highway__title" }, translate('path-details.highway-name')), " ", formatDuration(this.highwayTimeMin)))
       : null, urbanPathState.durationMin !== undefined ?
-      h("noi-button", { class: urbanHeaderClass, onClick: this.onActivatePath.bind(this, 'urban') }, h("span", { class: "header-highway__title" }, strings.get('path-details.urban-name')), " ", formatDuration(urbanPathState.durationMin))
+      h("noi-button", { class: urbanHeaderClass, onClick: this.onActivatePath.bind(this, 'urban') }, h("span", { class: "header-highway__title" }, translate('path-details.urban-name')), " ", formatDuration(urbanPathState.durationMin))
       : null), this.renderPath()));
   }
   static get watchers() { return {

@@ -8,9 +8,79 @@
 .wrapper {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
   margin: 0;
+}
+
+.error {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--noi-font-family);
+  background: var(--noi-primary-contrast);
+  color: rgba(var(--noi-primary-rgb), 0.8);
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--noi-primary-contrast);
+  color: rgba(var(--noi-primary-rgb), 0.8);
+}
+
+.loading-img {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.loading-img > img {
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+
+.loading-img:before {
+  z-index: 1;
+    background: rgba(var(--noi-primary-rgb), 0.5);
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 50%;
+    animation: pulse-circle 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-circle {
+  0% {
+    transform: scale(.5);
+  }
+  80%, 100% {
+    opacity: 0;
+  }
+}
+.error-btn {
+  --font-family: var(--noi-font-family);
+  --background: var(--noi-primary);
+  --color: var(--noi-primary-contrast);
 }
 
 /* map */

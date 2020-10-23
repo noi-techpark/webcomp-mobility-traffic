@@ -1,4 +1,4 @@
-import { h } from './index-375c0366.js';
+import { h } from './index-5dc3e2b7.js';
 import { l as leafletSrc } from './leaflet-src-ee2a66f1.js';
 
 const defaultPathOptions = {
