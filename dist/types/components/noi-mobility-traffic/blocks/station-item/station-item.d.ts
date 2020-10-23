@@ -1,6 +1,7 @@
 export declare class StationItem {
   name: string;
   position: number;
-  arrival: Date;
+  isStart: boolean;
+  isEnd: boolean;
   render(): any;
 }

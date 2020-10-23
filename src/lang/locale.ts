@@ -1,8 +1,13 @@
+import { NoiError, NOI_ERR_NO_LOCALE } from '@noi/api/error';
+
 export enum SupportedLangs {
   it = 'it',
   en = 'en',
   de = 'de',
 }
+
+const strings = new Map<string, string>();
+let locale = undefined;
 
 export function getNavigatorLang(): SupportedLangs {
   const lang = navigator.language ? navigator.language.split('-')[0] : 'en';
@@ -31,15 +36,29 @@ export function fetchLocaleStringsForComponent(componentName: string, locale: st
   });
 }
 
-export async function getLocaleComponentStrings(element: HTMLElement): Promise<any> {
+export async function getLocaleComponentStrings(element: HTMLElement): Promise<void> {
   let componentName = element.tagName.toLowerCase();
   let componentLanguage = getComponentClosestLang(element);
-  let strings;
   try {
-    strings = await fetchLocaleStringsForComponent(componentName, componentLanguage);
+    locale = await fetchLocaleStringsForComponent(componentName, componentLanguage);
   } catch (e) {
     console.warn(`No locale for ${componentName} (${componentLanguage}) loading default locale en.`);
-    strings = await fetchLocaleStringsForComponent(componentName, 'en');
   }
-  return strings;
+  try {
+    locale = locale || await fetchLocaleStringsForComponent(componentName, 'en');
+    Object.keys(locale).forEach(key => strings.set(key, locale[key]));
+  }
+    catch (error) {
+    throw new NoiError(NOI_ERR_NO_LOCALE, {message: 'Unable to fetch any language'});
+  }
 }
+
+export function translate(code: string) {
+  if (strings.has(code)) {
+    return strings.get(code);
+  }
+  return code;
+}
+
+
+

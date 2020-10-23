@@ -1,10 +1,13 @@
 import { NoiError, NoiErrorOptionsObject } from "./error";
 import { NoiAuth } from "./auth";
+import { getPointsDistance } from "src/utils";
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
 export const NOI_SERVICE_ERR_DATA_FORMAT = 'error.noi-service.data-format';
 export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
+export const LINK_STATION_PATH_ERR_NOT_FOUND = 'error.link-station-path.not-found';
+export const LINK_STATION_VELOCITY_ERR_NOT_FOUND = 'error.link-station-velocity.not-found';
 
 
 export function getErrByServiceError(_: Error): NoiError {
@@ -23,24 +26,15 @@ export interface NoiErrorService {
   showError(error: NoiError);
 }
 
-export interface NoiService {
-  getBluetoothStations(): Promise<Array<NoiBTStation>>;
-  getHighwayStations(): Promise<Array<NoiHighwayStation>>;
-  getLinkStationAvgTime(id: string, auth?: boolean): Promise<number>;
-  getSegmentsAvgTime(ids: string[], auth?: boolean): Promise<Array<{id: string, timeSec: number}>>;
-  getLinkStations(): Promise<Array<NoiLinkStation>>
-}
-
 export interface NoiLinkStation {
   type: 'LinkStation',
-  available: boolean,
-  active: boolean,
   id: string,
   name: string,
   origin: string,
   start: NoiBTStation,
   end: NoiBTStation,
   geometry: GeoJSON.Geometry,
+  distance?: number
 }
 
 export interface NoiTreeItem {
@@ -54,8 +48,6 @@ export interface NoiTreeItem {
 }
 
 export interface NoiBTStation {
-  active: boolean;
-  available: boolean;
   id: string;
   coordinates: {lat: number; long: number};
   name: string;
@@ -131,8 +123,8 @@ export function parse4326Coordinates(value: {x: number, y: number; srid: number}
     return null;
   }
   try {
-    const long = value.x * 180 / 20037508.34;
-    const lat = Math.atan(Math.exp(value.y * Math.PI / 20037508.34)) * 360 / Math.PI - 90;
+    const long = +value.x * 180 / 20037508.34;
+    const lat = Math.atan(Math.exp(+value.y * Math.PI / 20037508.34)) * 360 / Math.PI - 90;
     return {lat, long};
   } catch (error) {
     return null;
@@ -143,13 +135,14 @@ export function parseBluetoothStation(prefix, s: any): NoiBTStation {
   if (s[`${prefix}type`] !== 'BluetoothStation') {
     return null;
   }
-  const coordinates = parse4326Coordinates(s[`${prefix}coordinate`]);
+  if (!s[`${prefix}coordinate`] || !s[`${prefix}coordinate`].y) {
+    return null;
+  }
+  const coordinates = {lat: s[`${prefix}coordinate`].y, long: s[`${prefix}coordinate`].x};
   if (!coordinates) {
     return null;
   }
   return {
-    active: !!s[`${prefix}active`],
-    available: !!s[`${prefix}available`],
     id: s[`${prefix}code`],
     name: s[`${prefix}name`],
     coordinates,
@@ -157,24 +150,41 @@ export function parseBluetoothStation(prefix, s: any): NoiBTStation {
   };
 }
 
-export function parseLinkStation(s): NoiLinkStation {
-  const start: NoiBTStation = parseBluetoothStation('sb', s);
-  const end: NoiBTStation = parseBluetoothStation('se', s);
-  return {
-    type: 'LinkStation',
-    active: !!s.eactive,
-    available: !!s.eavailable,
-    id: s.ecode,
-    name: s.ename,
-    origin: s.eorigin,
-    geometry: s.egeometry,
-    start,
-    end
-  };
+function calcGeometryDistance(value: any) {
+  if (value.type !== 'LineString') {
+    return undefined;
+  }
+  return (value.coordinates as Array<[number, number]>).reduce<{prev: [number, number], distance: number}>((result, i) => {
+    if (result.prev !== null) {
+      result.distance += getPointsDistance(result.prev, i);
+    }
+    result.prev = i;
+    return result;
+  }, {prev: null, distance: 0}).distance;
+}
+
+function getLinkStationParser(options?: {calcGeometryDistance?: boolean}) {
+  return (s: any) =>{
+    const start: NoiBTStation = parseBluetoothStation('sb', s);
+    const end: NoiBTStation = parseBluetoothStation('se', s);
+    const result: NoiLinkStation = {
+      type: 'LinkStation',
+      id: s.ecode,
+      name: s.ename,
+      origin: s.eorigin,
+      geometry: s.egeometry,
+      start,
+      end
+    };
+    if (options && options.calcGeometryDistance && s.egeometry) {
+      result.distance = calcGeometryDistance(s.egeometry);
+    }
+    return result;
+  }
 }
 
 
-export class OpenDataHubNoiService implements NoiService {
+export class OpenDataHubNoiService {
   static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
   static VERSION = 'v2';
 
@@ -196,22 +206,7 @@ export class OpenDataHubNoiService implements NoiService {
     }
   }
 
-  async getLinkStationAvgTime(id: string, auth = false): Promise<number> {
-    const where = `scode.eq.${id}`;
-    const select = `sdatatypes.tempo`;
-    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
-    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
-    const response = await this.request(
-      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/tempo/latest?limit=-1&select=${select}&where=${where}&distinct=true`,
-      { headers }
-    );
-    if (!response || !response.data) {
-      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
-    }
-    return response.data.reduce((result, t) => {result += t.mvalue; return result}, 0);
-  }
-
-  async getSegmentsAvgTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number}>> {
+  async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number}>> {
     const where = `scode.in.(${ids.join(',')})`;
     const select = `scode,sdatatypes.tempo`;
     const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
@@ -226,18 +221,63 @@ export class OpenDataHubNoiService implements NoiService {
     return response.data.map(s => ({timeSec: s.mvalue, id: s.scode}));
   }
 
+  async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number}>> {
+    const where = `scode.in.(${ids.join(',')}),mperiod.eq.3600`;
+    const select = `mvalue,scode`;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/velocita'/latest?limit=-1&select=${select}&where=${where}&distinct=true`,
+      { headers }
+    );
+    if (!response || !response.data) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
+    }
+    if (response.data.length !== ids.length) {
+      throw new NoiError(LINK_STATION_VELOCITY_ERR_NOT_FOUND, {message: `Some of LinkStation ids=${ids.join(',')} are not found`});
+    }
+    return response.data.map(s => ({velocityKmH: s.mvalue, id: s.scode}));
+  }
 
-  async getLinkStations(): Promise<Array<NoiLinkStation>> {
-    const where = 'egeometry.neq.null,eactive.eq.true';
-    const accessToken = await NoiAuth.getValidAccessToken();
+  async getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>> {
+    if (startId === '1854' && endId === '1853') {
+      // BZ SÜD -> BZ NORD
+      return [
+        'Torricelli->siemens',
+        'siemens->Galilei_Palermo',
+        'Galilei_Palermo->Galilei_Lancia',
+        'Galilei_Lancia->Galilei_Virgolo',
+        'Galilei_Virgolo->Galleria_Virgolo',
+        'Galleria_Virgolo->P_Campiglio'
+      ];
+    }
+    if (startId === '1853' && endId === '1854') {
+      // BZ NORD -> BZ SÜD
+      return [
+        'P_Campiglio->Galleria_Virgolo',
+        'Galleria_Virgolo->Arginale_Palermo',
+        'Arginale_Palermo->Arginale_Resia',
+        'Arginale_Resia->Agip_Einstein' 
+      ];
+    }
+    return null;
+  }
+
+  async getLinkStationsByIds(ids: Array<string>, options?: {auth?: boolean, calcGeometryDistance?: boolean}): Promise<Array<NoiLinkStation>> {
+    const where = `egeometry.neq.null,eactive.eq.true,ecode.in.(${ids.join(',')})`;
+    const accessToken = options && options.auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
     const response = await this.request(
       `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=${where}&limit=-1`,
-      { headers: { 'Authorization': `bearer ${accessToken}` } }
+      { headers }
     );
     if (!response || !response.data || !Array.isArray(response.data)) {
       throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `LinkStations expecting an array response`});
     }
-    return response.data.map(parseLinkStation);
+    if (response.data.length !== ids.length) {
+      throw new NoiError(LINK_STATION_PATH_ERR_NOT_FOUND, {message: `Some of LinkStation ids=${ids.join(',')} are not found`});
+    }
+    return response.data.map(getLinkStationParser(options));
   }
 
   async getHighwayStations(): Promise<Array<NoiHighwayStation>> {
@@ -250,35 +290,6 @@ export class OpenDataHubNoiService implements NoiService {
     }
     return parseHighwayStations(response.data);
   }
-
-  async getRoute(startId: string, endId: string): Promise<Array<NoiHighwayStation>> {
-    const accessToken = await NoiAuth.getValidAccessToken();
-    const where = `scode.eq.${startId},sactive.eq.true`;
-    const response = await this.request(
-      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat/LinkStation?where=${where}&limit=-1`,
-      { headers: { 'Authorization': `bearer ${accessToken}` } }
-    );
-    if (!response || !response.data || !Array.isArray(response.data)) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `HighwayStations expecting an array response`});
-    }
-    return parseHighwayStations(response.data);
-  }
-
-  async getBluetoothStations(): Promise<Array<NoiBTStation>> {
-    const response = await this.request(
-      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/
-      tree/BluetoothStation`
-    );
-    if (!response || !response.data || !response.data.BluetoothStation || !response.data.BluetoothStation.stations) {
-      throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {
-        message: 'getBluetoothStations expecting an array response in data.BluetoothStation.stations'
-      });
-    }
-    return Object
-      .values(response.data.BluetoothStation.stations)
-      .map(s => parseBluetoothStation('s', s))
-      .filter(s => !!s);
-  }
 }
 
-export const NoiAPI: NoiService = new OpenDataHubNoiService();
+export const NoiAPI = new OpenDataHubNoiService();

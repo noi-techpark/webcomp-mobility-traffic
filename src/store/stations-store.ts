@@ -1,15 +1,15 @@
-import { Event } from '@stencil/core';
 import { createStore } from '@stencil/store';
-import { EventEmitter } from 'events';
 import { NoiHighwayStation } from '../api';
 import { Selectable, WithStartEnd } from '../utils';
 
 export interface NoiState {
   selecting: 'start' | 'end' | null;
+  activePath: 'highway' | 'urban';
   selectedId: string;
   startId: string;
   endId: string;
   stations: {[id: string]: NoiHighwayStation},
+  readonly mapCenter: {lat: number, long: number};
   readonly start: NoiHighwayStation,
   readonly end: NoiHighwayStation,
   readonly selected: NoiHighwayStation,
@@ -24,6 +24,7 @@ function orderStations(value:{[id: string]: NoiHighwayStation}) {
 }
 
 const { state, onChange, set } = createStore<NoiState>({
+  activePath: 'highway',
   selecting: null,
   selectedId: '',
   startId: '',
@@ -33,7 +34,8 @@ const { state, onChange, set } = createStore<NoiState>({
   end: null,
   selected: null,
   stationsList: null,
-  loading: true
+  loading: true,
+  mapCenter: {lat: 46.4983, long: 11.3548}
 });
 
 onChange('stations', (stations) => {
@@ -51,6 +53,12 @@ onChange('selectedId', (selectedId) => {
     set('selected', state.stations[selectedId]);
   } else {
     set('selected', null);
+  }
+});
+
+onChange('selected', (selected) => {
+  if (selected) {
+    set('mapCenter', {...selected.coordinates});
   }
 });
 

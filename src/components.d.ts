@@ -167,11 +167,14 @@ export namespace Components {
     interface NoiMobilityTraffic {
     }
     interface NoiPathDetails {
+        "endId": string;
+        "startId": string;
     }
     interface NoiSearch {
     }
     interface NoiStationItem {
-        "arrival": Date;
+        "isEnd": boolean;
+        "isStart": boolean;
         "name": string;
         "position": number;
     }
@@ -179,6 +182,8 @@ export namespace Components {
         "overlayIndex": number;
         "selecting": 'start' | 'end';
         "visible": boolean;
+    }
+    interface NoiUrbanPath {
     }
 }
 declare global {
@@ -242,6 +247,12 @@ declare global {
         prototype: HTMLNoiStationsModalElement;
         new (): HTMLNoiStationsModalElement;
     };
+    interface HTMLNoiUrbanPathElement extends Components.NoiUrbanPath, HTMLStencilElement {
+    }
+    var HTMLNoiUrbanPathElement: {
+        prototype: HTMLNoiUrbanPathElement;
+        new (): HTMLNoiUrbanPathElement;
+    };
     interface HTMLElementTagNameMap {
         "noi-backdrop": HTMLNoiBackdropElement;
         "noi-button": HTMLNoiButtonElement;
@@ -253,6 +264,7 @@ declare global {
         "noi-search": HTMLNoiSearchElement;
         "noi-station-item": HTMLNoiStationItemElement;
         "noi-stations-modal": HTMLNoiStationsModalElement;
+        "noi-urban-path": HTMLNoiUrbanPathElement;
     }
 }
 declare namespace LocalJSX {
@@ -433,11 +445,15 @@ declare namespace LocalJSX {
     interface NoiMobilityTraffic {
     }
     interface NoiPathDetails {
+        "endId": string;
+        "onToggleActive"?: (event: CustomEvent<'urban' | 'highway'>) => void;
+        "startId": string;
     }
     interface NoiSearch {
     }
     interface NoiStationItem {
-        "arrival"?: Date;
+        "isEnd"?: boolean;
+        "isStart"?: boolean;
         "name": string;
         "position": number;
     }
@@ -446,6 +462,8 @@ declare namespace LocalJSX {
         "overlayIndex"?: number;
         "selecting"?: 'start' | 'end';
         "visible"?: boolean;
+    }
+    interface NoiUrbanPath {
     }
     interface IntrinsicElements {
         "noi-backdrop": NoiBackdrop;
@@ -458,6 +476,7 @@ declare namespace LocalJSX {
         "noi-search": NoiSearch;
         "noi-station-item": NoiStationItem;
         "noi-stations-modal": NoiStationsModal;
+        "noi-urban-path": NoiUrbanPath;
     }
 }
 export { LocalJSX as JSX };
@@ -474,6 +493,7 @@ declare module "@stencil/core" {
             "noi-search": LocalJSX.NoiSearch & JSXBase.HTMLAttributes<HTMLNoiSearchElement>;
             "noi-station-item": LocalJSX.NoiStationItem & JSXBase.HTMLAttributes<HTMLNoiStationItemElement>;
             "noi-stations-modal": LocalJSX.NoiStationsModal & JSXBase.HTMLAttributes<HTMLNoiStationsModalElement>;
+            "noi-urban-path": LocalJSX.NoiUrbanPath & JSXBase.HTMLAttributes<HTMLNoiUrbanPathElement>;
         }
     }
 }

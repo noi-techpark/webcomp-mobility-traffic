@@ -2,6 +2,7 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 /* popup container */
@@ -54,6 +55,12 @@
   flex: 1;
 }
 
+/* noi-path */
+.noi-map-path {
+  stroke: var(--noi-action);
+  stroke-dasharray: 6px;
+  stroke-width: 5px;
+}
 
 /* start-end marker */
 .noi-marker {

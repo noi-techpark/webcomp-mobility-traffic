@@ -13,11 +13,11 @@
   background-color: var(--background, #1b2b34);
   transition: opacity 0.5s ease-in-out;
   opacity: var(--opacity, 0.5);
+  will-change: opacity;
 }
 
 
 :host(.backdrop-hide) {
-  background: transparent;
   opacity: .1;
 }
 

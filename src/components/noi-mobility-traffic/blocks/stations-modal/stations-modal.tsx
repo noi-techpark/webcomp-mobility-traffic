@@ -1,5 +1,6 @@
-import { Host, Component, h, Prop, getAssetPath, Event, EventEmitter, State } from '@stencil/core';
-import noiStore, { selectStationsWithSelected } from '../../../../store';
+import { Host, Component, h, Prop, Event, EventEmitter, State } from '@stencil/core';
+import noiStore, { selectStationsWithSelected } from '@noi/store';
+import { translate } from 'src/lang';
 
 @Component({
   tag: 'noi-stations-modal',
@@ -16,15 +17,11 @@ export class StationsModal {
 
   onClose() {
     this.modalClose.emit();
+    this.searchText = '';
   }
 
   getTitle() {
-    if (this.selecting === 'start') {
-      return  'Selezionare la partenza';
-    }
-    if (this.selecting === 'end') {
-      return  'Selezionare la destinazione';
-    }
+    return translate(`stations-modal.header-${this.selecting}`);
   }
 
   onSearchChange(value: CustomEvent<{value: string}>) {
@@ -48,19 +45,22 @@ export class StationsModal {
     if (!noiStore.stationsList) {
       return null;
     }
+    const notSelectedId = this.selecting === 'start' ? noiStore.endId : noiStore.startId;
     return selectStationsWithSelected()
-      .filter(s => s.name.toLowerCase().includes(this.searchText))
+      .filter(s => s.name.toLowerCase().includes(this.searchText) && s.id !== notSelectedId)
       .map(s => {
         const stationClass = {
           station: true,
-          'station--selected': !!s.selected,
+          'station--selected': s.selected,
           'station--end': this.selecting === 'end'
         };
         return (
           <article class={stationClass} onClick={this.stationSelectedToggle.bind(this, s.id)}>
             <svg class="station__icon" height="20" viewBox="-4 -4 20 24" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m7 0c3.8659932 0 7 3.13400675 7 7 0 2.57732883-2.3333333 6.9106622-7 13l-.60839506-.8015058c-4.26106996-5.6695486-6.39160494-9.73571332-6.39160494-12.1984942 0-3.86599325 3.13400675-7 7-7z" stroke-width="2"/></svg>
             {s.name}
-            <noi-button size="small" class="station__select-btn button-md" onClick={this.onSelectStation.bind(this, s.id)}>Select</noi-button>
+            <noi-button size="small" class="station__select-btn button-md" onClick={this.onSelectStation.bind(this, s.id)}>
+              {translate('stations-modal.select-btn')}
+            </noi-button>
           </article>
         );
       })
@@ -84,7 +84,7 @@ export class StationsModal {
           <span class="header__title">{this.getTitle()}</span>
         </header>
         <div class="search">
-          <noi-input debounce={100} onNoiChange={this.onSearchChange.bind(this)} placeholder={`A22 station?`}></noi-input>
+          <noi-input debounce={100} onNoiChange={this.onSearchChange.bind(this)} placeholder={translate('stations-modal.input-placeholder')}></noi-input>
         </div>
         <div class="list">
           {this.renderStations()}

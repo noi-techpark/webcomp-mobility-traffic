@@ -3,7 +3,7 @@ import noiStore from '@noi/store';
 import { GeoJSON, Map, TileLayer } from 'leaflet';
 
 import { MapEntity, MapEntityFactory } from './map-entity-factory';
-import { fnDebounce } from 'src/utils';
+import { translate } from 'src/lang';
 
 interface LayerObserver<T> {
   layer: T,
@@ -54,13 +54,17 @@ export class NoiMap {
 
   @Watch('lat')
   latHandler(newValue: number, _oldValue: number): void {
-    this.lat = newValue;
+    if (isNotAssigned(newValue)) {
+      return;
+    }
     this.updateCenterAndZoom();
   }
 
   @Watch('long')
   longHandler(newValue: number, _oldValue: number): void {
-    this.long = newValue;
+    if (isNotAssigned(newValue)) {
+      return;
+    }
     this.updateCenterAndZoom();
   }
 
@@ -134,7 +138,11 @@ export class NoiMap {
 
   private renderGeoJson(e: Element) {
     const geometry = JSON.parse(e.getAttribute('geometry'));
-    const layer = new GeoJSON(geometry, geometry);
+    const layer = new GeoJSON(geometry, {
+      style: {
+        className: 'noi-map-path',
+      }, 
+    });
     this.pathChildren.set(e, {layer, observer: null});
     layer.addTo(this.map);
   }
@@ -204,11 +212,9 @@ export class NoiMap {
     if (noiStore.selectedId === noiStore.startId) {
       return null;
     }
-    // TODO: get from strings
-    const title = 'Da qui';
     return (
       <noi-button fill="solid" class="button-md station-popup__btn" onClick={this.onSetAsStart.bind(this)}>
-        {title}
+        {translate('map-popup.from')}
       </noi-button>
     );
   }
@@ -217,11 +223,9 @@ export class NoiMap {
     if (noiStore.selectedId === noiStore.endId) {
       return null;
     }
-    // TODO: get from strings
-    const title = 'A qua';
     return (
       <noi-button fill="solid" class="button-md station-popup__btn" onClick={this.onSetAsEnd.bind(this)}>
-        {title}
+        {translate('map-popup.to')}
       </noi-button>
     );
   }
@@ -229,7 +233,7 @@ export class NoiMap {
   renderSelectedStationPopup() {
     return (
       <div class="station-popup">
-        <div class="station-popup__header">{noiStore.selected.name}</div>
+        <div class="station-popup__header">{noiStore.selectedId ? noiStore.selected.name : ''}</div>
         <div class="station-popup__content">
           {this.renderSetAsStartButton()}
           {this.renderSetAsEndButton()}
@@ -239,6 +243,7 @@ export class NoiMap {
   }
 
   render() {
+    console.log('map render');
     const popupClass = {
       'map-popup-container': true,
       'map-popup-container--visible': this.showPopup

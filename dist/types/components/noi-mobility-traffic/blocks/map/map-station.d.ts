@@ -1,7 +1,7 @@
+import { NoiHighwayStation } from '@noi/api';
 import { FunctionalComponent } from '../../../../stencil-public-runtime';
 import { CircleMarker } from 'leaflet';
-import { NoiHighwayStation } from '../../../../api';
-import { Selectable, WithStartEnd } from '../../../../utils';
+import { Selectable, WithStartEnd } from 'src/utils';
 export declare type MapStationProps = WithStartEnd<Selectable<NoiHighwayStation>>;
 export declare const MAP_ENTITY_STATION = "MAP_ENTITY_STATION";
 export declare const MapStation: FunctionalComponent<MapStationProps>;

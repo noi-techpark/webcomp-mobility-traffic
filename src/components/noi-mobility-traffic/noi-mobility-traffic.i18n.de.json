@@ -1,3 +1,7 @@
 {
-  "title": "NOI Mobilitätsverkehr"
+  "title": "NOI Mobilitätsverkehr",
+  "path-details.highway-name": "A22",
+  "path-details.urban-name": "SS",
+  "noi.error.unknown": "Errore sconosciuto",
+  "noi.error.no-locale": "Language is not supported"
 }

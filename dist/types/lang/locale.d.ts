@@ -6,4 +6,5 @@ export declare enum SupportedLangs {
 export declare function getNavigatorLang(): SupportedLangs;
 export declare function getComponentClosestLang(element: HTMLElement): SupportedLangs;
 export declare function fetchLocaleStringsForComponent(componentName: string, locale: string): Promise<any>;
-export declare function getLocaleComponentStrings(element: HTMLElement): Promise<any>;
+export declare function getLocaleComponentStrings(element: HTMLElement): Promise<void>;
+export declare function translate(code: string): string;
