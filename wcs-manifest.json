@@ -12,7 +12,7 @@
       "organizationUrl": "https://noi.bz.it"
     }
   ],
-  "image": null,
+  "image": "logo.png",
   "searchTags": [],
   "dist": {
     "basePath": "build",
