@@ -3,7 +3,14 @@
   "description": "Noi Mobility Traffic Web Component",
   "descriptionAbstract": "Noi Mobility Traffic Web Component",
   "license": "AGPL-3.0",
-  "repositoryUrl": "https://github.com/noi-techpark/webcomp-mobility-traffic",
+  "copyrightHolders": [
+    {
+      "name": "NOI",
+      "email": "info@noi.bz.it",
+      "organization": "NOI S.p.A",
+      "organizationUrl": "https://noi.bz.it"
+    }
+  ],
   "authors": [
     {
       "name": "NOI",
@@ -12,10 +19,10 @@
       "organizationUrl": "https://noi.bz.it"
     }
   ],
-  "image": "logo.png",
+  "image": "wcs-logo.png",
   "searchTags": [],
   "dist": {
-    "basePath": "build",
+    "basePath": "www/build",
     "files": [
       "noi-mobility-traffic.js"
     ]
