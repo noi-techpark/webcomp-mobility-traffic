@@ -5,6 +5,9 @@ import { sass } from '@stencil/sass';
 export const config: Config = {
   namespace: 'noi-mobility-traffic',
   globalStyle: 'src/global/styles.css',
+  testing: {
+    browserArgs: ['--no-sandbox', '--disable-setuid-sandbox'],
+  },
   outputTargets: [
     {
       type: 'dist',
