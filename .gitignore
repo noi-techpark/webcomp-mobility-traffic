@@ -1,7 +1,7 @@
 # General
 .DS_Store
 .env
-www/build/
+www/
 dist/
 
 
