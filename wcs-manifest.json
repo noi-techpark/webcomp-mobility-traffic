@@ -24,7 +24,9 @@
   "dist": {
     "basePath": "www/build",
     "files": [
-      "noi-mobility-traffic.js"
+      "noi-mobility-traffic.js",
+      "noi-mobility-traffic.esm.js",
+      "noi-mobility-traffic.css"
     ]
   },
   "configuration": {
