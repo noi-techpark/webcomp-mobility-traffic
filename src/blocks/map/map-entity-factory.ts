@@ -1,6 +1,6 @@
 import { CircleMarker, LatLng, LatLngExpression, Layer, Map, Marker } from 'leaflet';
+import noiStore from '@noi/store';
 
-import noiStore from '../../../../store';
 import { highlightMarker, MAP_ENTITY_MARKER, renderMarkerElement, unHighlightMarker } from './map-marker';
 import {
   highlightHighwayStation,
@@ -40,6 +40,7 @@ export class MapEntityFactory {
         const latLong = (e.target as CircleMarker).getLatLng();
         this.map.panTo(latLong);
         noiStore.selectedId = id;
+        noiStore.mapPopup = true;
       }
     });
     return result;
@@ -55,6 +56,7 @@ export class MapEntityFactory {
         const latLong = (e.target as Marker).getLatLng();
         this.map.panTo(latLong);
         noiStore.selectedId = id;
+        noiStore.mapPopup = true;
       }
     });
     return result;

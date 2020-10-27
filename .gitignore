@@ -1,7 +1,8 @@
 # General
 .DS_Store
 .env
-www/build
+www/build/
+dist/
 
 
 # Editors

@@ -1,13 +1,13 @@
 import { NoiAPI } from '@noi/api';
 import { urbanPathState } from '@noi/store/path-store';
 import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '@noi/store';
+import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
+import { getLocaleComponentStrings, translate } from '@noi/lang';
 import { Component, Element, State, h, getAssetPath } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
 
-import { getLocaleComponentStrings, translate } from '../../lang';
 import { MapMarker } from './blocks/map/map-marker';
 import { MapStation } from './blocks/map/map-station';
-import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {

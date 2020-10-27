@@ -8,18 +8,17 @@
 /* popup container */
 .popup-container {
   min-width: 200px;
-  visibility: hidden;
-  height: 0;
+  padding: 8px;
   opacity: 0;
-  transition: opacity 1s, visibility 1s;
+  height: auto;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
 }
 
 .popup-container--visible {
-  height: auto;
   opacity: 1;
-  visibility: visible;
-  transition: opacity 1s, visibility 1s;
-  opacity: 1;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
 }
 
 
@@ -319,15 +318,18 @@
 .leaflet-fade-anim .leaflet-tile {
   will-change: opacity;
 }
+
 .leaflet-fade-anim .leaflet-popup {
   opacity: 0;
-  -webkit-transition: opacity 0.2s linear;
-  -moz-transition: opacity 0.2s linear;
-  transition: opacity 0.2s linear;
+  -webkit-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
+  transition: opacity 0.5s linear;
 }
+
 .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
   opacity: 1;
 }
+
 .leaflet-zoom-animated {
   -webkit-transform-origin: 0 0;
   -ms-transform-origin: 0 0;

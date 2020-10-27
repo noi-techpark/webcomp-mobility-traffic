@@ -132,7 +132,7 @@ export class NoiMap {
     observer.observe(e, { attributes: true, childList: false, subtree: false });
     this.entityChildren.set(e, {layer, observer});
     layer.addTo(this.map);
-    layer.bindPopup(this.popupElement, {minWidth: 350});
+    layer.bindPopup(this.popupElement, {minWidth: 400});
     layer.getPopup().on('remove', () => noiStore.selectedId = '');
   }
 
@@ -187,27 +187,6 @@ export class NoiMap {
     this.map.closePopup();
   }
 
-
-  /**
-   * dirty hack to avoid popup container blinking with empty content,
-   * popup container should only be shown (with 1s CSS animation) if the content is rendered.
-   * inverse for hiding, popup content should only be destroyed, when popup container finished hiding 1s CSS animation
-   */
-  updatePopupVisibility(visible: boolean) {
-    clearTimeout(this.popupTimer);
-    if (!visible) {
-      this.popupTimer = window.setTimeout(() => {
-        this.showPopup = false;
-        clearTimeout(this.popupTimer);
-      }, 1000);
-    } else {
-      this.popupTimer = window.setTimeout(() => {
-        this.showPopup = true;
-        clearTimeout(this.popupTimer);
-      }, 500);
-    }
-  }
-
   renderSetAsStartButton() {
     if (noiStore.selectedId === noiStore.startId) {
       return null;
@@ -243,14 +222,12 @@ export class NoiMap {
   }
 
   render() {
-    console.log('map render');
     const popupClass = {
-      'map-popup-container': true,
-      'map-popup-container--visible': this.showPopup
+      'popup-container': true,
+      'popup-container--visible': noiStore.mapPopup
     };
-    this.updatePopupVisibility(!!noiStore.selectedId);
     return <div class={popupClass} ref={(el) => this.popupElement= el as HTMLElement}>
-      {noiStore.selectedId || this.showPopup ? this.renderSelectedStationPopup() : null}
+      {this.renderSelectedStationPopup()}
     </div>
   }
 

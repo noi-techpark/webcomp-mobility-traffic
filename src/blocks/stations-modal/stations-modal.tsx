@@ -1,4 +1,4 @@
-import { Host, Component, h, Prop, Event, EventEmitter, State } from '@stencil/core';
+import { Host, Component, h, Prop, Event, EventEmitter, State, Watch } from '@stencil/core';
 import noiStore, { selectStationsWithSelected } from '@noi/store';
 import { translate } from '@noi/lang';
 
@@ -14,6 +14,13 @@ export class StationsModal {
   @Prop() overlayIndex = 1;
   @Event() modalClose!: EventEmitter<{stationId: string}>;
   @State() searchText = '';
+  @State() hostClass: {slideIn?: boolean, slideOut?: boolean} = {}
+
+  @Watch('visible')
+  onVisibleChange(newValue) {
+    this.hostClass = this.getHostClass(newValue);
+  }
+
 
   onClose() {
     this.modalClose.emit();
@@ -65,11 +72,21 @@ export class StationsModal {
         );
       })
   }
+
+  getHostClass(visible: boolean) {
+    if (visible) {
+      return {slideIn: true};
+    }
+    if (!visible && this.hostClass.slideIn) {
+      return {slideOut: true};
+    }
+    return {};
+  }
   
   render() {
     const hostClass = {
-      'slide-in': this.visible,
-      'slide-out': !this.visible
+      'slide-in': this.hostClass.slideIn,
+      'slide-out': this.hostClass.slideOut
     }
     const hostStyle = {
       zIndex: `${this.overlayIndex + 1}`,
