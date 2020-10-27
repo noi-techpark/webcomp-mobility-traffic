@@ -2,8 +2,8 @@ import { Component, Event, EventEmitter, h, Host, Prop, State, Watch } from '@st
 import { NoiAPI } from '@noi/api';
 import { selectPathSegmentsIds, selectPathStations } from '@noi/store';
 import { urbanPathState } from '@noi/store/path-store';
-import { formatDuration } from 'src/utils';
-import { translate } from 'src/lang/locale';
+import { formatDuration } from '@noi/utils';
+import { translate } from '@noi/lang';
 
 @Component({
   tag: 'noi-path-details',

@@ -1,8 +1,8 @@
-import { NoiHighwayStation } from '@noi/api';
 import { FunctionalComponent, h } from '@stencil/core';
+import { NoiHighwayStation } from '@noi/api';
+import { Selectable, WithStartEnd } from '@noi/utils';
+import { SvgPathIcon } from '@noi/components/leaflet/svg-marker';
 import { Marker, MarkerOptions } from 'leaflet';
-import { SvgPathIcon } from 'src/leaflet/svg-marker';
-import { Selectable, WithStartEnd } from 'src/utils';
 
 export type MapMarkerProps = WithStartEnd<Selectable<NoiHighwayStation>>;
 

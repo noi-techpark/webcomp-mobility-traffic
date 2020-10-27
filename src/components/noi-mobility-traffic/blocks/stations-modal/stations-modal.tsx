@@ -1,6 +1,6 @@
 import { Host, Component, h, Prop, Event, EventEmitter, State } from '@stencil/core';
 import noiStore, { selectStationsWithSelected } from '@noi/store';
-import { translate } from 'src/lang';
+import { translate } from '@noi/lang';
 
 @Component({
   tag: 'noi-stations-modal',

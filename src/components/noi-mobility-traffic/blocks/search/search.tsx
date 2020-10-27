@@ -1,6 +1,6 @@
 import { Host, Component, h, getAssetPath, State } from '@stencil/core';
 import noiStore, { selectCanLoadPath } from '@noi/store';
-import { translate } from 'src/lang';
+import { translate } from '@noi/lang';
 
 @Component({
   tag: 'noi-search',

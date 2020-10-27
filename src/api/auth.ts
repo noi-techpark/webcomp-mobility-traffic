@@ -1,4 +1,4 @@
-import { notConcurrent } from "src/utils";
+import { notConcurrent } from "@noi/utils";
 import { NoiError } from "./error";
 
 export const AUTH_SERVICE_ERR_UNKNOWN = 'error.auth-service.unknown';

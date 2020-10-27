@@ -1,7 +1,7 @@
 import { NoiHighwayStation } from '@noi/api';
 import { FunctionalComponent, h } from '@stencil/core';
 import { CircleMarker, FillRule, Browser } from 'leaflet';
-import { Selectable, WithStartEnd } from 'src/utils';
+import { Selectable, WithStartEnd } from '@noi/utils';
 
 export type MapStationProps = WithStartEnd<Selectable<NoiHighwayStation>>;
 

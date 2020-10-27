@@ -20,7 +20,10 @@
       "@noi/api/*": ["src/api/*"],
       "@noi/api": ["src/api"],
       "@noi/store/*": ["src/store/*"],
-      "@noi/store": ["src/store"]
+      "@noi/store": ["src/store"],
+      "@noi/utils": ["src/utils"],
+      "@noi/components/*": ["src/components/noi-mobility-traffic/components/*"],
+      "@noi/lang": ["src/lang"]
     }
   },
   "include": [

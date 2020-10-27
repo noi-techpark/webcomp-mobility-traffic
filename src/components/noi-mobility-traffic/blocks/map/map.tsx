@@ -1,9 +1,9 @@
 import { Component, Element, Prop, Watch, h, State } from '@stencil/core';
 import noiStore from '@noi/store';
+import { translate } from '@noi/lang';
 import { GeoJSON, Map, TileLayer } from 'leaflet';
 
 import { MapEntity, MapEntityFactory } from './map-entity-factory';
-import { translate } from 'src/lang';
 
 interface LayerObserver<T> {
   layer: T,
