@@ -59,8 +59,6 @@ export namespace Components {
          */
         "type": 'submit' | 'reset' | 'button';
     }
-    interface NoiCard {
-    }
     interface NoiInput {
         /**
           * This Boolean attribute lets you specify that a form control should have input focus when the page loads.
@@ -199,12 +197,6 @@ declare global {
         prototype: HTMLNoiButtonElement;
         new (): HTMLNoiButtonElement;
     };
-    interface HTMLNoiCardElement extends Components.NoiCard, HTMLStencilElement {
-    }
-    var HTMLNoiCardElement: {
-        prototype: HTMLNoiCardElement;
-        new (): HTMLNoiCardElement;
-    };
     interface HTMLNoiInputElement extends Components.NoiInput, HTMLStencilElement {
     }
     var HTMLNoiInputElement: {
@@ -256,7 +248,6 @@ declare global {
     interface HTMLElementTagNameMap {
         "noi-backdrop": HTMLNoiBackdropElement;
         "noi-button": HTMLNoiButtonElement;
-        "noi-card": HTMLNoiCardElement;
         "noi-input": HTMLNoiInputElement;
         "noi-map": HTMLNoiMapElement;
         "noi-mobility-traffic": HTMLNoiMobilityTrafficElement;
@@ -328,8 +319,6 @@ declare namespace LocalJSX {
           * The type of the button.
          */
         "type"?: 'submit' | 'reset' | 'button';
-    }
-    interface NoiCard {
     }
     interface NoiInput {
         /**
@@ -468,7 +457,6 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "noi-backdrop": NoiBackdrop;
         "noi-button": NoiButton;
-        "noi-card": NoiCard;
         "noi-input": NoiInput;
         "noi-map": NoiMap;
         "noi-mobility-traffic": NoiMobilityTraffic;
@@ -485,7 +473,6 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "noi-backdrop": LocalJSX.NoiBackdrop & JSXBase.HTMLAttributes<HTMLNoiBackdropElement>;
             "noi-button": LocalJSX.NoiButton & JSXBase.HTMLAttributes<HTMLNoiButtonElement>;
-            "noi-card": LocalJSX.NoiCard & JSXBase.HTMLAttributes<HTMLNoiCardElement>;
             "noi-input": LocalJSX.NoiInput & JSXBase.HTMLAttributes<HTMLNoiInputElement>;
             "noi-map": LocalJSX.NoiMap & JSXBase.HTMLAttributes<HTMLNoiMapElement>;
             "noi-mobility-traffic": LocalJSX.NoiMobilityTraffic & JSXBase.HTMLAttributes<HTMLNoiMobilityTrafficElement>;

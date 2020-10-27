@@ -1,5 +1,4 @@
 import { LatLng } from 'leaflet';
-import { NoiError } from './api/error';
 
 export type Selectable<T> = T & {selected?: boolean};
 

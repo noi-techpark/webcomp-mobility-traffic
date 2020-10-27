@@ -3,7 +3,7 @@ import { Component, ComponentInterface, Event, EventEmitter, Host, Listen, Prop,
 @Component({
   tag: 'noi-backdrop',
   styleUrl: 'backdrop.css',
-  shadow: true
+  scoped: true,
 })
 export class Backdrop implements ComponentInterface {
   @Prop() overlayIndex = 1;

@@ -99,7 +99,7 @@ export const startTapClick = () => {
     activatableEle = el;
   };
 
-  const addActivated = (el: HTMLElement, x: number, y: number) => {
+  const addActivated = (el: HTMLElement, _x: number, _y: number) => {
     lastActivated = Date.now();
     el.classList.add(ACTIVATED);
   };

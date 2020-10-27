@@ -6,11 +6,25 @@ import tsconfig from './tsconfig.json';
 
 export const config: Config = {
   namespace: 'noi-mobility-traffic',
-  globalStyle: 'src/global/styles.css',
   testing: {
     browserArgs: ['--no-sandbox', '--disable-setuid-sandbox'],
     moduleNameMapper: tsconfigPathsJest(tsconfig),
   },
+  bundles: [
+    { components: [
+      'noi-backdrop',
+      'noi-mobility-traffic',
+      'noi-map',
+      'noi-path-details',
+      'noi-search',
+      'noi-station-item',
+      'noi-stations-modal',
+      'noi-urban-path',
+      'noi-button',
+      'noi-input'
+      ]
+    },
+  ],
   outputTargets: [
     {
       type: 'dist',
