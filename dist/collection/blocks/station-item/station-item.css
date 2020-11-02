@@ -1,0 +1,41 @@
+:host {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 48px;
+  margin: 0 16px;
+  background: transparent;
+  font-family: var(--noi-font-family);
+  color: rgba(var(--noi-primary-rgb), 0.7);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+h3 {
+  font-family: var(--noi-font-family);
+  margin-left: 8px;
+}
+
+:host.station-item--start h3 {
+  color: var(--noi-primary);
+}
+
+:host.station-item--end h3 {
+  color: var(--noi-action);
+}
+
+svg {
+  margin: 0 16px;
+  fill: var(--noi-primary-contrast);
+  stroke-width: 4px;
+  stroke: rgba(var(--noi-primary-rgb), 0.7);
+}
+
+:host.station-item--start svg {
+  color: var(--noi-primary);
+}
+
+:host.station-item--end svg {
+  color: var(--noi-action);
+}
