@@ -54,7 +54,7 @@ pipeline {
                       git tag -a v${VERSION} -m "Version ${VERSION}"
                       mkdir -p ~/.ssh
                       ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-                      git push origin HEAD:master
+                      git push origin HEAD:development
                       git push origin --tags
                     """
                 }
