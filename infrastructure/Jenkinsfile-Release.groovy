@@ -1,9 +1,13 @@
 pipeline {
     agent {
         dockerfile {
-            filename 'docker/Dockerfile'
+            filename 'infrastructure/docker/Dockerfile'
             additionalBuildArgs '--build-arg JENKINS_USER_ID=`id -u jenkins` --build-arg JENKINS_GROUP_ID=`id -g jenkins`'
         }
+    }
+
+    options {
+        ansiColor('xterm')
     }
 
     parameters {
@@ -39,17 +43,20 @@ pipeline {
         }
         stage('Git Tag') {
             steps {
-                ansiColor('xterm') {
-                    sshagent (credentials: ['jenkins_github_ssh_key']) {
-                        sh 'git config --global user.email "info@opendatahub.bz.it"'
-                        sh 'git config --global user.name "Jenkins"'
-                        sh 'git remote set-url origin ${GIT_REPOSITORY}'
-                        sh 'git add -A'
-                        sh 'git commit -m "Verion ${VERSION}"'
-                        sh 'git tag -s -a v${VERSION} -m "Version ${VERSION}"'
-                        sh 'git push origin HEAD:master'
-                        sh 'git push origin --tags'
-                    }
+                sshagent (credentials: ['jenkins_github_ssh_key']) {
+                    sh """
+                      git config --global user.email "info@opendatahub.bz.it"
+                      git config --global user.name "Jenkins"
+                      git remote set-url origin ${GIT_REPOSITORY}
+                      git add -A
+                      git commit --allow-empty -m "Version ${VERSION}"
+                      git tag --delete v${VERSION} || true
+                      git tag -a v${VERSION} -m "Version ${VERSION}"
+                      mkdir -p ~/.ssh
+                      ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+                      git push origin HEAD:master
+                      git push origin --tags
+                    """
                 }
             }
         }

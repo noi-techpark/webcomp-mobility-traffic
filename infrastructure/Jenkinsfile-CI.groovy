@@ -6,15 +6,21 @@ pipeline {
             args '--cap-add=SYS_ADMIN'
         }
     }
+    options {
+        ansiColor('xterm')
+    }
     environment{
         CLIENT_SECRET=credentials('webcomp-mobility-traffic_client-secret')
     }
     stages {
         stage('Configure'){
             steps{
-                sh "echo 'CLIENT_SECRET=${CLIENT_SECRET}'>> .env"
-                sh "echo 'CLIENT_ID=it.bz.opendatahub.webcomponents.mobility-traffic' >>.env"
-                sh """echo 'TOKEN_URL="https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token' >>.env"""
+                sh """
+                    rm -f .env
+                    echo 'CLIENT_SECRET=${CLIENT_SECRET}' >> .env
+                    echo 'CLIENT_ID=it.bz.opendatahub.webcomponents.mobility-traffic' >>.env
+                    echo 'TOKEN_URL="https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token' >>.env
+                """
             }
         }
         stage('Dependencies') {
