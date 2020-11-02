@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
     <title>NOI mobility traffic web component</title>
     <script type="module" src="/build/noi-mobility-traffic.esm.js"></script>
-    <script nomodule src="/build/noi-mobility-traffic.js"></script>
-    <link rel="stylesheet" href="/build/noi-mobility-traffic.css">
+    <!-- <script type="module" src="/build/noi-mobility-traffic.esm.js"></script> -->
+    <!-- <script nomodule src="/build/noi-mobility-traffic.js"></script> -->
     <style>
       html, body {
         display: block;
@@ -16,8 +16,15 @@
         padding: 0;
       }
       noi-mobility-traffic {
-        /* --noi-width: 50%;
-        --noi-height: 50%; */
+        --noi-font-family: "Roboto", "Helvetica Neue", sans-serif; 
+        --noi-width: 100%;
+        --noi-height: 100%;
+        --noi-primary: #0068B4;
+        --noi-primary-rgb: 0, 104, 180;
+        --noi-primary-contrast: #ffffff;
+        --noi-action-rgb: 87, 173, 57;
+        --noi-action: #339966;
+        --noi-action-contrast: #ffffff;
       }
     </style>
   </head>

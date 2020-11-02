@@ -1,6 +1,6 @@
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { createStore } from '@stencil/store';
-import { CancellablePromise, cancellablePromise } from 'src/utils';
+import { CancellablePromise, cancellablePromise } from '@noi/utils';
 import { NoiAPI, NoiLinkStation } from '../api';
 
 export interface NoiPathState {

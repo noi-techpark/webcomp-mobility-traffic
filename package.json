@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "description": "NOI Mobility Traffic Web Component",
   "main": "dist/index.cjs.js",
-  "module": "dist/custom-elements/index.js",
+  "module": "dist/index.js",
+  "types": "dist/types/components.d.ts",
   "es2015": "dist/esm/index.mjs",
   "es2017": "dist/esm/index.mjs",
-  "types": "dist/custom-elements/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/noi-mobility-traffic/noi-mobility-traffic.js",
@@ -17,8 +17,8 @@
   "scripts": {
     "build": "stencil build --docs",
     "start": "stencil build --dev --watch --serve",
-    "test": "stencil test --spec --e2e",
-    "test.watch": "stencil test --spec --e2e --watchAll",
+    "test": "stencil test --spec",
+    "test.watch": "stencil test --spec --watchAll",
     "generate": "stencil generate",
     "chrome": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --disable-web-security --user-data-dir=\"/tmp/chrome_dev_test\" --remote-debugging-port=9222"
   },
@@ -28,17 +28,16 @@
     "leaflet": "^1.7.1",
     "resize-observer-polyfill": "^1.5.1"
   },
-"license": "MIT",
+  "license": "MIT",
   "devDependencies": {
     "@stencil/sass": "^1.3.2",
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^26.0.12",
     "@types/leaflet": "^1.5.17",
     "@types/node": "^14.11.2",
-    "@types/puppeteer": "^3.0.1",
     "jest": "^26.4.2",
     "jest-cli": "^26.4.2",
-    "puppeteer": "^5.2.1",
-    "rollup-plugin-dotenv": "^0.3.0"
+    "rollup-plugin-dotenv": "^0.3.0",
+    "tsconfig-paths-jest": "0.0.1"
   }
 }

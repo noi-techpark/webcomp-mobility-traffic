@@ -5,6 +5,7 @@ import { Selectable, WithStartEnd } from '../utils';
 export interface NoiState {
   selecting: 'start' | 'end' | null;
   activePath: 'highway' | 'urban';
+  mapPopup: boolean;
   selectedId: string;
   startId: string;
   endId: string;
@@ -24,6 +25,7 @@ function orderStations(value:{[id: string]: NoiHighwayStation}) {
 }
 
 const { state, onChange, set } = createStore<NoiState>({
+  mapPopup: false,
   activePath: 'highway',
   selecting: null,
   selectedId: '',
@@ -53,6 +55,7 @@ onChange('selectedId', (selectedId) => {
     set('selected', state.stations[selectedId]);
   } else {
     set('selected', null);
+    set('mapPopup', false);
   }
 });
 

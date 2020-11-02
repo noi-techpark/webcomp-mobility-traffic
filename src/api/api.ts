@@ -1,6 +1,6 @@
 import { NoiError, NoiErrorOptionsObject } from "./error";
 import { NoiAuth } from "./auth";
-import { getPointsDistance } from "src/utils";
+import { getPointsDistance } from "@noi/utils";
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
