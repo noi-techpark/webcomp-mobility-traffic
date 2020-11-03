@@ -28,9 +28,10 @@
   "image": "wcs-logo.png",
   "searchTags": [],
   "dist": {
-    "basePath": "dist/noi-mobility-traffic",
+    "basePath": "cdn/noi",
     "files": [
-      "noi-mobility-traffic.esm.js"
+      "noi-mobility-traffic.esm.js",
+      "noi-mobility-traffic.js"
     ]
   },
   "configuration": {
