@@ -3,7 +3,6 @@
 .env
 www/
 dist/
-cdn/
 
 
 # Editors

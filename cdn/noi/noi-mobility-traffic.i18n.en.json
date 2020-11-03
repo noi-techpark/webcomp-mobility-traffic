@@ -1,0 +1,21 @@
+{
+  "title": "NOI Mobility Traffic",
+  "path-details.highway-name": "A22",
+  "path-details.urban-name": "SS",
+  "search.start-placeholder": "Departure?",
+  "search.end-placeholder": "Arrival?",
+  "map-popup.from": "From",
+  "map-popup.to": "To",
+  "stations-modal.input-placeholder": "A22 stations",
+  "stations-modal.header-start": "Select departure",
+  "stations-modal.header-end": "Select destination",
+  "stations-modal.select-btn": "Select",
+  "noi.error.unknown": "Unknown error. Please contact the support.",
+  "noi.error.no-locale": "Language is not supported",
+  "error.noi-service.unknown": "Unable to connect to Open Data Hub",
+  "error.noi-service.offline": "Network error",
+  "error.noi-service.data-format": "Open Data Hub data error",
+  "error.link-station.not-found": "Segment not found",
+  "error.link-station-path.not-found": "Segment path not found",
+  "error.link-station-velocity.not-found": "Segment velocity data not found"
+}
