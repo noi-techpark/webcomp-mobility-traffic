@@ -5,8 +5,7 @@ import { translate } from '@noi/lang';
 @Component({
   tag: 'noi-stations-modal',
   styleUrl: './stations-modal.css',
-  scoped: true,
-  assetsDirs: ['../../assets']
+  scoped: true
 })
 export class StationsModal {
   @Prop() visible = false;

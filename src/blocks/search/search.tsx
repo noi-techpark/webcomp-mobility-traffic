@@ -70,12 +70,12 @@ export class Search {
   renderFooter() {
     if (selectCanLoadPath()) {
       return (
-        <img class="search-footer__img" src={getAssetPath('./assets/mountains.svg')} alt=""/>
+        <img class="search-footer__img" src={getAssetPath('./mountains.svg')} alt=""/>
       );
     }
     return [
       <p class="search-footer__text">Smart travel <br/> decisions</p>,
-      <img class="search-footer__img" src={getAssetPath('./assets/search.svg')} alt=""/>
+      <img class="search-footer__img" src={getAssetPath('./search.svg')} alt=""/>
     ];
   }
 
@@ -102,7 +102,7 @@ export class Search {
           <noi-button class="header__back-btn" fill="clear" onClick={this.onSlideOut.bind(this)}>
             <svg slot="icon-only" class="header__icon" height="14" viewBox="0 0 10 14" width="10" xmlns="http://www.w3.org/2000/svg"><path d="m0 1.53073535 1.28718658-1.53073535 8.35973178 7.02965056-8.35973178 7.02965054-1.28718658-1.5307353 6.53859329-5.49919813z" transform="matrix(-1 0 0 1 9.646918 0)"/></svg>
           </noi-button>
-          <img class="search__logo" src={getAssetPath('./assets/logo.svg')} alt="BrennerLec"/>
+          <img class="search__logo" src={getAssetPath('./logo.svg')} alt="BrennerLec"/>
         </header>
         <div class="search__stations">
           <div class="search-stations__wrapper">

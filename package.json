@@ -9,14 +9,16 @@
   "es2017": "dist/esm/index.mjs",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/noi-mobility-traffic/noi-mobility-traffic.js",
+  "unpkg": "dist/noi-mobility-traffic/noi-mobility-traffic.esm.js",
   "files": [
     "dist/",
     "loader/"
   ],
   "scripts": {
-    "build": "stencil build --docs",
-    "start": "stencil build --dev --watch --serve",
+    "build:cdn": "stencil build --docs --config stencil.config-cdn.ts",
+    "build:local": "stencil build --docs --config  stencil.config-local.ts",
+    "start": "stencil build --config  stencil.config-local.ts --dev --watch --serve",
+    "start:prod": "stencil build --config stencil.config-local.ts --watch --serve",
     "test": "stencil test --spec",
     "test.watch": "stencil test --spec --watchAll",
     "generate": "stencil generate",
@@ -31,6 +33,7 @@
   "license": "MIT",
   "devDependencies": {
     "@stencil/sass": "^1.3.2",
+    "@stencil/webpack": "0.0.6",
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^26.0.12",
     "@types/leaflet": "^1.5.17",

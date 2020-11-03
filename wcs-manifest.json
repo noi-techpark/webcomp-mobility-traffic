@@ -6,7 +6,7 @@
   "copyrightHolders": [
     {
       "name": "NOI",
-      "email": "info@noi.bz.it",
+      "email": "digital@noi.bz.it",
       "organization": "NOI S.p.A",
       "organizationUrl": "https://noi.bz.it"
     }
@@ -14,9 +14,15 @@
   "authors": [
     {
       "name": "NOI",
-      "email": "info@noi.bz.it",
+      "email": "digital@noi.bz.it",
       "organization": "NOI S.p.A",
       "organizationUrl": "https://noi.bz.it"
+    },
+    {
+      "name": "Solhea",
+      "email": "info@solhea.com",
+      "organization": "Solhea S.R.L.",
+      "organizationUrl": "https://solhea.com"
     }
   ],
   "image": "wcs-logo.png",

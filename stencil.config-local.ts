@@ -27,25 +27,17 @@ export const config: Config = {
   ],
   outputTargets: [
     {
-      type: 'dist',
-      esmLoaderPath: '../loader',
-      copy: [
-        {
-          src: "**/*.i18n.*.json",
-          dest: "i18n"
-        }
-      ]
-    },
-    {
-      type: 'docs-readme',
-    },
-    {
       type: 'www',
-      serviceWorker: null, // disable service workers
+      serviceWorker: null,
+      buildDir: '',
       copy: [
         {
-          src: "**/*.i18n.*.json",
-          dest: "i18n"
+          src: "../i18n/*.i18n.*.json",
+          dest: "."
+        },
+        {
+          src: "../assets/*.svg",
+          dest: "."
         }
       ]
     },
