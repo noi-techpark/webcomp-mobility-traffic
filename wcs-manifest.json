@@ -30,8 +30,29 @@
   "dist": {
     "basePath": "cdn/noi",
     "files": [
+      "host.config.json",
+      "index.esm.js",
+      "index.html",
+      "logo.svg",
+      "mountains.svg",
       "noi-mobility-traffic.esm.js",
-      "noi-mobility-traffic.js"
+      "noi-mobility-traffic.i18n.de.js",
+      "noi-mobility-traffic.i18n.en.js",
+      "noi-mobility-traffic.i18n.it.js",
+      "noi-mobility-traffic.js",
+      "p-6c255794.entry.js",
+      "p-cdb96f25.js",
+      "search.svg"
+    ],
+    "scripts": [
+      {
+        "file": "noi-mobility-traffic.esm.js",
+        "parameter": "type='module'"
+      },
+      {
+        "file": "noi-mobility-traffic.js",
+        "parameter": "nomodule"
+      }
     ]
   },
   "configuration": {
