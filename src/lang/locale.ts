@@ -1,4 +1,5 @@
 import { NoiError, NOI_ERR_NO_LOCALE } from '@noi/api/error';
+import { getAssetPath } from '@stencil/core';
 
 export enum SupportedLangs {
   it = 'it',
@@ -24,31 +25,27 @@ export function getComponentClosestLang(element: HTMLElement): SupportedLangs {
   }
 }
 
-export function fetchLocaleStringsForComponent(componentName: string, locale: string): Promise<any> {
-  return new Promise((resolve, reject): void => {
-    fetch(`/i18n/${componentName}.i18n.${locale}.json`).then(
-      result => {
-        if (result.ok) resolve(result.json());
-        else reject();
-      },
-      () => reject()
-    );
-  });
+export async function fetchLocaleStringsForComponent(componentName: string, locale: string): Promise<any> {
+  try {
+    const result = await fetch(getAssetPath(`./${componentName}.i18n.${locale}.json`));
+    if (result.ok) {
+      return result.json();
+    }
+    return null;
+  } catch (error) {
+    console.warn(`No locale for ${componentName} (${locale}) loading default locale en.`);
+    return null;
+  }
 }
 
 export async function getLocaleComponentStrings(element: HTMLElement): Promise<void> {
   let componentName = element.tagName.toLowerCase();
   let componentLanguage = getComponentClosestLang(element);
-  try {
-    locale = await fetchLocaleStringsForComponent(componentName, componentLanguage);
-  } catch (e) {
-    console.warn(`No locale for ${componentName} (${componentLanguage}) loading default locale en.`);
-  }
-  try {
-    locale = locale || await fetchLocaleStringsForComponent(componentName, 'en');
+  locale = await fetchLocaleStringsForComponent(componentName, componentLanguage);
+  locale = locale || await fetchLocaleStringsForComponent(componentName, 'en');
+  if (locale) {
     Object.keys(locale).forEach(key => strings.set(key, locale[key]));
-  }
-    catch (error) {
+  } else {
     throw new NoiError(NOI_ERR_NO_LOCALE, {message: 'Unable to fetch any language'});
   }
 }

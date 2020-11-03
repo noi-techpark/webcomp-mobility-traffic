@@ -8,6 +8,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 
 import { MapMarker } from './blocks/map/map-marker';
 import { MapStation } from './blocks/map/map-station';
+import { startTapClick } from './components/tap-click';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -21,8 +22,7 @@ const rIC = (callback: () => void) => {
 @Component({
   tag: 'noi-mobility-traffic',
   styleUrl: 'noi-mobility-traffic.css',
-  scoped: true,
-  assetsDirs: ['assets']
+  scoped: true
 })
 export class NoiMobilityTraffic {
   private resizeObserver: ResizeObserver;
@@ -54,9 +54,7 @@ export class NoiMobilityTraffic {
 
   async componentDidLoad(): Promise<void> {
     await this.loadLocaleAndStations();
-    rIC(() => {
-      import('./components/tap-click').then(module => module.startTapClick());
-    });
+    rIC(startTapClick);
     this.resizeObserver = new ResizeObserver(([entry]) => {
       this.applyMediaClasses(entry.contentRect.width, entry.contentRect.height);
     });
@@ -135,7 +133,7 @@ export class NoiMobilityTraffic {
       return (<div class="wrapper">
         <div class="loading">
           <div class="loading-img">
-            <img src={getAssetPath('./assets/search.svg')} alt=""/>
+            <img src={getAssetPath('./search.svg')} alt=""/>
           </div>
         </div>
       </div>);
