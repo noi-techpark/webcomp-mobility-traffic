@@ -67,6 +67,15 @@
           "values": ["en", "de", "it"],
           "default": "en"
         }
+      },
+      {
+        "key": "style",
+        "type": "text",
+        "label": "CSS style definition",
+        "required": false,
+        "options": {
+          "default": "--noi-font-family: 'Roboto', 'Helvetica Neue', sans-serif; --noi-width: 100%; --noi-height: 100%; --noi-primary: #0068B4; --noi-primary-rgb: 0, 104, 180; --noi-primary-contrast: #ffffff; --noi-action-rgb: 87, 173, 57; --noi-action: #339966; --noi-action-contrast: #ffffff"
+        }
       }
     ]
   }
