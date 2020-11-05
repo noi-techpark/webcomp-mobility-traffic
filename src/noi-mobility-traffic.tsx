@@ -9,6 +9,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 import { MapMarker } from './blocks/map/map-marker';
 import { MapStation } from './blocks/map/map-station';
 import { startTapClick } from './components/tap-click';
+import { fnDebounce } from './utils';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -55,9 +56,19 @@ export class NoiMobilityTraffic {
   async componentDidLoad(): Promise<void> {
     await this.loadLocaleAndStations();
     rIC(startTapClick);
-    this.resizeObserver = new ResizeObserver(([entry]) => {
+    /** If any changes are incurred during the callback, then layout happens again,
+     * but here, the system finds the shallowest at which depth a change occurred
+     * (measured in simple node depth from the root).
+     * Any changes that are related to something deeper down in the tree are delivered at once,
+     * while any that are not are queued up and delivered in the next frame,
+     * and an error message will be sent to the Web Inspector console:
+     * (ResizeObserver loop completed with undelivered notifications)
+     * 
+     * So, to avoid this, just debounce the callback
+     *  */ 
+    this.resizeObserver = new ResizeObserver(fnDebounce(100, ([entry]) => {
       this.applyMediaClasses(entry.contentRect.width, entry.contentRect.height);
-    });
+    }));
     this.resizeObserver.observe(this.element);
   }
 
