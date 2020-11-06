@@ -41,12 +41,12 @@ pipeline {
         }
         stage('Configure') {
             steps {
-                sh '''
+                sh """
                     rm -rf .env
                     echo 'CLIENT_SECRET=${CLIENT_SECRET}' >> .env
                     echo 'CLIENT_ID=${CLIENT_ID}' >> .env
                     echo 'TOKEN_URL=${TOKEN_URL}' >> .env
-                '''
+                """
             }
         }
         stage('Build') {
@@ -80,7 +80,7 @@ pipeline {
                       mkdir -p ~/.ssh
                       ssh-keyscan -H github.com >> ~/.ssh/known_hosts
                       git push origin HEAD:${GIT_BRANCH}
-                      git push origin ${VERSION}
+                      git push origin v${VERSION}
                     """
                 }
             }
