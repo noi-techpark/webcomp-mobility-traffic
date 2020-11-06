@@ -43,8 +43,9 @@ pipeline {
         stage('Update wcs-manifest.json') {
             steps {
                 sh """
-                    ls cdn/noi/ | jq -R -s -c 'split("\n")[:-1]' | jq '.' > files-list.json
-                    jq '.dist.files = input' wcs-manifest.json files-list.json > wcs-manifest.json
+                    ls cdn/noi/ | jq -R -s -c 'split("\\n")[:-1]' | jq '.' > files-list.json
+                    jq '.dist.files = input' wcs-manifest.json files-list.json > wcs-manifest-tmp.json
+                    mv wcs-manifest-tmp.json wcs-manifest.json
                     rm -f files-list.json
                 """
             }
