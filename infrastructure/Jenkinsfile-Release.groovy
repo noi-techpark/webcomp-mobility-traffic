@@ -16,6 +16,7 @@ pipeline {
 
     environment {
         GIT_REPOSITORY = "git@github.com:noi-techpark/webcomp-mobility-traffic.git"
+        GIT_BRANCH = "development"
     }
 
     stages {
@@ -61,11 +62,12 @@ pipeline {
                       git add -A
                       git commit --allow-empty -m "Version ${VERSION}"
                       git tag --delete v${VERSION} || true
+                      git push origin :${VERSION} || true
                       git tag -a v${VERSION} -m "Version ${VERSION}"
                       mkdir -p ~/.ssh
                       ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-                      git push origin HEAD:development
-                      git push origin --tags
+                      git push origin HEAD:${GIT_BRANCH}
+                      git push origin ${VERSION}
                     """
                 }
             }
