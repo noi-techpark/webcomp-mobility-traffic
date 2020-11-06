@@ -53,6 +53,29 @@ noi-button.header__section--active {
   overflow-x: hidden;
 }
 
+.content__inner {
+  position: relative;
+}
+
+.content__inner::before {
+    position: absolute;
+    content: '';
+    z-index: 2;
+    top: 88px;
+    bottom: 48px;
+    left: 38px;
+    width: 4px;
+    background:
+      repeating-linear-gradient(
+        0,
+        transparent,
+        transparent 16px,
+        #fff 16px,
+        #fff 32px
+      ),
+      linear-gradient(to bottom, var(--noi-primary), var(--noi-action));
+}
+
 /* header-highway */
 
 .header-highway__title {

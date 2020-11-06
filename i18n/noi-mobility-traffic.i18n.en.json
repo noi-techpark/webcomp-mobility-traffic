@@ -7,6 +7,8 @@
   "search.end-placeholder": "Arrival?",
   "map-popup.from": "From",
   "map-popup.to": "To",
+  "station-item.start": "Departure",
+  "station-item.end": "Arrival",
   "stations-modal.input-placeholder": "A22 stations",
   "stations-modal.header-start": "Select departure",
   "stations-modal.header-end": "Select destination",
