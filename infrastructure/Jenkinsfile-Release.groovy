@@ -21,8 +21,7 @@ pipeline {
     stages {
         stage('Clean') {
             steps {
-                sh 'rm -rf dist'
-                sh 'rm -rf build'
+                sh 'rm -rf dist build cdn/noi'
             }
         }
         stage('Dependencies') {
@@ -41,6 +40,15 @@ pipeline {
                 sh 'npm run build:cdn'
             }
         }
+        stage('Update wcs-manifest.json') {
+            steps {
+                sh """
+                    ls cdn/noi/ | jq -R -s -c 'split("\n")[:-1]' | jq '.' > files-list.json
+                    jq '.dist.files = input' wcs-manifest.json files-list.json > wcs-manifest.json
+                    rm -f files-list.json
+                """
+            }
+        }
         stage('Git Tag') {
             steps {
                 sshagent (credentials: ['jenkins_github_ssh_key']) {
@@ -48,6 +56,7 @@ pipeline {
                       git config --global user.email "info@opendatahub.bz.it"
                       git config --global user.name "Jenkins"
                       git remote set-url origin ${GIT_REPOSITORY}
+                      git add cdn/noi/*
                       git add -A
                       git commit --allow-empty -m "Version ${VERSION}"
                       git tag --delete v${VERSION} || true
