@@ -32,8 +32,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                //sh 'npm run test'
-                sh 'true'
+                sh 'npm run test'
             }
         }
         stage('Build') {
