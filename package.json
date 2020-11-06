@@ -19,8 +19,8 @@
     "build:local": "stencil build --docs --config  stencil.config-local.ts",
     "start": "stencil build --config  stencil.config-local.ts --dev --watch --serve",
     "start:prod": "stencil build --config stencil.config-local.ts --watch --serve",
-    "test": "stencil test --spec",
-    "test.watch": "stencil test --spec --watchAll",
+    "test": "stencil test --spec --config stencil.config-local.ts",
+    "test.watch": "stencil test --spec --watchAll --config stencil.config-local.ts",
     "generate": "stencil generate",
     "chrome": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --disable-web-security --user-data-dir=\"/tmp/chrome_dev_test\" --remote-debugging-port=9222"
   },
