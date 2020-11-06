@@ -41,7 +41,6 @@
       "noi-mobility-traffic.i18n.it.json",
       "noi-mobility-traffic.js",
       "p-6b1a1763.entry.js",
-      "p-7bb3c484.entry.js",
       "p-cdb96f25.js",
       "search.svg"
     ],
@@ -65,7 +64,11 @@
         "label": "Two letter key for the language to be used, if omitted the widget will use the lang attribute of the closest parent element. Fallback is `en`",
         "required": false,
         "options": {
-          "values": ["en", "de", "it"],
+          "values": [
+            "en",
+            "de",
+            "it"
+          ],
           "default": "en"
         }
       },
