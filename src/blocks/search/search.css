@@ -103,6 +103,7 @@ header {
 
 /* search-footer */
 footer {
+  margin-top: auto;
   display: none;
   height: 0;
   z-index: 999;
@@ -119,7 +120,7 @@ footer {
 }
 
 .search-footer__text {
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
@@ -129,8 +130,8 @@ footer {
 }
 
 .search-footer__img {
-  width: 100%;
-  min-height: 150px;
+  width: calc(100% + 2px);
+  height: calc(100% + 4px);
 }
 
 

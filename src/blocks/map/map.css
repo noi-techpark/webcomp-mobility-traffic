@@ -56,9 +56,21 @@
 
 /* noi-path */
 .noi-map-path {
-  stroke: var(--noi-action);
+  stroke: var(--noi-primary);
   stroke-dasharray: 6px;
   stroke-width: 5px;
+}
+
+.noi-map-path--jam-none {
+  stroke: var(--noi-action);
+}
+
+.noi-map-path--jam-light {
+  stroke: var(--noi-jam-light, yellow);
+}
+
+.noi-map-path--jam-strong {
+  stroke: var(--noi-jam-strong, red);
 }
 
 /* start-end marker */

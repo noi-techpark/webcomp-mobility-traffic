@@ -69,7 +69,7 @@ header {
 }
 
 .header__title {
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
   color: var(--noi-primary-contrast);
   font-size: 16px;
   flex: 1;
@@ -95,7 +95,7 @@ header {
   margin: 0 16px;
   padding-right: 8px;
   background: #ffffff;
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
   color: var(--noi-primary);
   display: flex;
   align-items: center;

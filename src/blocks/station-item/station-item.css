@@ -3,19 +3,34 @@
   overflow: hidden;
   position: relative;
   height: 48px;
-  margin: 0 16px;
+  margin: 0 16px 0 48px;
   background: transparent;
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
   color: rgba(var(--noi-primary-rgb), 0.7);
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
+:host.station-item--start {
+  margin-left: 16px;
+}
+
+:host.station-item--end {
+  margin-left: 16px;
+}
+
 h3 {
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
   margin-left: 8px;
 }
+
+p {
+  font-size: 12px;
+  margin-left: 8px;
+  text-transform: uppercase;
+}
+
 
 :host.station-item--start h3 {
   color: var(--noi-primary);
@@ -33,9 +48,11 @@ svg {
 }
 
 :host.station-item--start svg {
-  color: var(--noi-primary);
+  stroke: var(--noi-primary);
+  fill: var(--noi-primary);
 }
 
 :host.station-item--end svg {
-  color: var(--noi-action);
+  stroke: var(--noi-action);
+  fill: var(--noi-action);
 }

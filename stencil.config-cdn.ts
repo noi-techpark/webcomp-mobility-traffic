@@ -38,6 +38,10 @@ export const config: Config = {
           dest: "."
         },
         {
+          src: "../data/*.json",
+          dest: "."
+        },
+        {
           src: "../assets/*.svg",
           dest: "."
         }

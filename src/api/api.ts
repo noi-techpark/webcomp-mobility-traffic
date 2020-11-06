@@ -1,6 +1,7 @@
 import { NoiError, NoiErrorOptionsObject } from "./error";
 import { NoiAuth } from "./auth";
 import { getPointsDistance } from "@noi/utils";
+import { getAssetPath } from "@stencil/core";
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
@@ -61,6 +62,22 @@ export interface NoiHighwayStation {
   highway: 'A22';
   position: number;
 };
+
+export type JamLevel = '' | 'light' | 'strong';
+
+function getJamLevel(jams: {[id: string]: [number, number]}, id: string, timeSec: number): JamLevel {
+  if (!jams[id] || !Array.isArray(jams[id]) || jams[id].length !== 2) {
+    return undefined;
+  }
+  const j = jams[id];
+  if (timeSec < j[0]) {
+    return '';
+  }
+  if (timeSec < j[1]) {
+    return 'light';
+  }
+  return 'strong';
+}
 
 export function parseHighwayStations(linkStations: Array<any>): Array<NoiHighwayStation> {
   const stations = linkStations.reduce<{[id: string]: NoiHighwayStation}>((result, s) => {
@@ -206,7 +223,21 @@ export class OpenDataHubNoiService {
     }
   }
 
-  async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number}>> {
+  async fetchJamThresholds(): Promise<{[stationId: string]: [number, number]}> {
+    try {
+      const result = await fetch(getAssetPath('./jams.json'));
+      if (result.ok) {
+        return result.json();
+      }
+      return {};
+    } catch (error) {
+      console.warn('No jams information');
+      return {};
+    }
+  }
+
+  async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date, jam?: JamLevel}>> {
+    const jams = await this.fetchJamThresholds();
     const where = `scode.in.(${ids.join(',')})`;
     const select = `scode,sdatatypes.tempo`;
     const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
@@ -218,7 +249,10 @@ export class OpenDataHubNoiService {
     if (!response || !response.data) {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
     }
-    return response.data.map(s => ({timeSec: s.mvalue, id: s.scode}));
+    return response.data.map(s => {
+      const jam = getJamLevel(jams, s.scode, s.mvalue);
+      return {timeSec: s.mvalue, id: s.scode, sync: new Date(s.mvalidtime), jam};
+    });
   }
 
   async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number}>> {

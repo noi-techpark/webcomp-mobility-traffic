@@ -46,7 +46,7 @@
   display: inline-block;
   width: auto;
   color: var(--color);
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
   text-align: center;
   text-decoration: none;
   text-overflow: ellipsis;

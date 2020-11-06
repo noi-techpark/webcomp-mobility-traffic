@@ -138,9 +138,10 @@ export class NoiMap {
 
   private renderGeoJson(e: Element) {
     const geometry = JSON.parse(e.getAttribute('geometry'));
+    const jam = e.getAttribute('jam');
     const layer = new GeoJSON(geometry, {
       style: {
-        className: 'noi-map-path',
+        className: 'noi-map-path' + (jam ? ` noi-map-path--jam-${jam}` : '')
       }, 
     });
     this.pathChildren.set(e, {layer, observer: null});

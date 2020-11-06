@@ -43,6 +43,14 @@ export function formatDuration(valueMin: number): string {
   return h ? `${h} h ${min} min` : `${min} min`;
 }
 
+export function formatDate(value: Date): string {
+  const str = value.toISOString();
+  if (str.slice(0, 10) === (new Date()).toISOString().slice(0, 10)) {
+    return str.slice(0, -8).split('T')[1];
+  }
+  return str.slice(0, -8).split('T').join(' ')
+}
+
 export interface NoiCoordinate {
   lat: number;
   long: number;
