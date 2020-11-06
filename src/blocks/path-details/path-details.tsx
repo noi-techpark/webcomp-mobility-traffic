@@ -51,6 +51,7 @@ export class PathDetails {
     const highwayPath = selectPathSegmentsIds();
     try {
       const segmentsTime = await NoiAPI.getLinkStationsTime(highwayPath, true);
+      // TODO: save jams to store, so map can use it
       this.segmentsTime = segmentsTime.reduce((result, i) => { result[i.id] = i.timeSec; return result;}, {});
       this.syncDate = segmentsTime.reduce((result, i) => (i.sync && i.sync < result ? i.sync : result), new Date());
       this.highwayTimeMin = Math.round(segmentsTime.reduce((result, i) => { result += i.timeSec; return result;}, 0) / 60);

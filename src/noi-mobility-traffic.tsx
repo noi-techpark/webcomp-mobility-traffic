@@ -117,7 +117,11 @@ export class NoiMobilityTraffic {
     if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
       return null;
     }
-    return urbanPathState.path.map(s => (<noi-map-route geometry={JSON.stringify(s.geometry)}></noi-map-route>));
+    return urbanPathState.path.map(s => {
+      const rnd = Math.random();
+      const jam = rnd < 0.3 ? 'none' : (rnd < 0.4 ? 'light' : 'strong');
+      return <noi-map-route jam={jam} geometry={JSON.stringify(s.geometry)}></noi-map-route>
+    });
   }
 
   getHighwayMarkers() {

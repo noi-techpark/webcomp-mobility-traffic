@@ -50,7 +50,7 @@
   background: var(--background);
   border-radius: var(--border-radius, 0);
   color: var(--color);
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
 
   z-index: 2;
 }

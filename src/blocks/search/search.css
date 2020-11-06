@@ -120,7 +120,7 @@ footer {
 }
 
 .search-footer__text {
-  font-family: var(--noi-font-family);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
