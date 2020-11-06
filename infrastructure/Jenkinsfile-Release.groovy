@@ -17,6 +17,10 @@ pipeline {
     environment {
         GIT_REPOSITORY = "git@github.com:noi-techpark/webcomp-mobility-traffic.git"
         GIT_BRANCH = "development"
+
+        CLIENT_SECRET = credentials("it.bz.opendatahub.webcomponents.mobility-traffic")
+        CLIENT_ID = "it.bz.opendatahub.webcomponents.mobility-traffic"
+        TOKEN_URL = "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
     }
 
     stages {
@@ -34,6 +38,14 @@ pipeline {
             steps {
                 sh 'npm run test'
             }
+        }
+        stage('Configure') {
+            sh '''
+                rm -rf .env
+                echo 'CLIENT_SECRET=${CLIENT_SECRET}' >> .env
+                echo 'CLIENT_ID=${CLIENT_ID}' >> .env
+                echo 'TOKEN_URL=${TOKEN_URL}' >> .env
+            '''
         }
         stage('Build') {
             steps {
