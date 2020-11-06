@@ -13,6 +13,25 @@ header {
   text-align: center;
 }
 
+/* last sync panel */
+.last-sync {
+  height: 48px;
+  line-height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(var(--noi-primary-rgb), 0.5);
+}
+
+.last-sync__icon {
+  margin-right: 8px;
+}
+
+.last-sync__date {
+  font-weight: bold;
+  margin-left: 8px;
+}
+
 /* header buttons */
 noi-button.header__section {
   flex: 1;
