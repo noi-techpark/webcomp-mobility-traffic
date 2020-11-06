@@ -33,6 +33,7 @@
       "host.config.json",
       "index.esm.js",
       "index.html",
+      "jams.json",
       "logo.svg",
       "mountains.svg",
       "noi-mobility-traffic.esm.js",
@@ -40,7 +41,7 @@
       "noi-mobility-traffic.i18n.en.json",
       "noi-mobility-traffic.i18n.it.json",
       "noi-mobility-traffic.js",
-      "p-6b1a1763.entry.js",
+      "p-08a8f8cf.entry.js",
       "p-cdb96f25.js",
       "search.svg"
     ],
