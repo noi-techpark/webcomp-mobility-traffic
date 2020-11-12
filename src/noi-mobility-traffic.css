@@ -3,13 +3,7 @@
   overflow: hidden;
   width: var(--noi-width, 100%);
   height: var(--noi-height, 100%);
-  --noi-font-family-default: "Roboto", "Helvetica Neue", sans-serif; 
-  --noi-primary-default: #0068B4;
-  --noi-primary-rgb-default: 0, 104, 180;
-  --noi-primary-contrast-default: #ffffff;
-  --noi-action-rgb-default: 87, 173, 57;
-  --noi-action-default: #339966;
-  --noi-action-contrast-default: #ffffff;
+  --noi-font-family-default: "Roboto", "Helvetica Neue", sans-serif;
 }
 
 .wrapper {

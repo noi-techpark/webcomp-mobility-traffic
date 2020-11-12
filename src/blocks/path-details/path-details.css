@@ -21,6 +21,7 @@ header {
   justify-content: center;
   align-items: center;
   color: rgba(var(--noi-primary-rgb), 0.5);
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
 }
 
 .last-sync__icon {
