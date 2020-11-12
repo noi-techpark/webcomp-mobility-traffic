@@ -1,12 +1,13 @@
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise } from '@noi/utils';
-import { NoiAPI, NoiLinkStation } from '../api';
+import { getJamLevel, NoiAPI, NoiJams, NoiLinkStation } from '../api';
 
 export interface NoiPathState {
   startId: string;
   endId: string;
   path: Array<NoiLinkStation>;
+  jams: NoiJams;
   readonly loading: boolean;
   readonly errorCode: string;
   readonly stations: Array<{position: number, id: string, name: string}>;
@@ -17,16 +18,20 @@ export interface NoiPathState {
 const urbanPathStore = createStore<NoiPathState>({
   startId: undefined,
   endId: undefined,
+  path: undefined,
+  jams: undefined,
   loading: false,
   errorCode: undefined,
-  path: undefined,
   stations: undefined,
   durationMin: undefined,
   distance: undefined
 });
 
 const { onChange, set, state } = urbanPathStore;
+
 let effectPromise: CancellablePromise<{path: Array<NoiLinkStation>, timeMin: number}> = undefined;
+
+loadJams();
 
 onChange('path', (path) => {
   if (!path || !path.length) {
@@ -67,6 +72,21 @@ onChange('endId', (value) => {
   }
 });
 
+onChange('jams', (value) => {
+  if (!value || !state.path) {
+    return;
+  }
+  set('path', [...state.path]); // if jams were loaded after the path, update the path
+});
+
+
+function loadJams() {
+  NoiAPI.fetchJamThresholds()
+    .then(jams => {
+      set('jams', jams);
+    })
+    .catch(_ => {});
+}
 
 function loadUrbanPath(startId: string, endId: string): void {
   set('loading', true);
@@ -119,6 +139,10 @@ async function loadUrbanPathEffect(startId: string, endId: string): Promise<{pat
     result += timeMin;
     return result;
   }, 0);
-  return {path, timeMin}
+  const pathWithJams = path.map(i => {
+    const jamLevel = getJamLevel(state.jams, i.id, velocityMap[i.id]);
+    return {...i, jamLevel}
+  })
+  return {path: pathWithJams, timeMin}
 }
 

@@ -29,5 +29,6 @@
   "error.noi-service.data-format": "Open Data Hub data error",
   "error.link-station.not-found": "Segment not found",
   "error.link-station-path.not-found": "Segment path not found",
-  "error.link-station-velocity.not-found": "Segment velocity data not found"
+  "error.link-station-velocity.not-found": "Segment velocity data not found",
+  "error.jams-not-available": "Traffic jams information is not available"
 }

@@ -118,9 +118,7 @@ export class NoiMobilityTraffic {
       return null;
     }
     return urbanPathState.path.map(s => {
-      const rnd = Math.random();
-      const jam = rnd < 0.3 ? 'none' : (rnd < 0.4 ? 'light' : 'strong');
-      return <noi-map-route jam={jam} geometry={JSON.stringify(s.geometry)}></noi-map-route>
+      return <noi-map-route jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
     });
   }
 

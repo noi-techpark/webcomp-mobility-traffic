@@ -10,6 +10,10 @@ export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
 export const LINK_STATION_PATH_ERR_NOT_FOUND = 'error.link-station-path.not-found';
 export const LINK_STATION_VELOCITY_ERR_NOT_FOUND = 'error.link-station-velocity.not-found';
 
+export interface NoiJams {
+  [stationId: string]: [number, number]
+}
+
 export function validateUrbanSegmentsIds(data: unknown): Array<string> {
   if (!data) {
     return null;
@@ -49,7 +53,8 @@ export interface NoiLinkStation {
   start: NoiBTStation,
   end: NoiBTStation,
   geometry: GeoJSON.Geometry,
-  distance?: number
+  distance?: number,
+  jamLevel?: JamLevel
 }
 
 export interface NoiTreeItem {
@@ -79,8 +84,8 @@ export interface NoiHighwayStation {
 
 export type JamLevel = '' | 'light' | 'strong';
 
-function getJamLevel(jams: {[id: string]: [number, number]}, id: string, timeSec: number): JamLevel {
-  if (!jams[id] || !Array.isArray(jams[id]) || jams[id].length !== 2) {
+export function getJamLevel(jams: {[id: string]: [number, number]}, id: string, timeSec: number): JamLevel {
+  if (!jams || !jams[id] || !Array.isArray(jams[id]) || jams[id].length !== 2) {
     return undefined;
   }
   const j = jams[id];
@@ -218,6 +223,8 @@ function getLinkStationParser(options?: {calcGeometryDistance?: boolean}) {
 export class OpenDataHubNoiService {
   static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
   static VERSION = 'v2';
+  private jams = undefined;
+  private urbanSegments = undefined;
 
   public async request(url: string, init: RequestInit = {}) {
     try {
@@ -237,21 +244,25 @@ export class OpenDataHubNoiService {
     }
   }
 
-  async fetchJamThresholds(): Promise<{[stationId: string]: [number, number]}> {
+  async fetchJamThresholds(): Promise<NoiJams> {
     try {
-      const result = await fetch(getAssetPath('./jams.json'));
-      if (result.ok) {
-        return result.json();
+      const response = await fetch(getAssetPath('./jams.json'));
+      if (!response.ok) {
+        throw new NoiError('error.jams-not-available');
       }
-      return {};
-    } catch (error) {
-      console.warn('No jams information'); // TODO:
-      return {};
+      const json = await response.json() || {};
+      this.jams = json;
+      return json;
+    } catch (err) {
+      if (err instanceof NoiError) {
+        throw err;
+      }
+      const noiErr = getErrByServiceError(err);
+      throw noiErr;
     }
   }
 
-  async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date, jam?: JamLevel}>> {
-    const jams = await this.fetchJamThresholds();
+  async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date}>> {
     const where = `scode.in.(${ids.join(',')})`;
     const select = `scode,sdatatypes.tempo`;
     const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
@@ -264,8 +275,7 @@ export class OpenDataHubNoiService {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
     }
     return response.data.map(s => {
-      const jam = getJamLevel(jams, s.scode, s.mvalue);
-      return {timeSec: s.mvalue, id: s.scode, sync: new Date(s.mvalidtime), jam};
+      return {timeSec: s.mvalue, id: s.scode, sync: new Date(s.mvalidtime)};
     });
   }
 
@@ -288,12 +298,15 @@ export class OpenDataHubNoiService {
   }
 
   async getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>> {
+    if (this.urbanSegments) {
+      return this.urbanSegments;
+    }
     try {
       const response = await fetch(getAssetPath('./urban-segments.json'));
       if (response.ok) {
         const json = await response.json() || {};
-        const result = json[`${startId}->${endId}`];
-        return validateUrbanSegmentsIds(result);
+        this.urbanSegments = json;
+        return validateUrbanSegmentsIds(json[`${startId}->${endId}`]);
       }
       throw new NoiError('error.urban-segments');
     } catch (error) {
