@@ -311,7 +311,11 @@ export class OpenDataHubNoiService {
     if (response.data.length !== ids.length) {
       throw new NoiError(LINK_STATION_PATH_ERR_NOT_FOUND, {message: `Some of LinkStation ids=${ids.join(',')} are not found`});
     }
-    return response.data.map(getLinkStationParser(options));
+    const stationsMap = (response.data as Array<unknown>).map(getLinkStationParser(options)).reduce(
+      (result, i) => {result[i.id] = i; return result;},
+      {}
+    );
+    return ids.map(i => stationsMap[i]);
   }
 
   async getHighwayStations(): Promise<Array<NoiHighwayStation>> {
