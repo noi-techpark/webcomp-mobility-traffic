@@ -299,7 +299,7 @@ export class OpenDataHubNoiService {
 
   async getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>> {
     if (this.urbanSegments) {
-      return this.urbanSegments;
+      return validateUrbanSegmentsIds(this.urbanSegments[`${startId}->${endId}`]);
     }
     try {
       const response = await fetch(getAssetPath('./urban-segments.json'));

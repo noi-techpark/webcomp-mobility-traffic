@@ -1,5 +1,5 @@
 import { NoiAPI } from '@noi/api';
-import { urbanPathState } from '@noi/store/path-store';
+import { urbanPathState } from '@noi/store/urban-path.store';
 import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '@noi/store';
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { getLocaleComponentStrings, translate } from '@noi/lang';
@@ -10,6 +10,7 @@ import { MapMarker } from './blocks/map/map-marker';
 import { MapStation } from './blocks/map/map-station';
 import { startTapClick } from './components/tap-click';
 import { fnDebounce } from './utils';
+import { pathState } from './store/path.store';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -122,6 +123,18 @@ export class NoiMobilityTraffic {
     });
   }
 
+  getPath() {
+    if (noiStore.activePath !== 'highway') {
+      return null;
+    }
+    if (pathState.loading || pathState.errorCode || !pathState.path) {
+      return null;
+    }
+    return pathState.path.map(s => {
+      return <noi-map-route jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
+    });
+  }
+
   getHighwayMarkers() {
     if (!noiStore.startId && !noiStore.endId) {
       return null;
@@ -165,8 +178,6 @@ export class NoiMobilityTraffic {
     if (this.errorCode) {
       return this.renderError();
     }
-    urbanPathState.startId = noiStore.startId;
-    urbanPathState.endId = noiStore.endId;
     return <div class="wrapper">
       <noi-backdrop
         overlayIndex={2}
@@ -186,6 +197,7 @@ export class NoiMobilityTraffic {
         lat={noiStore.mapCenter.lat}
         long={noiStore.mapCenter.long}>
         {this.getUrbanPath()}
+        {/* {this.getPath()} */}
         {this.getHighwayCircles()}
         {this.getHighwayMarkers()}
       </noi-map>

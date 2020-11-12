@@ -60,8 +60,6 @@ export class Search {
       return null;
     }
     return (<noi-path-details
-      startId={noiStore.startId}
-      endId={noiStore.endId}
       onToggleActive={this.onToggleActive.bind(this)}
     >
     </noi-path-details>);

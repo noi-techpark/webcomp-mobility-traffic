@@ -4,10 +4,9 @@ import { CancellablePromise, cancellablePromise } from '@noi/utils';
 import { getJamLevel, NoiAPI, NoiJams, NoiLinkStation } from '../api';
 
 export interface NoiPathState {
-  startId: string;
-  endId: string;
-  path: Array<NoiLinkStation>;
-  jams: NoiJams;
+  startEnd: [string, string];
+  readonly path: Array<NoiLinkStation>;
+  readonly jams: NoiJams;
   readonly loading: boolean;
   readonly errorCode: string;
   readonly stations: Array<{position: number, id: string, name: string}>;
@@ -16,8 +15,7 @@ export interface NoiPathState {
 }
 
 const urbanPathStore = createStore<NoiPathState>({
-  startId: undefined,
-  endId: undefined,
+  startEnd: undefined,
   path: undefined,
   jams: undefined,
   loading: false,
@@ -54,21 +52,12 @@ onChange('stations', (value) => {
   set('distance', Math.round(distance));
 })
 
-onChange('startId', (value) => {
+onChange('startEnd', (value) => {
   set('path', undefined);
   set('durationMin', undefined);
   set('errorCode', undefined);
-  if (!!value && state.endId) {
-    loadUrbanPath(value, state.endId);
-  }
-});
-
-onChange('endId', (value) => {
-  set('path', undefined);
-  set('durationMin', undefined);
-  set('errorCode', undefined);
-  if (!!value && state.startId) {
-    loadUrbanPath(state.startId, value);
+  if (!!value) {
+    loadUrbanPath(...value);
   }
 });
 

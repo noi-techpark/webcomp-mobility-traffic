@@ -165,8 +165,6 @@ export namespace Components {
     interface NoiMobilityTraffic {
     }
     interface NoiPathDetails {
-        "endId": string;
-        "startId": string;
     }
     interface NoiSearch {
     }
@@ -434,9 +432,7 @@ declare namespace LocalJSX {
     interface NoiMobilityTraffic {
     }
     interface NoiPathDetails {
-        "endId": string;
         "onToggleActive"?: (event: CustomEvent<'urban' | 'highway'>) => void;
-        "startId": string;
     }
     interface NoiSearch {
     }

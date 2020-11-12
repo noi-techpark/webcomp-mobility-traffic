@@ -1,5 +1,5 @@
 import { Component, h, Host } from '@stencil/core';
-import { urbanPathState } from '@noi/store/path-store';
+import { urbanPathState } from '@noi/store/urban-path.store';
 import { translate } from '@noi/lang';
 
 @Component({
