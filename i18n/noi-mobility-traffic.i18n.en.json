@@ -17,6 +17,8 @@
   "stations-modal.header-end": "Select destination",
   "stations-modal.select-btn": "Select",
   "noi.error.unknown": "Unknown error. Please contact the support.",
+  "noi.error.urban-segments": "Unable to load urban segments data",
+  "noi.error.urban-segments-validation": "Urban segments data is not valid",
   "noi.error.no-locale": "Language is not supported",
   "error.noi-service.unknown": "Unable to connect to Open Data Hub",
   "error.noi-service.offline": "Network error",

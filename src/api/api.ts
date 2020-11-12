@@ -2,7 +2,6 @@ import { NoiError, NoiErrorOptionsObject } from "./error";
 import { NoiAuth } from "./auth";
 import { getPointsDistance } from "@noi/utils";
 import { getAssetPath } from "@stencil/core";
-import { rejects } from "assert";
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';
@@ -11,6 +10,20 @@ export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
 export const LINK_STATION_PATH_ERR_NOT_FOUND = 'error.link-station-path.not-found';
 export const LINK_STATION_VELOCITY_ERR_NOT_FOUND = 'error.link-station-velocity.not-found';
 
+export function validateUrbanSegmentsIds(data: unknown): Array<string> {
+  if (!data) {
+    return null;
+  }
+  if (!Array.isArray(data)) {
+    throw new NoiError('noi.error.urban-segments-validation');
+  }
+  (data as Array<unknown>).forEach(i => {
+    if (typeof i !== 'string') {
+      throw new NoiError('noi.error.urban-segments-validation');
+    }
+  });
+  return data as Array<string>;
+}
 
 export function getErrByServiceError(_: Error): NoiError {
   return new NoiError(NOI_SERVICE_ERR_OFFLINE);
@@ -275,27 +288,20 @@ export class OpenDataHubNoiService {
   }
 
   async getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>> {
-    if (startId === '1854' && endId === '1853') {
-      // BZ SÜD -> BZ NORD
-      return [
-        'Torricelli->siemens',
-        'siemens->Galilei_Palermo',
-        'Galilei_Palermo->Galilei_Lancia',
-        'Galilei_Lancia->Galilei_Virgolo',
-        'Galilei_Virgolo->Galleria_Virgolo',
-        'Galleria_Virgolo->P_Campiglio'
-      ];
+    try {
+      const response = await fetch(getAssetPath('./urban-segments.json'));
+      if (response.ok) {
+        const json = await response.json() || {};
+        const result = json[`${startId}->${endId}`];
+        return validateUrbanSegmentsIds(result);
+      }
+      throw new NoiError('noi.error.urban-segments');
+    } catch (error) {
+      if (error instanceof NoiError) {
+        throw error;
+      }
+      throw new NoiError('noi.error.urban-segments');
     }
-    if (startId === '1853' && endId === '1854') {
-      // BZ NORD -> BZ SÜD
-      return [
-        'P_Campiglio->Galleria_Virgolo',
-        'Galleria_Virgolo->Arginale_Palermo',
-        'Arginale_Palermo->Arginale_Resia',
-        'Arginale_Resia->Agip_Einstein' 
-      ];
-    }
-    return null;
   }
 
   async getLinkStationsByIds(ids: Array<string>, options?: {auth?: boolean, calcGeometryDistance?: boolean}): Promise<Array<NoiLinkStation>> {
