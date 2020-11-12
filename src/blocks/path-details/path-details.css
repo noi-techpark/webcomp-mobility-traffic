@@ -24,6 +24,18 @@ header {
   font-family: var(--noi-font-family, var(--noi-font-family-default));
 }
 
+.error {
+  padding: 4px;
+  margin-left: 8px;
+  margin-right: 8px;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(var(--noi-error-rgb, 255, 0, 0), 0.7);
+  color: var(--noi-error-contrast, #fff);
+  line-height: normal;
+  font-weight: normal;
+}
+
 .last-sync__icon {
   margin-right: 8px;
 }

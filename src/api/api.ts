@@ -15,11 +15,11 @@ export function validateUrbanSegmentsIds(data: unknown): Array<string> {
     return null;
   }
   if (!Array.isArray(data)) {
-    throw new NoiError('noi.error.urban-segments-validation');
+    throw new NoiError('error.urban-segments-validation');
   }
   (data as Array<unknown>).forEach(i => {
     if (typeof i !== 'string') {
-      throw new NoiError('noi.error.urban-segments-validation');
+      throw new NoiError('error.urban-segments-validation');
     }
   });
   return data as Array<string>;
@@ -245,7 +245,7 @@ export class OpenDataHubNoiService {
       }
       return {};
     } catch (error) {
-      console.warn('No jams information');
+      console.warn('No jams information'); // TODO:
       return {};
     }
   }
@@ -295,12 +295,12 @@ export class OpenDataHubNoiService {
         const result = json[`${startId}->${endId}`];
         return validateUrbanSegmentsIds(result);
       }
-      throw new NoiError('noi.error.urban-segments');
+      throw new NoiError('error.urban-segments');
     } catch (error) {
       if (error instanceof NoiError) {
         throw error;
       }
-      throw new NoiError('noi.error.urban-segments');
+      throw new NoiError('error.urban-segments');
     }
   }
 

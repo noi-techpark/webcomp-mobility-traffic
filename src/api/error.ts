@@ -1,5 +1,5 @@
-export const NOI_ERR_UNKNOWN = 'noi.error.unknown';
-export const NOI_ERR_NO_LOCALE = 'noi.error.no-locale';
+export const NOI_ERR_UNKNOWN = 'error.unknown';
+export const NOI_ERR_NO_LOCALE = 'error.no-locale';
 
 export type NoiErrorOptions =
   'actionCode' |
