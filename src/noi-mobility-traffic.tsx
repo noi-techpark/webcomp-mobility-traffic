@@ -143,6 +143,17 @@ export class NoiMobilityTraffic {
     noiStore.selecting = null;
   }
 
+  renderError() {
+    return (
+      <div class="wrapper">
+        <div class="error">
+          <h2>{translate(this.errorCode)}</h2>
+          <noi-button fill="solid" class="button-md error-btn" onClick={this.loadLocaleAndStations.bind(this)}>Retry</noi-button>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     if (this.loading) {
       return (<div class="wrapper">
@@ -154,12 +165,7 @@ export class NoiMobilityTraffic {
       </div>);
     }
     if (this.errorCode) {
-      return (<div class="wrapper">
-        <div class="error">
-          <h2>{translate(this.errorCode)}</h2>
-          <noi-button fill="solid" class="button-md error-btn" onClick={this.loadLocaleAndStations.bind(this)}>Retry</noi-button>
-        </div>
-      </div>)
+      return this.renderError();
     }
     urbanPathState.startId = noiStore.startId;
     urbanPathState.endId = noiStore.endId;

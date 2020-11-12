@@ -36,6 +36,7 @@ header {
 /* header buttons */
 noi-button.header__section {
   flex: 1;
+  max-width: 50%;
   justify-content: center;
   --background: rgba(var(--noi-primary-rgb), 0.3);
   --color: var(--noi-primary-contrast);
@@ -44,8 +45,20 @@ noi-button.header__section {
 }
 
 noi-button.header__section--active {
-  --background: rgba(var(--noi-primary-rgb), 0.5);
+  --background: rgba(var(--noi-primary-rgb), 0.7);
 }
+
+noi-button.header__section--err {
+  --background: rgba(var(--noi-error-rgb, 255, 0, 0), 0.3);
+  --color: var(--noi-error-contrast, #fff);
+}
+
+
+noi-button.header__section--active.header__section--err {
+  --background: rgba(var(--noi-error-rgb, 255, 0, 0), 0.7);
+}
+
+
 
 /* content */
 .content {
@@ -88,6 +101,7 @@ noi-button.header__section--active {
   font-weight: normal;
   text-shadow: none;
 }
+
 
 noi-station-item:last-of-type {
   margin-bottom: 48px;

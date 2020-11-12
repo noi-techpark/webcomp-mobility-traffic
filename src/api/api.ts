@@ -2,6 +2,7 @@ import { NoiError, NoiErrorOptionsObject } from "./error";
 import { NoiAuth } from "./auth";
 import { getPointsDistance } from "@noi/utils";
 import { getAssetPath } from "@stencil/core";
+import { rejects } from "assert";
 
 export const NOI_SERVICE_ERR_UNKNOWN = 'error.noi-service.unknown';
 export const NOI_SERVICE_ERR_OFFLINE = 'error.noi-service.offline';

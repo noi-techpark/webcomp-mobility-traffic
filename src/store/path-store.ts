@@ -77,10 +77,13 @@ function loadUrbanPath(startId: string, endId: string): void {
   effectPromise = cancellablePromise(loadUrbanPathEffect(startId, endId));
   effectPromise.promise
     .then(data => {
-      set('path', data.path);
-      set('durationMin', data.timeMin);
       set('loading', false);
       effectPromise = undefined;
+      if (data === undefined) {
+        return;
+      }
+      set('path', data.path);
+      set('durationMin', data.timeMin);
     })
     .catch(err => {
       if (err.isCancelled) {

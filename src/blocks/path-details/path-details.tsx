@@ -92,6 +92,41 @@ export class PathDetails {
     </div>;
   }
 
+  renderUrbanHeaderTab() {
+    const urbanHeaderClass = {
+      'header__section': true,
+      'header__section--active': this.activePath === 'urban',
+      'header__section--err': !!urbanPathState.errorCode
+    };
+    if (urbanPathState.durationMin !== undefined) {
+      return (
+        <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
+          <span class="header-highway__title">{translate('path-details.urban-name')}</span> {formatDuration(urbanPathState.durationMin)}
+        </noi-button>
+      );
+    }
+    if (urbanPathState.errorCode) {
+      return (
+        <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
+          <span class="header-highway__title">{translate('path-details.urban-name')}</span>
+          {translate('path-details.urban-error')}
+        </noi-button>
+      );
+    }
+    if (urbanPathState.loading) {
+      return (
+        <noi-button disabled class={urbanHeaderClass}>
+          <span class="header-highway__title">{translate('path-details.urban-name')}</span>
+          {translate('path-details.urban-loading')}
+        </noi-button>
+      );
+    }
+    return (
+      <noi-button disabled class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
+        <span class="header-highway__title">{translate('path-details.urban-name')}</span>
+      </noi-button>
+    );
+  }
 
   render() {
     const hostClass = {
@@ -100,10 +135,6 @@ export class PathDetails {
     const highwayHeaderClass = {
       'header__section': true,
       'header__section--active': this.activePath === 'highway'
-    };
-    const urbanHeaderClass = {
-      'header__section': true,
-      'header__section--active': this.activePath === 'urban'
     };
     return (
       <Host class={hostClass}>
@@ -114,12 +145,7 @@ export class PathDetails {
             </noi-button>
             : null
           }
-          {urbanPathState.durationMin !== undefined  ?
-            <noi-button class={urbanHeaderClass} onClick={this.onActivatePath.bind(this, 'urban')}>
-              <span class="header-highway__title">{translate('path-details.urban-name')}</span> {formatDuration(urbanPathState.durationMin)}
-            </noi-button>
-            : null
-          }
+          {this.renderUrbanHeaderTab()}
         </header>
         {this.renderPath()}
       </Host>
