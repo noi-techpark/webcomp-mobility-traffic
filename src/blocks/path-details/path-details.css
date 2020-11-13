@@ -102,6 +102,10 @@ noi-button.header__section--active.header__section--err {
       linear-gradient(to bottom, var(--noi-primary), var(--noi-action));
 }
 
+.content__inner--error::before {
+  top: calc(88px + 48px);
+}
+
 /* header-highway */
 
 .header-highway__title {

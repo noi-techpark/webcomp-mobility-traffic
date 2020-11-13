@@ -127,7 +127,7 @@ export class NoiMobilityTraffic {
     if (noiStore.activePath !== 'highway') {
       return null;
     }
-    if (pathState.loading || pathState.errorCode || !pathState.path) {
+    if (!pathState.path) {
       return null;
     }
     return pathState.path.map(s => {
@@ -197,7 +197,7 @@ export class NoiMobilityTraffic {
         lat={noiStore.mapCenter.lat}
         long={noiStore.mapCenter.long}>
         {this.getUrbanPath()}
-        {/* {this.getPath()} */}
+        {this.getPath()}
         {this.getHighwayCircles()}
         {this.getHighwayMarkers()}
       </noi-map>

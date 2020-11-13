@@ -1,4 +1,4 @@
-import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
+import { NoiError } from '@noi/api/error';
 import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise } from '@noi/utils';
 import { NoiAPI, NoiJams, NoiLinkStation } from '../api';
@@ -6,6 +6,7 @@ import { NoiAPI, NoiJams, NoiLinkStation } from '../api';
 export interface NoiPathState {
   segmentsIds: Array<string>;
   readonly path: Array<NoiLinkStation>;
+  readonly pathError: string;
   readonly jams: NoiJams;
   readonly loading: boolean;
   readonly errorCode: string;
@@ -17,6 +18,7 @@ export interface NoiPathState {
 const pathStore = createStore<NoiPathState>({
   segmentsIds: undefined,
   path: undefined,
+  pathError: undefined,
   jams: undefined,
   loading: false,
   errorCode: undefined,
@@ -27,14 +29,15 @@ const pathStore = createStore<NoiPathState>({
 
 const { onChange, set, state } = pathStore;
 
-let effectPromise: CancellablePromise<{syncDate: Date, timeMin: number, segmentsTime: {[id: string]: number}}> = undefined;
+let pathDetailsPromise: CancellablePromise<{syncDate: Date, timeMin: number, segmentsTime: {[id: string]: number}}> = undefined;
+let pathPromise: CancellablePromise<Array<NoiLinkStation>> = undefined;
 
 loadJams();
 
 
 onChange('segmentsIds', (value) => {
   if (!!value && value.length) {
-    loadPathDetails(value);
+    loadPath(value);
   }
 });
 
@@ -46,21 +49,45 @@ function loadJams() {
     .catch(_ => {});
 }
 
-function loadPathDetails(segmentsIds: Array<string>): void {
+function loadPath(segmentsIds: Array<string>): void {
   set('loading', true);
   set('errorCode', undefined);
   set('durationMin', undefined);
   set('segmentsTime', undefined);
   set('syncDate', undefined);
+  set('path', undefined);
+  set('pathError', undefined);
   
-  if (effectPromise) {
-    effectPromise.cancel()
+  if (pathDetailsPromise) {
+    pathDetailsPromise.cancel()
   }
-  effectPromise = cancellablePromise(loadPathEffect(segmentsIds));
-  effectPromise.promise
+  if (pathPromise) {
+    pathPromise.cancel()
+  }
+  pathPromise = cancellablePromise(loadPathEffect(segmentsIds));
+  pathPromise.promise
+    .then(path => {
+      if (!path) {
+        set('pathError', 'error.highway-path');
+      } else {
+        set('path', path);
+        if (segmentsIds.length !== path.length) {
+          set('pathError', 'error.highway-path.incomplete');
+        }
+      }
+    })
+    .catch(err => {
+      if (err instanceof NoiError) {
+        set('pathError', err.code);
+      } else {
+        set('pathError', 'error.highway-path');
+      }
+    });
+  pathDetailsPromise = cancellablePromise(loadPathDetailsEffect(segmentsIds));
+  pathDetailsPromise.promise
     .then(data => {
       set('loading', false);
-      effectPromise = undefined;
+      pathDetailsPromise = undefined;
       if (data === undefined) {
         return;
       }
@@ -72,7 +99,7 @@ function loadPathDetails(segmentsIds: Array<string>): void {
       if (err.isCancelled) {
         return;
       }
-      effectPromise = undefined;
+      pathDetailsPromise = undefined;
       set('loading', false);
       if (err instanceof NoiError) {
         set('errorCode', (err as NoiError).code);
@@ -87,7 +114,7 @@ export const pathState = state;
 /**
  * it's like a Redux Effect to load external data in async way
  */
-async function loadPathEffect(segmentsIds: Array<string>): Promise<{syncDate: Date, timeMin: number, segmentsTime: {[id: string]: number}}> {
+async function loadPathDetailsEffect(segmentsIds: Array<string>): Promise<{syncDate: Date, timeMin: number, segmentsTime: {[id: string]: number}}> {
   const segmentsTime = await NoiAPI.getLinkStationsTime(segmentsIds, true);
   const result = {
     segmentsTime: segmentsTime.reduce((result, i) => { result[i.id] = i.timeSec; return result;}, {} as {[id: string]: number}),
@@ -95,4 +122,26 @@ async function loadPathEffect(segmentsIds: Array<string>): Promise<{syncDate: Da
     timeMin: Math.round(segmentsTime.reduce((result, i) => { result += i.timeSec; return result;}, 0) / 60),
   }
   return result;
+}
+
+async function loadPathEffect(segmentsIds: Array<string>): Promise<Array<NoiLinkStation>> {
+  const geometryMap = await NoiAPI.getSegmentsGeometries(segmentsIds);
+  const path = segmentsIds.reduce((result, id) => {
+    if (!geometryMap[id]) {
+      return result;
+    }
+    const ls: NoiLinkStation = {
+      type: 'LinkStation',
+      id,
+      name: geometryMap[id].name,
+      origin: 'A22',
+      start: null,
+      end: null,
+      geometry: geometryMap[id].geometry,
+      jamLevel: undefined // FIXME:
+    }
+    result.push(ls);
+    return result;
+  }, [] as Array<NoiLinkStation>);
+  return path;
 }

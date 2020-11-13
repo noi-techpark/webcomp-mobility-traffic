@@ -14,6 +14,18 @@ export interface NoiJams {
   [stationId: string]: [number, number]
 }
 
+export function selectSegmentsGeometries(segmentsIds: Array<string>, geometries: any): {[id: string]: {name: string, geometry: any}} {
+  if (!segmentsIds || !segmentsIds.length) {
+    return {};
+  }
+  return segmentsIds.reduce((result, id) => {
+    if (geometries[id] && geometries[id].geometry) {
+      result[id] = geometries[id];
+    }
+    return result;
+  }, {} as {[id: string]: {name: string, geometry: any}});
+}
+
 export function validateUrbanSegmentsIds(data: unknown): Array<string> {
   if (!data) {
     return null;
@@ -225,6 +237,7 @@ export class OpenDataHubNoiService {
   static VERSION = 'v2';
   private jams = undefined;
   private urbanSegments = undefined;
+  private geometries = undefined;
 
   public async request(url: string, init: RequestInit = {}) {
     try {
@@ -314,6 +327,26 @@ export class OpenDataHubNoiService {
         throw error;
       }
       throw new NoiError('error.urban-segments');
+    }
+  }
+
+  async getSegmentsGeometries(segmentsIds: Array<string>): Promise<{[id: string]: {name: string, geometry: any}}> {
+    if (this.geometries) {
+      return selectSegmentsGeometries(segmentsIds, this.geometries);
+    }
+    try {
+      const response = await fetch(getAssetPath('./geometries.json'));
+      if (response.ok) {
+        const json = await response.json() || {};
+        this.geometries = json;
+        return selectSegmentsGeometries(segmentsIds, this.geometries);
+      }
+      throw new NoiError('error.geometries');
+    } catch (error) {
+      if (error instanceof NoiError) {
+        throw error;
+      }
+      throw new NoiError('error.geometries');
     }
   }
 

@@ -18,6 +18,8 @@
   "stations-modal.header-start": "Select departure",
   "stations-modal.header-end": "Select destination",
   "stations-modal.select-btn": "Select",
+  "error.highway-path": "Unable to load A22 geometry data",
+  "error.highway-path.incomplete": "A22 geometry data is incomplete for given segment",
   "error.highway-time": "Unable to load A22 travel time data",
   "error.auth-service.unknown": "Unable to pass authentication",
   "error.unknown": "Unknown error. Please contact the support.",
