@@ -26,8 +26,7 @@ header {
 
 .error {
   padding: 4px;
-  margin-left: 8px;
-  margin-right: 8px;
+  margin: 8px 8px 16px 8px;
   text-align: center;
   border-radius: 4px;
   background: rgba(var(--noi-error-rgb, 255, 0, 0), 0.7);
@@ -71,7 +70,6 @@ noi-button.header__section--active.header__section--err {
 }
 
 
-
 /* content */
 .content {
   flex: 1;
@@ -103,7 +101,7 @@ noi-button.header__section--active.header__section--err {
 }
 
 .content__inner--error::before {
-  top: calc(88px + 48px);
+  top: calc(48px + 88px);
 }
 
 /* header-highway */

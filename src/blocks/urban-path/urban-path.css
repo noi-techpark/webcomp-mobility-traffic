@@ -3,6 +3,7 @@
   overflow-x: hidden;
   height: 100%;
   position: relative;
+  margin-top: 16px;
 }
 
 .container {

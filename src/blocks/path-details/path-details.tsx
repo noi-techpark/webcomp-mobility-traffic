@@ -64,12 +64,14 @@ export class PathDetails {
       'content__inner': true,
       'content__inner--error': !!pathState.pathError
     };
+    const segmentsTime = pathState.segmentsTime || {};
     return <div class="content">
       <div class={contentInnerClass}>
         {this.renderHighwayDetails()}
-        {stations.map(s => <noi-station-item
+        {stations.map((s, i) => <noi-station-item
           name={s.name}
           position={Math.abs(startPos - s.position)}
+          time={i === 0 ? undefined : Math.round(segmentsTime[`${stations[i-1].id}-${s.id}`])}
           isStart={!!s.isStart}
           isEnd={!!s.isEnd}
         ></noi-station-item>)}
