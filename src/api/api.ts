@@ -295,6 +295,38 @@ export class OpenDataHubNoiService {
     });
   }
 
+  async getLinkStationsHistoryTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date}>> {
+    const from = new Date();
+    from.setDate(from.getDate()-1);
+    from.setHours(0, 0, 0);
+    const fromString = from.toISOString();
+    const to = new Date();
+    from.setHours(23, 59, 59);
+    const toString = to.toISOString();
+    const where = `scode.in.(${ids.join(',')})`;
+    const select = `scode,sdatatypes.tempo`;
+    const limit = -1;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/tempo/${fromString}/${toString}?limit=${limit}&select=${select}&where=${where}&distinct=true`,
+      { headers }
+    );
+    if (!response || !response.data) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
+    }
+    const res: {[key: string]: Array<{id: string, timeSec: number, sync: Date}>} = response.data.reduce((result, i) => {
+      result[i.scode] = result[i.scode] || [];
+      result[i.scode].push({timeSec: i.mvalue, id: i.scode, sync: new Date(i.mvalidtime)});
+      return result;
+    }, {});
+    return Object.keys(res).reduce((result, i) => {
+      const secondLast = res[i].length > 1 ? res[i][res[i].length - 2] : res[i][res[i].length - 1];
+      result.push(secondLast);
+      return result;
+    }, []);
+  }
+
   async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number}>> {
     const where = `scode.in.(${ids.join(',')}),mperiod.eq.3600`;
     const select = `mvalue,scode`;
