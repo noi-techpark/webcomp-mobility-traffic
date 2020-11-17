@@ -111,28 +111,24 @@ export class NoiMobilityTraffic {
     })
   }
 
-  getUrbanPath() {
-    if (noiStore.activePath !== 'urban') {
-      return null;
-    }
-    if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
-      return null;
-    }
-    return urbanPathState.path.map(s => {
-      return <noi-map-route jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
-    });
-  }
-
   getPath() {
-    if (noiStore.activePath !== 'highway') {
-      return null;
+    if (noiStore.activePath === 'highway') {
+      if (!pathState.path) {
+        return null;
+      }
+      return pathState.path.map(s => {
+        return <noi-map-route key={`${s.id}-${s.jamLevel}`} jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
+      });
     }
-    if (!pathState.path) {
-      return null;
+    if (noiStore.activePath === 'urban') { 
+      if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+        return null;
+      }
+      return urbanPathState.path.map(s => {
+        return <noi-map-route key={`${s.id}-${s.jamLevel}`} jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
+      });
     }
-    return pathState.path.map(s => {
-      return <noi-map-route jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
-    });
+    return null;
   }
 
   getHighwayMarkers() {
@@ -196,10 +192,9 @@ export class NoiMobilityTraffic {
       <noi-map
         lat={noiStore.mapCenter.lat}
         long={noiStore.mapCenter.long}>
-        {this.getUrbanPath()}
-        {this.getPath()}
         {this.getHighwayCircles()}
         {this.getHighwayMarkers()}
+        {this.getPath()}
       </noi-map>
     </div>;
   }

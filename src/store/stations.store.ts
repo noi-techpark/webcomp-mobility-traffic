@@ -45,7 +45,7 @@ const { state, onChange, set } = createStore<NoiState>({
 
 onChange('stations', (stations) => {
   if (!stations) {
-    pathState.segmentsIds = undefined;
+    pathState.segments = undefined;
     set('stationsList', null);
     set('loading', true);
     return;
@@ -53,7 +53,7 @@ onChange('stations', (stations) => {
   set('loading', false);
   set('stationsList', orderStations(stations));
   if (state.startId && state.endId) {
-    pathState.segmentsIds = selectPathSegmentsIds();
+    pathState.segments = selectPathSegments();
   }
 });
 
@@ -77,7 +77,7 @@ onChange('startId', (value) => {
   state.selecting = null;
   if (!value) {
     set('start', null);
-    pathState.segmentsIds = undefined;
+    pathState.segments = undefined;
     return;
   }
   set('start', state.stations[value]);
@@ -86,7 +86,7 @@ onChange('startId', (value) => {
   } else {
     if (state.endId) {
       // if have both start and end
-      pathState.segmentsIds = selectPathSegmentsIds();
+      pathState.segments = selectPathSegments();
       urbanPathState.startEnd = [value, state.endId];
     }
   }
@@ -96,7 +96,7 @@ onChange('endId', (value) => {
   state.selecting = null;
   if (!value) {
     set('end', null);
-    pathState.segmentsIds = undefined;
+    pathState.segments = undefined;
     return;
   }
   set('end', state.stations[value]);
@@ -105,7 +105,7 @@ onChange('endId', (value) => {
   } else {
     if (state.startId) {
       // if have both start and end
-      pathState.segmentsIds = selectPathSegmentsIds();
+      pathState.segments = selectPathSegments();
       urbanPathState.startEnd = [state.startId, value];
     }
   }
@@ -166,14 +166,19 @@ export function selectPathStations(): WithStartEnd<Selectable<NoiHighwayStation>
   })
 }
 
-export function selectPathSegmentsIds() {
+export function selectPathSegments() {
+  if (!state.stations || !state.startId || !state.endId) {
+    return undefined;
+  }
+  const startPos = state.start.position;
   return selectPathStations().reduce((result, s) => {
     if (!!result.lastId) {
-      result.data.push(`${result.lastId}-${s.id}`);
+      
+      result.data.push({id: `${result.lastId}-${s.id}`, length: Math.abs(startPos - s.position)});
     }
     result.lastId = s.id;
     return result;
-  }, {data: [], lastId: ''}).data;
+  }, {data: [] as Array<{id: string, length: number}>, lastId: ''}).data;
 }
 
 export function selectCanLoadPath(): boolean {

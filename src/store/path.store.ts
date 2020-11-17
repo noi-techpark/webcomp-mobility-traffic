@@ -1,59 +1,74 @@
 import { NoiError } from '@noi/api/error';
 import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise } from '@noi/utils';
-import { NoiAPI, NoiJams, NoiLinkStation } from '../api';
+import { getJamLevel, NoiAPI, NoiLinkStation } from '../api';
+
+export type StringMap<T> = {[id: string]: T};
+export type StringNumberMap = StringMap<number>;
 
 export interface NoiPathState {
-  segmentsIds: Array<string>;
+  segments: Array<{id: string, length: number}>;
   readonly path: Array<NoiLinkStation>;
   readonly pathError: string;
-  readonly jams: NoiJams;
   readonly loading: boolean;
   readonly errorCode: string;
   readonly durationMin: number;
   readonly syncDate: Date;
-  readonly segmentsTime: {[id: string]: number};
+  readonly segmentsTime: StringNumberMap;
+  readonly segmentsVelocity: StringNumberMap;
 }
 
 const pathStore = createStore<NoiPathState>({
-  segmentsIds: undefined,
+  segments: undefined,
   path: undefined,
   pathError: undefined,
-  jams: undefined,
   loading: false,
   errorCode: undefined,
   syncDate: undefined,
   durationMin: undefined,
-  segmentsTime: undefined
+  segmentsTime: undefined,
+  segmentsVelocity: undefined
 });
 
 const { onChange, set, state } = pathStore;
 
-let pathDetailsPromise: CancellablePromise<{syncDate: Date, timeMin: number, segmentsTime: {[id: string]: number}}> = undefined;
+let pathDetailsPromise: CancellablePromise<{syncDate: Date, timeMin: number, segmentsTime: StringNumberMap, segmentsVelocity: StringNumberMap}> = undefined;
 let pathPromise: CancellablePromise<Array<NoiLinkStation>> = undefined;
 
-loadJams();
 
-
-onChange('segmentsIds', (value) => {
+onChange('segments', (value) => {
   if (!!value && value.length) {
     loadPath(value);
   }
 });
 
-function loadJams() {
-  NoiAPI.fetchJamThresholds()
-    .then(jams => {
-      set('jams', jams);
-    })
-    .catch(_ => {});
+onChange('segmentsVelocity', (value) => {
+  if (!!value && !!state.path && state.path.length) {
+    // if velocity info was calculated AFTER path => update path jams
+    loadJams().then(jams => {
+      const pathWithJams =  state.path.map(i => {
+        const jamId = i.id.replace('-', '->');
+        return {...i, jamLevel: getJamLevel(jams, jamId, value[i.id])};
+      });
+      set('path', pathWithJams);
+    }).catch(_ => {console.error('Error loading traffic jams info')})
+  }
+});
+
+async function loadJams() {
+  try {
+    return await NoiAPI.fetchJamThresholds();
+  } catch (error) {
+    return undefined;
+  }
 }
 
-function loadPath(segmentsIds: Array<string>): void {
+function loadPath(segments: Array<{id: string, length: number}>): void {
   set('loading', true);
   set('errorCode', undefined);
   set('durationMin', undefined);
   set('segmentsTime', undefined);
+  set('segmentsVelocity', undefined);
   set('syncDate', undefined);
   set('path', undefined);
   set('pathError', undefined);
@@ -64,14 +79,14 @@ function loadPath(segmentsIds: Array<string>): void {
   if (pathPromise) {
     pathPromise.cancel()
   }
-  pathPromise = cancellablePromise(loadPathEffect(segmentsIds));
+  pathPromise = cancellablePromise(loadPathEffect(segments, state.segmentsVelocity));
   pathPromise.promise
     .then(path => {
       if (!path) {
         set('pathError', 'error.highway-path');
       } else {
         set('path', path);
-        if (segmentsIds.length !== path.length) {
+        if (segments.length !== path.length) {
           set('pathError', 'error.highway-path.incomplete');
         }
       }
@@ -83,7 +98,7 @@ function loadPath(segmentsIds: Array<string>): void {
         set('pathError', 'error.highway-path');
       }
     });
-  pathDetailsPromise = cancellablePromise(loadPathDetailsEffect(segmentsIds));
+  pathDetailsPromise = cancellablePromise(loadPathDetailsEffect(segments));
   pathDetailsPromise.promise
     .then(data => {
       set('loading', false);
@@ -94,6 +109,7 @@ function loadPath(segmentsIds: Array<string>): void {
       set('durationMin', data.timeMin);
       set('syncDate', data.syncDate);
       set('segmentsTime', data.segmentsTime);
+      set('segmentsVelocity', data.segmentsVelocity);
     })
     .catch(err => {
       if (err.isCancelled) {
@@ -111,25 +127,32 @@ function loadPath(segmentsIds: Array<string>): void {
 
 export const pathState = state;
 
+
 /**
  * it's like a Redux Effect to load external data in async way
  */
-async function loadPathDetailsEffect(segmentsIds: Array<string>): Promise<{syncDate: Date, timeMin: number, segmentsTime: {[id: string]: number}}> {
+async function loadPathDetailsEffect(segments: Array<{id: string, length: number}>): Promise<{syncDate: Date, timeMin: number, segmentsTime: StringNumberMap, segmentsVelocity: StringNumberMap}> {
+  const segmentsIds = segments.map(i => i.id);
   const segmentsTime = await NoiAPI.getLinkStationsTime(segmentsIds, true);
+  const segmentsLengthMap = segments.reduce((result, i) => { result[i.id] = i.length; return result;}, {} as StringNumberMap);
   const result = {
-    segmentsTime: segmentsTime.reduce((result, i) => { result[i.id] = i.timeSec; return result;}, {} as {[id: string]: number}),
+    segmentsVelocity: segmentsTime.reduce((result, i) => { result[i.id] = Math.round((segmentsLengthMap[i.id] / 1000) / (i.timeSec / 3600)); return result;}, {} as StringNumberMap),
+    segmentsTime: segmentsTime.reduce((result, i) => { result[i.id] = i.timeSec; return result;}, {} as StringNumberMap),
     syncDate: segmentsTime.reduce((result, i) => (i.sync && i.sync < result ? i.sync : result), new Date()),
     timeMin: Math.round(segmentsTime.reduce((result, i) => { result += i.timeSec; return result;}, 0) / 60),
   }
   return result;
 }
 
-async function loadPathEffect(segmentsIds: Array<string>): Promise<Array<NoiLinkStation>> {
+async function loadPathEffect(segments: Array<{id: string, length: number}>, velocityMap: StringNumberMap): Promise<Array<NoiLinkStation>> {
+  const segmentsIds = segments.map(i => i.id);
   const geometryMap = await NoiAPI.getSegmentsGeometries(segmentsIds);
+  const jams = await loadJams();
   const path = segmentsIds.reduce((result, id) => {
     if (!geometryMap[id]) {
       return result;
     }
+    const jamLevel = getJamLevel(jams, id, velocityMap ? velocityMap[id] : undefined);
     const ls: NoiLinkStation = {
       type: 'LinkStation',
       id,
@@ -138,7 +161,7 @@ async function loadPathEffect(segmentsIds: Array<string>): Promise<Array<NoiLink
       start: null,
       end: null,
       geometry: geometryMap[id].geometry,
-      jamLevel: undefined // FIXME:
+      jamLevel
     }
     result.push(ls);
     return result;

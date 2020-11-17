@@ -1,12 +1,11 @@
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise } from '@noi/utils';
-import { getJamLevel, NoiAPI, NoiJams, NoiLinkStation } from '../api';
+import { getJamLevel, NoiAPI, NoiLinkStation } from '../api';
 
 export interface NoiPathState {
   startEnd: [string, string];
   readonly path: Array<NoiLinkStation>;
-  readonly jams: NoiJams;
   readonly loading: boolean;
   readonly errorCode: string;
   readonly stations: Array<{position: number, id: string, name: string}>;
@@ -17,7 +16,6 @@ export interface NoiPathState {
 const urbanPathStore = createStore<NoiPathState>({
   startEnd: undefined,
   path: undefined,
-  jams: undefined,
   loading: false,
   errorCode: undefined,
   stations: undefined,
@@ -28,8 +26,6 @@ const urbanPathStore = createStore<NoiPathState>({
 const { onChange, set, state } = urbanPathStore;
 
 let effectPromise: CancellablePromise<{path: Array<NoiLinkStation>, timeMin: number}> = undefined;
-
-loadJams();
 
 onChange('path', (path) => {
   if (!path || !path.length) {
@@ -61,20 +57,12 @@ onChange('startEnd', (value) => {
   }
 });
 
-onChange('jams', (value) => {
-  if (!value || !state.path) {
-    return;
+async function loadJams() {
+  try {
+    return await NoiAPI.fetchJamThresholds();
+  } catch (error) {
+    return undefined;
   }
-  set('path', [...state.path]); // if jams were loaded after the path, update the path
-});
-
-
-function loadJams() {
-  NoiAPI.fetchJamThresholds()
-    .then(jams => {
-      set('jams', jams);
-    })
-    .catch(_ => {});
 }
 
 function loadUrbanPath(startId: string, endId: string): void {
@@ -114,7 +102,8 @@ export const urbanPathState = state;
  * it's like a Redux Effect to load external data in async way
  */
 async function loadUrbanPathEffect(startId: string, endId: string): Promise<{path: Array<NoiLinkStation>, timeMin: number}> {
-  const segmentsIds = (await NoiAPI.getUrbanSegmentsIds(startId, endId));
+  const segmentsIds = await NoiAPI.getUrbanSegmentsIds(startId, endId);
+  const jams = await loadJams();
   if (!segmentsIds) {
     return undefined;
   }
@@ -129,9 +118,9 @@ async function loadUrbanPathEffect(startId: string, endId: string): Promise<{pat
     return result;
   }, 0);
   const pathWithJams = path.map(i => {
-    const jamLevel = getJamLevel(state.jams, i.id, velocityMap[i.id]);
+    const jamLevel = getJamLevel(jams, i.id, velocityMap[i.id]);
     return {...i, jamLevel}
-  })
+  });
   return {path: pathWithJams, timeMin}
 }
 

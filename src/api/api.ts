@@ -96,15 +96,15 @@ export interface NoiHighwayStation {
 
 export type JamLevel = '' | 'light' | 'strong';
 
-export function getJamLevel(jams: {[id: string]: [number, number]}, id: string, timeSec: number): JamLevel {
-  if (!jams || !jams[id] || !Array.isArray(jams[id]) || jams[id].length !== 2) {
+export function getJamLevel(jams: {[id: string]: [number, number]}, id: string, velocity: number): JamLevel {
+  if (!jams || !jams[id] || !Array.isArray(jams[id]) || jams[id].length !== 2 || velocity === undefined) {
     return undefined;
   }
   const j = jams[id];
-  if (timeSec < j[0]) {
+  if (velocity > j[1]) {
     return '';
   }
-  if (timeSec < j[1]) {
+  if (velocity > j[0]) {
     return 'light';
   }
   return 'strong';
@@ -259,6 +259,9 @@ export class OpenDataHubNoiService {
 
   async fetchJamThresholds(): Promise<NoiJams> {
     try {
+      if (this.jams ) {
+        return this.jams;
+      }
       const response = await fetch(getAssetPath('./jams.json'));
       if (!response.ok) {
         throw new NoiError('error.jams-not-available');
