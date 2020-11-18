@@ -10,6 +10,9 @@ export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
 export const LINK_STATION_PATH_ERR_NOT_FOUND = 'error.link-station-path.not-found';
 export const LINK_STATION_VELOCITY_ERR_NOT_FOUND = 'error.link-station-velocity.not-found';
 
+export type StringMap<T> = {[id: string]: T};
+export type StringNumberMap = StringMap<number>;
+
 export interface NoiJams {
   [stationId: string]: [number, number]
 }
@@ -236,6 +239,7 @@ export class OpenDataHubNoiService {
   static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
   static VERSION = 'v2';
   private jams = undefined;
+  private timeThresholds = undefined;
   private urbanSegments = undefined;
   private geometries = undefined;
 
@@ -278,6 +282,27 @@ export class OpenDataHubNoiService {
     }
   }
 
+  async fetchTimeThresholds(): Promise<StringNumberMap> {
+    try {
+      if (this.timeThresholds ) {
+        return this.timeThresholds;
+      }
+      const response = await fetch(getAssetPath('./time-thresholds.json'));
+      if (!response.ok) {
+        throw new NoiError('error.time-thresholds-not-available');
+      }
+      const json = await response.json() || {};
+      this.timeThresholds = json;
+      return json;
+    } catch (err) {
+      if (err instanceof NoiError) {
+        throw err;
+      }
+      const noiErr = getErrByServiceError(err);
+      throw noiErr;
+    }
+  }
+
   async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date}>> {
     const where = `scode.in.(${ids.join(',')})`;
     const select = `scode,sdatatypes.tempo`;
@@ -295,7 +320,7 @@ export class OpenDataHubNoiService {
     });
   }
 
-  async getLinkStationsHistoryTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date}>> {
+  async getLinkStationsHistoryTime(ids: Array<string>, auth = false): Promise<StringMap<{id: string, timeSec: number, sync: Date}>> {
     const from = new Date();
     from.setDate(from.getDate()-1);
     from.setHours(0, 0, 0);
@@ -322,9 +347,9 @@ export class OpenDataHubNoiService {
     }, {});
     return Object.keys(res).reduce((result, i) => {
       const secondLast = res[i].length > 1 ? res[i][res[i].length - 2] : res[i][res[i].length - 1];
-      result.push(secondLast);
+      result[i] = secondLast;
       return result;
-    }, []);
+    }, {});
   }
 
   async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number}>> {

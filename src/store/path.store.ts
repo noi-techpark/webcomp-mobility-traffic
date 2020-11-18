@@ -1,10 +1,7 @@
 import { NoiError } from '@noi/api/error';
 import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise } from '@noi/utils';
-import { getJamLevel, NoiAPI, NoiLinkStation } from '../api';
-
-export type StringMap<T> = {[id: string]: T};
-export type StringNumberMap = StringMap<number>;
+import { getJamLevel, NoiAPI, NoiLinkStation, StringNumberMap } from '../api';
 
 export interface NoiPathState {
   segments: Array<{id: string, length: number}>;
@@ -133,7 +130,25 @@ export const pathState = state;
  */
 async function loadPathDetailsEffect(segments: Array<{id: string, length: number}>): Promise<{syncDate: Date, timeMin: number, segmentsTime: StringNumberMap, segmentsVelocity: StringNumberMap}> {
   const segmentsIds = segments.map(i => i.id);
-  const segmentsTime = await NoiAPI.getLinkStationsTime(segmentsIds, true);
+  let segmentsTime = await NoiAPI.getLinkStationsTime(segmentsIds, true);
+  try {
+    const timeThresholds = await NoiAPI.fetchTimeThresholds();
+    const segmentsHistoryTime = await NoiAPI.getLinkStationsHistoryTime(segmentsIds, true);
+    segmentsTime.forEach(s => {
+      let thr = timeThresholds && timeThresholds[s.id.replace('-', '->')];
+      if (thr && segmentsHistoryTime[s.id] && (segmentsHistoryTime[s.id].timeSec + thr < s.timeSec)) {
+        // historical value + thresholds < actual value
+        s.sync = segmentsHistoryTime[s.id].sync;
+        s.timeSec = segmentsHistoryTime[s.id].timeSec;
+      }
+    })
+  } catch (error) {
+    if (error instanceof NoiError) {
+      // TODO: should we do something if either historical data or thresholds config is not available
+    } else {
+      // TODO: should we do something if either historical data or thresholds config is not available
+    }
+  }
   const segmentsLengthMap = segments.reduce((result, i) => { result[i.id] = i.length; return result;}, {} as StringNumberMap);
   const result = {
     segmentsVelocity: segmentsTime.reduce((result, i) => { result[i.id] = Math.round((segmentsLengthMap[i.id] / 1000) / (i.timeSec / 3600)); return result;}, {} as StringNumberMap),
