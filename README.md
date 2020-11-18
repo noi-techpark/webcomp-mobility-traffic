@@ -46,6 +46,11 @@ noi-mobility-traffic {
   --noi-action: #339966;
   --noi-action-rgb: 87, 173, 57;
   --noi-action-contrast: #ffffff;
+  --noi-error: #B44C00;
+  --noi-error-rgb: 180,76,0;
+  --noi-error-contrast: #ffffff;
+  --noi-jam-strong: #B44C00;
+  --noi-jam-light: yellow;
 }
 ```
 
@@ -87,6 +92,98 @@ Action contrast color color. Used to distinguish the text font on elements that 
 ```css
   --noi-action-contrast: #000000;
 ```
+
+#### --noi-error, --noi-error-rgb
+
+An error color to be used for all the error messages and it's rgb representation (should correspond to the first value). Default is:
+```css
+  --noi-action: red;
+  --noi-action-rgb: 255, 0, 0;
+```
+
+#### --noi-error-contrast
+
+Error contrast color color. Used to distinguish the text font on elements that have `background: var(--noi-error)`. Default is white.
+```css
+  --noi-error-contrast: #000000;
+```
+
+#### --noi-jam-strong
+
+The value that will be used to color a segment path with heavy traffic on the map. Default is red.
+
+```css
+--noi-jam-strong: red;
+```
+
+#### --noi-jam-light
+
+The value that will be used to color a segment path with light traffic on the map. Default is yellow.
+
+```css
+--noi-jam-strong: yellow;
+```
+
+
+### Configuration 
+
+The app uses following four json files to configure different thresholds and currently missing api data:
+
+- `geometries.json` - provide missing geometry data for A22 path
+- `jams.json` - values to identify traffic jams on segments
+- `time-thresholds.json` - thresholds to identify time values outlayers 
+- `urban-segments.json` - provide missing urban connections between two highway stations
+
+#### Geometries configuration
+
+Provide a json map (by LinkStation id) that should comply the  following structure. Geometry attribute should be a valid **GeoJSON** object.
+```json
+{
+  "1853-1854": {
+    "geometry": "",
+    "name":"BOLZANO NORD - BOLZANO SUD"
+  }
+}
+```
+
+#### Jams configuration
+
+Traffic jams map (by LinkStation id) that should comply the  following structure. Supports both Urban and A22 segments. Each key should be an array of two velocity values - heavy traffic value and light traffic value. If actual segment velocity is lower than first value, the traffic considered to be heavy. If higher than first but lower than second, light traffic. Higher than second, no traffic. If value is missing the segment will have the default colour on the map. Example:
+
+```json
+{
+  "1853->1854": [70, 95],
+  "Arginale_Palermo->Arginale_Resia": [40, 60]
+}
+```
+
+#### Time Outlayers configuration
+
+Time thresholds map. If historical value + thresholds < actual value, then the actual value will be considered an outlayer and a historical value will be used. Example:
+
+```json
+{
+  "1853->1854": 120
+}
+```
+
+#### Urban segments configuration
+
+Contains the urban stations path (as an array of ids) that connect two highway stations. The id should be a concatenation of start station id and end station id with `->` separator in-between (as in example below `1854->1853` LinkStation connecting Bz Nord and Bz Süd). If no data is provided for given start/end, urban path is considered to be absent.
+
+```json
+{
+  "1854->1853": [
+    "Torricelli->siemens",
+    "siemens->Galilei_Palermo",
+    "Galilei_Palermo->Galilei_Lancia",
+    "Galilei_Lancia->Galilei_Virgolo",
+    "Galilei_Virgolo->Galleria_Virgolo",
+    "Galleria_Virgolo->P_Campiglio"
+  ]
+}
+```
+
 
 ## Getting started
 
@@ -132,7 +229,7 @@ Download all dependencies (please, do clean install (ci), to respect the `packag
 npm ci
 ```
 
-### Build
+### Developer server start
 
 Build and start the project:
 
@@ -142,13 +239,12 @@ npm run start
 
 The application will be served and can be accessed at [http://localhost:3333](http://localhost:3333).
 
-## Tests and linting
+## Tests
 
-The tests and the linting can be executed with the following commands:
+The tests can be executed with the following command:
 
 ```bash
 npm run test
-npm run lint
 ```
 
 ## Deployment
@@ -156,7 +252,7 @@ npm run lint
 To create the distributable files, execute the following command:
 
 ```bash
-npm run build
+npm run build:cdn
 ```
 
 ## Docker environment
@@ -174,7 +270,7 @@ Install [Docker](https://docs.docker.com/install/) (with Docker Compose) locally
 First, install all dependencies:
 
 ```bash
-docker-compose run --rm app /bin/bash -c "npm install"
+docker-compose run --rm app /bin/bash -c "npm ci"
 ```
 
 ### Start and stop the containers
