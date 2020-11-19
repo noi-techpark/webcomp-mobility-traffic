@@ -13,6 +13,7 @@
 | `isStart`               | `is-start` |             | `boolean` | `false`     |
 | `name` _(required)_     | `name`     |             | `string`  | `undefined` |
 | `position` _(required)_ | `position` |             | `number`  | `undefined` |
+| `time`                  | `time`     |             | `number`  | `undefined` |
 
 
 ## Dependencies
