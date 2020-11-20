@@ -1,0 +1,16 @@
+{
+  "1854->1853": [
+    "Torricelli->siemens",
+    "siemens->Galilei_Palermo",
+    "Galilei_Palermo->Galilei_Lancia",
+    "Galilei_Lancia->Galilei_Virgolo",
+    "Galilei_Virgolo->Galleria_Virgolo",
+    "Galleria_Virgolo->P_Campiglio"
+  ],
+  "1853->1854": [
+    "P_Campiglio->Galleria_Virgolo",
+    "Galleria_Virgolo->Arginale_Palermo",
+    "Arginale_Palermo->Arginale_Resia",
+    "Arginale_Resia->Agip_Einstein"
+  ]
+}

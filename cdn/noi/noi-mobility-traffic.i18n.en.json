@@ -1,7 +1,12 @@
 {
   "title": "NOI Mobility Traffic",
   "path-details.highway-name": "A22",
+  "path-details.highway-error": "Error",
+  "path-details.highway-loading": "Loading...",
   "path-details.urban-name": "SS",
+  "path-details.urban-error": "Error",
+  "path-details.urban-empty": "No urban path data",
+  "path-details.urban-loading": "Loading...",
   "path-details.last-sync": "Last sync",
   "search.start-placeholder": "Departure?",
   "search.end-placeholder": "Arrival?",
@@ -13,12 +18,19 @@
   "stations-modal.header-start": "Select departure",
   "stations-modal.header-end": "Select destination",
   "stations-modal.select-btn": "Select",
+  "error.highway-path": "Unable to load A22 geometry data",
+  "error.highway-path.incomplete": "A22 geometry data is incomplete for given segment",
+  "error.highway-time": "Unable to load A22 travel time data",
+  "error.auth-service.unknown": "Unable to pass authentication",
   "error.unknown": "Unknown error. Please contact the support.",
+  "error.urban-segments": "Unable to load urban segments data",
+  "error.urban-segments-validation": "Urban segments data is not valid",
   "error.no-locale": "Language is not supported",
   "error.noi-service.unknown": "Unable to connect to Open Data Hub",
   "error.noi-service.offline": "Network error",
   "error.noi-service.data-format": "Open Data Hub data error",
   "error.link-station.not-found": "Segment not found",
   "error.link-station-path.not-found": "Segment path not found",
-  "error.link-station-velocity.not-found": "Segment velocity data not found"
+  "error.link-station-velocity.not-found": "Segment velocity data not found",
+  "error.jams-not-available": "Traffic jams information is not available"
 }

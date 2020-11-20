@@ -3,5 +3,5 @@
   "path-details.highway-name": "A22",
   "path-details.urban-name": "SS",
   "error.unknown": "Errore sconosciuto",
-  "noi.error.no-locale": "Language is not supported"
+  "error.no-locale": "Language is not supported"
 }
