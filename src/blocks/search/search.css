@@ -71,6 +71,10 @@ header {
   min-height: 36px;
 }
 
+.header__icon {
+  fill: var(--noi-primary-contrast);
+}
+
 .header__back-btn {
   margin-right: auto;
   min-width: 48px;
@@ -168,7 +172,7 @@ footer {
   --background-activated-opacity: 0.5;
 }
 
-.search-reorder-btn > svg {
+.search-reorder-btn__icon {
   fill: var(--noi-action);
 }
 
@@ -177,9 +181,6 @@ footer {
   --box-shadow: 0px 0px 0px 2px #eee;
 }
 
-.search-reorder-btn.noi-activated > svg {
-  fill: rgba(var(--noi-action-rgb), 0.5);
-}
 
 /* search-station-btn */
 .search-station-btn {
