@@ -5,14 +5,6 @@
 <!-- Auto Generated Below -->
 
 
-## Properties
-
-| Property               | Attribute  | Description | Type     | Default     |
-| ---------------------- | ---------- | ----------- | -------- | ----------- |
-| `endId` _(required)_   | `end-id`   |             | `string` | `undefined` |
-| `startId` _(required)_ | `start-id` |             | `string` | `undefined` |
-
-
 ## Events
 
 | Event          | Description | Type                                |

@@ -1,12 +1,11 @@
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise } from '@noi/utils';
-import { NoiAPI, NoiLinkStation } from '../api';
+import { getJamLevel, NoiAPI, NoiLinkStation } from '../api';
 
 export interface NoiPathState {
-  startId: string;
-  endId: string;
-  path: Array<NoiLinkStation>;
+  startEnd: [string, string];
+  readonly path: Array<NoiLinkStation>;
   readonly loading: boolean;
   readonly errorCode: string;
   readonly stations: Array<{position: number, id: string, name: string}>;
@@ -15,17 +14,17 @@ export interface NoiPathState {
 }
 
 const urbanPathStore = createStore<NoiPathState>({
-  startId: undefined,
-  endId: undefined,
+  startEnd: undefined,
+  path: undefined,
   loading: false,
   errorCode: undefined,
-  path: undefined,
   stations: undefined,
   durationMin: undefined,
   distance: undefined
 });
 
 const { onChange, set, state } = urbanPathStore;
+
 let effectPromise: CancellablePromise<{path: Array<NoiLinkStation>, timeMin: number}> = undefined;
 
 onChange('path', (path) => {
@@ -49,24 +48,22 @@ onChange('stations', (value) => {
   set('distance', Math.round(distance));
 })
 
-onChange('startId', (value) => {
+onChange('startEnd', (value) => {
   set('path', undefined);
   set('durationMin', undefined);
   set('errorCode', undefined);
-  if (!!value && state.endId) {
-    loadUrbanPath(value, state.endId);
+  if (!!value) {
+    loadUrbanPath(...value);
   }
 });
 
-onChange('endId', (value) => {
-  set('path', undefined);
-  set('durationMin', undefined);
-  set('errorCode', undefined);
-  if (!!value && state.startId) {
-    loadUrbanPath(state.startId, value);
+async function loadJams() {
+  try {
+    return await NoiAPI.fetchJamThresholds();
+  } catch (error) {
+    return undefined;
   }
-});
-
+}
 
 function loadUrbanPath(startId: string, endId: string): void {
   set('loading', true);
@@ -77,10 +74,13 @@ function loadUrbanPath(startId: string, endId: string): void {
   effectPromise = cancellablePromise(loadUrbanPathEffect(startId, endId));
   effectPromise.promise
     .then(data => {
-      set('path', data.path);
-      set('durationMin', data.timeMin);
       set('loading', false);
       effectPromise = undefined;
+      if (data === undefined) {
+        return;
+      }
+      set('path', data.path);
+      set('durationMin', data.timeMin);
     })
     .catch(err => {
       if (err.isCancelled) {
@@ -102,7 +102,8 @@ export const urbanPathState = state;
  * it's like a Redux Effect to load external data in async way
  */
 async function loadUrbanPathEffect(startId: string, endId: string): Promise<{path: Array<NoiLinkStation>, timeMin: number}> {
-  const segmentsIds = (await NoiAPI.getUrbanSegmentsIds(startId, endId));
+  const segmentsIds = await NoiAPI.getUrbanSegmentsIds(startId, endId);
+  const jams = await loadJams();
   if (!segmentsIds) {
     return undefined;
   }
@@ -116,6 +117,10 @@ async function loadUrbanPathEffect(startId: string, endId: string): Promise<{pat
     result += timeMin;
     return result;
   }, 0);
-  return {path, timeMin}
+  const pathWithJams = path.map(i => {
+    const jamLevel = getJamLevel(jams, i.id, velocityMap[i.id]);
+    return {...i, jamLevel}
+  });
+  return {path: pathWithJams, timeMin}
 }
 

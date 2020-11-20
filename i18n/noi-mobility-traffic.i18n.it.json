@@ -3,6 +3,6 @@
   "path-details.highway-name": "A22",
   "path-details.last-sync": "Ultima rilevazione",
   "path-details.urban-name": "SS",
-  "noi.error.unknown": "Errore sconosciuto",
-  "noi.error.no-locale": "Language is not supported"
+  "error.unknown": "Errore sconosciuto",
+  "error.no-locale": "Language is not supported"
 }

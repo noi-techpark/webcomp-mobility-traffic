@@ -10,6 +10,39 @@ export const LINK_STATION_ERR_NOT_FOUND = 'error.link-station.not-found';
 export const LINK_STATION_PATH_ERR_NOT_FOUND = 'error.link-station-path.not-found';
 export const LINK_STATION_VELOCITY_ERR_NOT_FOUND = 'error.link-station-velocity.not-found';
 
+export type StringMap<T> = {[id: string]: T};
+export type StringNumberMap = StringMap<number>;
+
+export interface NoiJams {
+  [stationId: string]: [number, number]
+}
+
+export function selectSegmentsGeometries(segmentsIds: Array<string>, geometries: any): {[id: string]: {name: string, geometry: any}} {
+  if (!segmentsIds || !segmentsIds.length) {
+    return {};
+  }
+  return segmentsIds.reduce((result, id) => {
+    if (geometries[id] && geometries[id].geometry) {
+      result[id] = geometries[id];
+    }
+    return result;
+  }, {} as {[id: string]: {name: string, geometry: any}});
+}
+
+export function validateUrbanSegmentsIds(data: unknown): Array<string> {
+  if (!data) {
+    return null;
+  }
+  if (!Array.isArray(data)) {
+    throw new NoiError('error.urban-segments-validation');
+  }
+  (data as Array<unknown>).forEach(i => {
+    if (typeof i !== 'string') {
+      throw new NoiError('error.urban-segments-validation');
+    }
+  });
+  return data as Array<string>;
+}
 
 export function getErrByServiceError(_: Error): NoiError {
   return new NoiError(NOI_SERVICE_ERR_OFFLINE);
@@ -35,7 +68,8 @@ export interface NoiLinkStation {
   start: NoiBTStation,
   end: NoiBTStation,
   geometry: GeoJSON.Geometry,
-  distance?: number
+  distance?: number,
+  jamLevel?: JamLevel
 }
 
 export interface NoiTreeItem {
@@ -65,15 +99,15 @@ export interface NoiHighwayStation {
 
 export type JamLevel = '' | 'light' | 'strong';
 
-function getJamLevel(jams: {[id: string]: [number, number]}, id: string, timeSec: number): JamLevel {
-  if (!jams[id] || !Array.isArray(jams[id]) || jams[id].length !== 2) {
+export function getJamLevel(jams: {[id: string]: [number, number]}, id: string, velocity: number): JamLevel {
+  if (!jams || !jams[id] || !Array.isArray(jams[id]) || jams[id].length !== 2 || velocity === undefined) {
     return undefined;
   }
   const j = jams[id];
-  if (timeSec < j[0]) {
+  if (velocity > j[1]) {
     return '';
   }
-  if (timeSec < j[1]) {
+  if (velocity > j[0]) {
     return 'light';
   }
   return 'strong';
@@ -204,6 +238,10 @@ function getLinkStationParser(options?: {calcGeometryDistance?: boolean}) {
 export class OpenDataHubNoiService {
   static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
   static VERSION = 'v2';
+  private jams = undefined;
+  private timeThresholds = undefined;
+  private urbanSegments = undefined;
+  private geometries = undefined;
 
   public async request(url: string, init: RequestInit = {}) {
     try {
@@ -223,21 +261,49 @@ export class OpenDataHubNoiService {
     }
   }
 
-  async fetchJamThresholds(): Promise<{[stationId: string]: [number, number]}> {
+  async fetchJamThresholds(): Promise<NoiJams> {
     try {
-      const result = await fetch(getAssetPath('./jams.json'));
-      if (result.ok) {
-        return result.json();
+      if (this.jams ) {
+        return this.jams;
       }
-      return {};
-    } catch (error) {
-      console.warn('No jams information');
-      return {};
+      const response = await fetch(getAssetPath('./jams.json'));
+      if (!response.ok) {
+        throw new NoiError('error.jams-not-available');
+      }
+      const json = await response.json() || {};
+      this.jams = json;
+      return json;
+    } catch (err) {
+      if (err instanceof NoiError) {
+        throw err;
+      }
+      const noiErr = getErrByServiceError(err);
+      throw noiErr;
     }
   }
 
-  async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date, jam?: JamLevel}>> {
-    const jams = await this.fetchJamThresholds();
+  async fetchTimeThresholds(): Promise<StringNumberMap> {
+    try {
+      if (this.timeThresholds ) {
+        return this.timeThresholds;
+      }
+      const response = await fetch(getAssetPath('./time-thresholds.json'));
+      if (!response.ok) {
+        throw new NoiError('error.time-thresholds-not-available');
+      }
+      const json = await response.json() || {};
+      this.timeThresholds = json;
+      return json;
+    } catch (err) {
+      if (err instanceof NoiError) {
+        throw err;
+      }
+      const noiErr = getErrByServiceError(err);
+      throw noiErr;
+    }
+  }
+
+  async getLinkStationsTime(ids: Array<string>, auth = false): Promise<Array<{id: string, timeSec: number, sync: Date}>> {
     const where = `scode.in.(${ids.join(',')})`;
     const select = `scode,sdatatypes.tempo`;
     const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
@@ -250,9 +316,40 @@ export class OpenDataHubNoiService {
       throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
     }
     return response.data.map(s => {
-      const jam = getJamLevel(jams, s.scode, s.mvalue);
-      return {timeSec: s.mvalue, id: s.scode, sync: new Date(s.mvalidtime), jam};
+      return {timeSec: s.mvalue, id: s.scode, sync: new Date(s.mvalidtime)};
     });
+  }
+
+  async getLinkStationsHistoryTime(ids: Array<string>, auth = false): Promise<StringMap<{id: string, timeSec: number, sync: Date}>> {
+    const from = new Date();
+    from.setDate(from.getDate()-1);
+    from.setHours(0, 0, 0);
+    const fromString = from.toISOString();
+    const to = new Date();
+    from.setHours(23, 59, 59);
+    const toString = to.toISOString();
+    const where = `scode.in.(${ids.join(',')})`;
+    const select = `scode,sdatatypes.tempo`;
+    const limit = -1;
+    const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
+    const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
+    const response = await this.request(
+      `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,node/LinkStation/tempo/${fromString}/${toString}?limit=${limit}&select=${select}&where=${where}&distinct=true`,
+      { headers }
+    );
+    if (!response || !response.data) {
+      throw new NoiError(LINK_STATION_ERR_NOT_FOUND, {message: `LinkStation ${name} not found`});
+    }
+    const res: {[key: string]: Array<{id: string, timeSec: number, sync: Date}>} = response.data.reduce((result, i) => {
+      result[i.scode] = result[i.scode] || [];
+      result[i.scode].push({timeSec: i.mvalue, id: i.scode, sync: new Date(i.mvalidtime)});
+      return result;
+    }, {});
+    return Object.keys(res).reduce((result, i) => {
+      const secondLast = res[i].length > 1 ? res[i][res[i].length - 2] : res[i][res[i].length - 1];
+      result[i] = secondLast;
+      return result;
+    }, {});
   }
 
   async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number}>> {
@@ -274,27 +371,43 @@ export class OpenDataHubNoiService {
   }
 
   async getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>> {
-    if (startId === '1854' && endId === '1853') {
-      // BZ SÜD -> BZ NORD
-      return [
-        'Torricelli->siemens',
-        'siemens->Galilei_Palermo',
-        'Galilei_Palermo->Galilei_Lancia',
-        'Galilei_Lancia->Galilei_Virgolo',
-        'Galilei_Virgolo->Galleria_Virgolo',
-        'Galleria_Virgolo->P_Campiglio'
-      ];
+    if (this.urbanSegments) {
+      return validateUrbanSegmentsIds(this.urbanSegments[`${startId}->${endId}`]);
     }
-    if (startId === '1853' && endId === '1854') {
-      // BZ NORD -> BZ SÜD
-      return [
-        'P_Campiglio->Galleria_Virgolo',
-        'Galleria_Virgolo->Arginale_Palermo',
-        'Arginale_Palermo->Arginale_Resia',
-        'Arginale_Resia->Agip_Einstein' 
-      ];
+    try {
+      const response = await fetch(getAssetPath('./urban-segments.json'));
+      if (response.ok) {
+        const json = await response.json() || {};
+        this.urbanSegments = json;
+        return validateUrbanSegmentsIds(json[`${startId}->${endId}`]);
+      }
+      throw new NoiError('error.urban-segments');
+    } catch (error) {
+      if (error instanceof NoiError) {
+        throw error;
+      }
+      throw new NoiError('error.urban-segments');
     }
-    return null;
+  }
+
+  async getSegmentsGeometries(segmentsIds: Array<string>): Promise<{[id: string]: {name: string, geometry: any}}> {
+    if (this.geometries) {
+      return selectSegmentsGeometries(segmentsIds, this.geometries);
+    }
+    try {
+      const response = await fetch(getAssetPath('./geometries.json'));
+      if (response.ok) {
+        const json = await response.json() || {};
+        this.geometries = json;
+        return selectSegmentsGeometries(segmentsIds, this.geometries);
+      }
+      throw new NoiError('error.geometries');
+    } catch (error) {
+      if (error instanceof NoiError) {
+        throw error;
+      }
+      throw new NoiError('error.geometries');
+    }
   }
 
   async getLinkStationsByIds(ids: Array<string>, options?: {auth?: boolean, calcGeometryDistance?: boolean}): Promise<Array<NoiLinkStation>> {
@@ -311,7 +424,11 @@ export class OpenDataHubNoiService {
     if (response.data.length !== ids.length) {
       throw new NoiError(LINK_STATION_PATH_ERR_NOT_FOUND, {message: `Some of LinkStation ids=${ids.join(',')} are not found`});
     }
-    return response.data.map(getLinkStationParser(options));
+    const stationsMap = (response.data as Array<unknown>).map(getLinkStationParser(options)).reduce(
+      (result, i) => {result[i.id] = i; return result;},
+      {}
+    );
+    return ids.map(i => stationsMap[i]);
   }
 
   async getHighwayStations(): Promise<Array<NoiHighwayStation>> {

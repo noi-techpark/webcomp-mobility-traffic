@@ -8,6 +8,10 @@
   --noi-action-rgb: 87, 173, 57;
   --noi-action: #339966;
   --noi-action-contrast: #ffffff;
+  --noi-jam-strong: #B44C00;
+  --noi-error: #B44C00;
+  --noi-error-rgb: 180,76,0;
+  --noi-error-contrast: #ffffff;
 }
 
 * {

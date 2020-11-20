@@ -1,3 +1,3 @@
-import noiStore from './stations-store';
+import noiStore from './stations.store';
 export default noiStore;
-export * from './stations-store';
+export * from './stations.store';

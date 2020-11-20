@@ -25,7 +25,7 @@ export interface ButtonInterface {
 @Component({
   tag: 'noi-button',
   styleUrl: 'button.scss',
-  shadow: true,
+  scoped: true
 })
 export class Button implements ComponentInterface, AnchorInterface, ButtonInterface {
   private inItem = false;

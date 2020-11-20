@@ -1,5 +1,5 @@
 import { NoiAPI } from '@noi/api';
-import { urbanPathState } from '@noi/store/path-store';
+import { urbanPathState } from '@noi/store/urban-path.store';
 import noiStore, { selectStartEnd, selectStationsWithSelectedWithStartEnd } from '@noi/store';
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { getLocaleComponentStrings, translate } from '@noi/lang';
@@ -10,6 +10,7 @@ import { MapMarker } from './blocks/map/map-marker';
 import { MapStation } from './blocks/map/map-station';
 import { startTapClick } from './components/tap-click';
 import { fnDebounce } from './utils';
+import { pathState } from './store/path.store';
 
 const rIC = (callback: () => void) => {
   if ('requestIdleCallback' in window) {
@@ -110,18 +111,24 @@ export class NoiMobilityTraffic {
     })
   }
 
-  getUrbanPath() {
-    if (noiStore.activePath !== 'urban') {
-      return null;
+  getPath() {
+    if (noiStore.activePath === 'highway') {
+      if (!pathState.path) {
+        return null;
+      }
+      return pathState.path.map(s => {
+        return <noi-map-route key={`${s.id}-${s.jamLevel}`} jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
+      });
     }
-    if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
-      return null;
+    if (noiStore.activePath === 'urban') { 
+      if (urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+        return null;
+      }
+      return urbanPathState.path.map(s => {
+        return <noi-map-route key={`${s.id}-${s.jamLevel}`} jam={s.jamLevel} geometry={JSON.stringify(s.geometry)}></noi-map-route>
+      });
     }
-    return urbanPathState.path.map(s => {
-      const rnd = Math.random();
-      const jam = rnd < 0.3 ? 'none' : (rnd < 0.4 ? 'light' : 'strong');
-      return <noi-map-route jam={jam} geometry={JSON.stringify(s.geometry)}></noi-map-route>
-    });
+    return null;
   }
 
   getHighwayMarkers() {
@@ -143,6 +150,17 @@ export class NoiMobilityTraffic {
     noiStore.selecting = null;
   }
 
+  renderError() {
+    return (
+      <div class="wrapper">
+        <div class="error">
+          <h2>{translate(this.errorCode)}</h2>
+          <noi-button fill="solid" class="button-md error-btn" onClick={this.loadLocaleAndStations.bind(this)}>Retry</noi-button>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     if (this.loading) {
       return (<div class="wrapper">
@@ -154,15 +172,8 @@ export class NoiMobilityTraffic {
       </div>);
     }
     if (this.errorCode) {
-      return (<div class="wrapper">
-        <div class="error">
-          <h2>{translate(this.errorCode)}</h2>
-          <noi-button fill="solid" class="button-md error-btn" onClick={this.loadLocaleAndStations.bind(this)}>Retry</noi-button>
-        </div>
-      </div>)
+      return this.renderError();
     }
-    urbanPathState.startId = noiStore.startId;
-    urbanPathState.endId = noiStore.endId;
     return <div class="wrapper">
       <noi-backdrop
         overlayIndex={2}
@@ -181,9 +192,9 @@ export class NoiMobilityTraffic {
       <noi-map
         lat={noiStore.mapCenter.lat}
         long={noiStore.mapCenter.long}>
-        {this.getUrbanPath()}
         {this.getHighwayCircles()}
         {this.getHighwayMarkers()}
+        {this.getPath()}
       </noi-map>
     </div>;
   }
