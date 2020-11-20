@@ -15,7 +15,7 @@ pipeline {
                     rm -f .env
                     echo 'CLIENT_SECRET=fake-secret-for-testing' >> .env
                     echo 'CLIENT_ID=it.bz.opendatahub.webcomponents.mobility-traffic' >>.env
-                    echo 'TOKEN_URL="https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token' >>.env
+                    echo 'TOKEN_URL=https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token' >>.env
                 """
             }
         }
