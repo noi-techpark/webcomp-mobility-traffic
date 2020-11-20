@@ -106,11 +106,11 @@ export class Search {
           <div class="search-stations__wrapper">
             <div class="search-stations__buttons">
               <noi-button class={startBtnClass} onClick={this.onInputClick.bind(this, 'start')}>
-                <svg slot="start" height="20" viewBox="0 0 14 20" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m7 0c3.8659932 0 7 3.13400675 7 7 0 2.57732883-2.3333333 6.9106622-7 13l-.60839506-.8015058c-4.26106996-5.6695486-6.39160494-9.73571332-6.39160494-12.1984942 0-3.86599325 3.13400675-7 7-7z" stroke-width="2"/></svg>
+                <svg slot="start" class="btn-marker-icon" height="20" viewBox="0 0 14 20" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m7 0c3.8659932 0 7 3.13400675 7 7 0 2.57732883-2.3333333 6.9106622-7 13l-.60839506-.8015058c-4.26106996-5.6695486-6.39160494-9.73571332-6.39160494-12.1984942 0-3.86599325 3.13400675-7 7-7z" stroke-width="2"/></svg>
                 {this.getStart()}
               </noi-button>
               <noi-button class={endBtnClass} onClick={this.onInputClick.bind(this, 'end')}>
-              <svg slot="start" height="20" viewBox="0 0 14 20" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m7 0c3.8659932 0 7 3.13400675 7 7 0 2.57732883-2.3333333 6.9106622-7 13l-.60839506-.8015058c-4.26106996-5.6695486-6.39160494-9.73571332-6.39160494-12.1984942 0-3.86599325 3.13400675-7 7-7z" stroke-width="2"/></svg>
+              <svg slot="start" height="20" class="btn-marker-icon" viewBox="0 0 14 20" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m7 0c3.8659932 0 7 3.13400675 7 7 0 2.57732883-2.3333333 6.9106622-7 13l-.60839506-.8015058c-4.26106996-5.6695486-6.39160494-9.73571332-6.39160494-12.1984942 0-3.86599325 3.13400675-7 7-7z" stroke-width="2"/></svg>
                 {this.getEnd()}
               </noi-button>
             </div>
