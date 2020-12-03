@@ -1,20 +1,22 @@
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { createStore } from '@stencil/store';
-import { CancellablePromise, cancellablePromise } from '@noi/utils';
+import { CancellablePromise, cancellablePromise, NoiCoordinate } from '@noi/utils';
 import { getJamLevel, NoiAPI, NoiLinkStation } from '../api';
 
 export interface NoiPathState {
   startEnd: [string, string];
+  selectedId: string;
   readonly path: Array<NoiLinkStation>;
   readonly loading: boolean;
   readonly errorCode: string;
-  readonly stations: Array<{position: number, id: string, name: string}>;
+  readonly stations: Array<{position: number, id: string, name: string, coordinates: NoiCoordinate}>;
   readonly durationMin: number;
   readonly distance: number;
 }
 
 const urbanPathStore = createStore<NoiPathState>({
   startEnd: undefined,
+  selectedId: undefined,
   path: undefined,
   loading: false,
   errorCode: undefined,
@@ -36,10 +38,11 @@ onChange('path', (path) => {
     result.push({
       position: result[result.length-1].position + i.distance,
       id: i.end.id,
-      name: i.end.name
+      name: i.end.name,
+      coordinates: i.end.coordinates
     });
     return result;
-  }, [{position: 0, name: path[0].start.name, id: path[0].start.id}]);
+  }, [{position: 0, name: path[0].start.name, id: path[0].start.id, coordinates: path[0].start.coordinates}]);
   set('stations', stations);
 });
 

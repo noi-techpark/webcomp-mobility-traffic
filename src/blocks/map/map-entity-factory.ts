@@ -4,16 +4,21 @@ import noiStore from '@noi/store';
 import { highlightMarker, MAP_ENTITY_MARKER, renderMarkerElement, unHighlightMarker } from './map-marker';
 import {
   highlightHighwayStation,
-  MAP_ENTITY_STATION,
+  MAP_ENTITY_HIGHWAY_STATION,
   renderHighwayStationElement,
   unHighlightHighwayStation,
 } from './map-station';
+import { MAP_ENTITY_URBAN_STATION, renderUrbanStationElement } from './map-urban-station';
+import { urbanPathState } from '@noi/store/urban-path.store';
 
 export interface MapEntity extends Layer {
   getLatLng(): LatLng;
   setLatLng(latLng: LatLngExpression): MapEntity;
   getElement(): Element;
+  canSelect?: boolean;
 }
+
+export type Selectable<T> = T & {canSelect?: boolean};
 
 export class MapEntityFactory {
   constructor (private map: Map) {
@@ -21,8 +26,11 @@ export class MapEntityFactory {
 
   public createLayer(e: Element): MapEntity {
     const type: string = e.getAttribute('entity-type');
-    if (type === MAP_ENTITY_STATION) {
-      return this.createStation(e)
+    if (type === MAP_ENTITY_HIGHWAY_STATION) {
+      return this.createHighwayStation(e)
+    }
+    if (type === MAP_ENTITY_URBAN_STATION) {
+      return this.createUrbanStation(e)
     }
     if (type === MAP_ENTITY_MARKER) {
       return this.createMarker(e)
@@ -30,9 +38,10 @@ export class MapEntityFactory {
   }
 
 
-  private createStation(e: Element) {
+  private createHighwayStation(e: Element) {
     const id: string = e.getAttribute('entity-id');
-    const result = renderHighwayStationElement(e);
+    const result: Selectable<CircleMarker> = renderHighwayStationElement(e);
+    result.canSelect = true;
     result.on({
       mouseover: highlightHighwayStation,
       mouseout: unHighlightHighwayStation,
@@ -46,9 +55,27 @@ export class MapEntityFactory {
     return result;
   }
 
+  private createUrbanStation(e: Element) {
+    const id: string = e.getAttribute('entity-id');
+    const result: Selectable<CircleMarker> = renderUrbanStationElement(e);
+    result.canSelect = false;
+    result.on({
+      mouseover: highlightHighwayStation,
+      mouseout: unHighlightHighwayStation,
+      click: (e) => {
+        const latLong = (e.target as CircleMarker).getLatLng();
+        this.map.panTo(latLong);
+        urbanPathState.selectedId = id;
+        noiStore.mapPopup = true;
+      }
+    });
+    return result;
+  }
+
   private createMarker(e: Element) {
     const id: string = e.getAttribute('entity-id');
-    const result = renderMarkerElement(e);
+    const result: Selectable<Marker> = renderMarkerElement(e);
+    result.canSelect = true;
     result.on({
       mouseover: highlightMarker,
       mouseout: unHighlightMarker,

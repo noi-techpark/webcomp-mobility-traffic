@@ -62,7 +62,7 @@ export class PathDetails {
     const startPos = stations[0].position; 
     const contentInnerClass = {
       'content__inner': true,
-      'content__inner--error': !!pathState.pathError
+      'content__inner--error': !!pathState.pathError && !!pathState.syncDate
     };
     const segmentsTime = pathState.segmentsTime || {};
     return <div class="content">
@@ -131,7 +131,7 @@ export class PathDetails {
       return (
         <noi-button class={highwayHeaderClass} onClick={this.onActivatePath.bind(this, 'highway')}>
           <span class="header-highway__title">{translate('path-details.highway-name')}</span>
-          {translate('path-details.highway-error')}
+          <span class="header-highway__icon">&#9888;</span>
         </noi-button>
       );
     }

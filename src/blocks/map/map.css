@@ -59,6 +59,7 @@
   stroke: var(--noi-primary);
   stroke-dasharray: 6px;
   stroke-width: 5px;
+  cursor: default !important;
 }
 
 .noi-map-path--jam-none {
@@ -124,7 +125,7 @@
   background-color: rgba(var(--noi-action-rgb), 0.8);
 }
 
-/* station circle */
+/* highway station circle */
 .noi-highway-station {
   stroke-width: 4;
   stroke: var(--noi-primary);
@@ -153,6 +154,25 @@
   stroke: var(--noi-action);
   fill: var(--noi-action-contrast);
 }
+
+/* urban station circle */
+.noi-urban-station {
+  stroke-width: 2;
+  stroke: var(--noi-action);
+  fill: var(--noi-action-contrast);
+  opacity: 1.0;
+  fill-opacity: 1;
+}
+
+.noi-urban-station--hover {
+  stroke: var(--noi-primary);
+}
+
+.noi-urban-station--selected {
+  stroke: #fff;
+  fill: var(--noi-action);
+}
+
 
 /* leaflet required styles */
 
