@@ -33,5 +33,15 @@
   "error.link-station-path.not-found": "Segment path not found",
   "error.link-station-velocity.not-found": "Segment velocity data not found",
   "error.jams-not-available": "Traffic jams information is not available",
-  "error.auth-service.offline": "Error getting access token for private data"
+  "error.auth-service.offline": "Error getting access token for private data",
+  "link-station.Torricelli": "Torricelli",
+  "link-station.siemens": "via Siemens",
+  "link-station.Galilei_Palermo": "Galilei Palermo",
+  "link-station.Galilei_Lancia": "Galilei Lancia",
+  "link-station.Galilei_Virgolo": "Galilei Virgolo",
+  "link-station.Galleria_Virgolo": "Galleria Virgolo",
+  "link-station.P_Campiglio": "Punto Campiglio",
+  "link-station.Arginale_Resia": "ArginaleResia",
+  "link-station.Arginale_Palermo": "Arginale Palermo",
+  "link-station.Agip_Einstein": "Agip Einstein"
 }
