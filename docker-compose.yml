@@ -1,7 +1,9 @@
 version: "3"
 services:
   app:
-    image: node:12
+    build:
+      context: ./
+      dockerfile: infrastructure/docker/dockerfile
     volumes:
       - ./:/code
     working_dir: /code
@@ -9,4 +11,3 @@ services:
     ports:
       - "8999:3333"
     tty: true
-  
