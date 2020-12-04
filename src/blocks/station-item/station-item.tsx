@@ -16,6 +16,8 @@ export class StationItem {
   @Prop()
   isStart: boolean = false;
   @Prop()
+  isSelected: boolean = false;
+  @Prop()
   isEnd: boolean = false;
 
   renderDetails() {
@@ -34,6 +36,7 @@ export class StationItem {
     const hostClass = {
       'station-item--end': this.isEnd,
       'station-item--start': this.isStart,
+      'station-item--selected': this.isSelected,
     };
     return (
       <Host class={hostClass}>

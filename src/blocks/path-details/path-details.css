@@ -101,7 +101,8 @@ noi-button.header__section--active.header__section--err {
 }
 
 .content__inner--error::before {
-  top: calc(48px + 88px);
+  top: calc(88px + 48px);
+  background-position-y: -48px
 }
 
 /* header-highway */
@@ -114,6 +115,12 @@ noi-button.header__section--active.header__section--err {
   margin-right: 8px;
   font-weight: normal;
   text-shadow: none;
+}
+
+.header-highway__icon {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: var(--noi-font-family, var(--noi-font-family-default));
 }
 
 

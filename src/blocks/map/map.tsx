@@ -1,7 +1,7 @@
 import { Component, Element, Prop, Watch, h, State } from '@stencil/core';
 import noiStore from '@noi/store';
 import { translate } from '@noi/lang';
-import { GeoJSON, Map, TileLayer } from 'leaflet';
+import { DomUtil, GeoJSON, Map, TileLayer } from 'leaflet';
 
 import { MapEntity, MapEntityFactory } from './map-entity-factory';
 
@@ -132,8 +132,10 @@ export class NoiMap {
     observer.observe(e, { attributes: true, childList: false, subtree: false });
     this.entityChildren.set(e, {layer, observer});
     layer.addTo(this.map);
-    layer.bindPopup(this.popupElement, {minWidth: 400});
-    layer.getPopup().on('remove', () => noiStore.selectedId = '');
+    if (layer.canSelect) {
+      layer.bindPopup(this.popupElement, {minWidth: 400});
+      layer.getPopup().on('remove', () => noiStore.selectedId = '');
+    }
   }
 
   private renderGeoJson(e: Element) {
@@ -144,6 +146,7 @@ export class NoiMap {
         className: 'noi-map-path' + (jam ? ` noi-map-path--jam-${jam}` : '')
       }, 
     });
+    layer.setZIndex(1);
     this.pathChildren.set(e, {layer, observer: null});
     layer.addTo(this.map);
   }

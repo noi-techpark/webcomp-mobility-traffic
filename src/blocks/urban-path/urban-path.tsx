@@ -24,10 +24,16 @@ export class UrbanPathDetails {
     </div>)
     }
     return urbanPathState.stations.map((s, i) => <noi-station-item
-      name={s.name}
+      name={translate(`link-station.${s.id}`)}
       position={s.position}
       isStart={i === 0}
+      isSelected={urbanPathState.selectedId === s.id}
+      onClick={this.onStationClick.bind(this, s.id)}
     ></noi-station-item>)
+  }
+
+  onStationClick(id: string) {
+    urbanPathState.selectedId = id;
   }
 
   render() {

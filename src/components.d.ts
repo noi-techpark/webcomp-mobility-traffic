@@ -170,6 +170,7 @@ export namespace Components {
     }
     interface NoiStationItem {
         "isEnd": boolean;
+        "isSelected": boolean;
         "isStart": boolean;
         "name": string;
         "position": number;
@@ -439,6 +440,7 @@ declare namespace LocalJSX {
     }
     interface NoiStationItem {
         "isEnd"?: boolean;
+        "isSelected"?: boolean;
         "isStart"?: boolean;
         "name": string;
         "position": number;

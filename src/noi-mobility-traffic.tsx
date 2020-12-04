@@ -8,6 +8,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 
 import { MapMarker } from './blocks/map/map-marker';
 import { MapStation } from './blocks/map/map-station';
+import { MapUrbanStation } from './blocks/map/map-urban-station';
 import { startTapClick } from './components/tap-click';
 import { fnDebounce } from './utils';
 import { pathState } from './store/path.store';
@@ -140,6 +141,16 @@ export class NoiMobilityTraffic {
     ));
   }
 
+  getUrbanCircles() {
+    if (noiStore.activePath !== 'urban' || urbanPathState.loading || urbanPathState.errorCode || !urbanPathState.path) {
+      return null;
+    }
+    const result = urbanPathState.stations.map(s => {
+      return <MapUrbanStation {...s} selected={s.id === urbanPathState.selectedId}></MapUrbanStation>
+    });
+    return result;
+  }
+
   getAllLinkStations(linkStations) {
     return linkStations.map(s => {
       return <leaflet-geojson geometry={JSON.stringify(s.geometry)}></leaflet-geojson>;
@@ -161,6 +172,16 @@ export class NoiMobilityTraffic {
     );
   }
 
+  getMapCenter() {
+    if (noiStore.activePath === 'urban' && urbanPathState.stations && urbanPathState.selectedId) {
+      const selectedStation = urbanPathState.stations.find(s => s.id === urbanPathState.selectedId);
+      if (selectedStation) {
+        return selectedStation.coordinates
+      }
+    }
+    return noiStore.mapCenter;
+  }
+
   render() {
     if (this.loading) {
       return (<div class="wrapper">
@@ -174,6 +195,7 @@ export class NoiMobilityTraffic {
     if (this.errorCode) {
       return this.renderError();
     }
+    const mapCenter = this.getMapCenter();
     return <div class="wrapper">
       <noi-backdrop
         overlayIndex={2}
@@ -190,9 +212,10 @@ export class NoiMobilityTraffic {
       <noi-search ref={el => this.searchEl = el as HTMLNoiSearchElement}>
       </noi-search>
       <noi-map
-        lat={noiStore.mapCenter.lat}
-        long={noiStore.mapCenter.long}>
+        lat={mapCenter.lat}
+        long={mapCenter.long}>
         {this.getHighwayCircles()}
+        {this.getUrbanCircles()}
         {this.getHighwayMarkers()}
         {this.getPath()}
       </noi-map>

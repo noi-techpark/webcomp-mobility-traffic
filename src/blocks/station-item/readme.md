@@ -7,13 +7,14 @@
 
 ## Properties
 
-| Property                | Attribute  | Description | Type      | Default     |
-| ----------------------- | ---------- | ----------- | --------- | ----------- |
-| `isEnd`                 | `is-end`   |             | `boolean` | `false`     |
-| `isStart`               | `is-start` |             | `boolean` | `false`     |
-| `name` _(required)_     | `name`     |             | `string`  | `undefined` |
-| `position` _(required)_ | `position` |             | `number`  | `undefined` |
-| `time`                  | `time`     |             | `number`  | `undefined` |
+| Property                | Attribute     | Description | Type      | Default     |
+| ----------------------- | ------------- | ----------- | --------- | ----------- |
+| `isEnd`                 | `is-end`      |             | `boolean` | `false`     |
+| `isSelected`            | `is-selected` |             | `boolean` | `false`     |
+| `isStart`               | `is-start`    |             | `boolean` | `false`     |
+| `name` _(required)_     | `name`        |             | `string`  | `undefined` |
+| `position` _(required)_ | `position`    |             | `number`  | `undefined` |
+| `time`                  | `time`        |             | `number`  | `undefined` |
 
 
 ## Dependencies

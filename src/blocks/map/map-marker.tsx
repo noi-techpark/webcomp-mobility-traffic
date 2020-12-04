@@ -18,6 +18,7 @@ export const MapMarker: FunctionalComponent<MapMarkerProps> = (props) => {
   };
   return (
     <noi-map-entity
+      key={props.id}
       entity-type={MAP_ENTITY_MARKER}
       entity-id={props.id}
       lat={props.coordinates.lat}

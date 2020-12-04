@@ -5,7 +5,7 @@ import { Selectable, WithStartEnd } from '@noi/utils';
 
 export type MapStationProps = WithStartEnd<Selectable<NoiHighwayStation>>;
 
-export const MAP_ENTITY_STATION = 'MAP_ENTITY_STATION';
+export const MAP_ENTITY_HIGHWAY_STATION = 'MAP_ENTITY_HIGHWAY_STATION';
 const STATION_CIRCLE_RADIUS = 12;
 
 export const MapStation: FunctionalComponent<MapStationProps> = (props) => {
@@ -17,7 +17,8 @@ export const MapStation: FunctionalComponent<MapStationProps> = (props) => {
   };
   return (
     <noi-map-entity
-      entity-type={MAP_ENTITY_STATION}
+      key={props.id}
+      entity-type={MAP_ENTITY_HIGHWAY_STATION}
       entity-id={props.id}
       lat={props.coordinates.lat}
       long={props.coordinates.long}
