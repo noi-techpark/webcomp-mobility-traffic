@@ -31,7 +31,10 @@ pipeline {
         }
         stage('Dependencies') {
             steps {
-                sh 'npm install'
+                sh '''
+					npm ci
+					ln -s /code/node_modules/@stencil/core/bin/stencil /usr/local/bin/stencil
+				'''
             }
         }
         stage('Test') {
