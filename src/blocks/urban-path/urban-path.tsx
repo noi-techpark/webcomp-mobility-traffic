@@ -26,6 +26,7 @@ export class UrbanPathDetails {
     return urbanPathState.stations.map((s, i) => <noi-station-item
       name={translate(`link-station.${s.id}`)}
       position={s.position}
+      timeSec={s.timeSec}
       isStart={i === 0}
       isSelected={urbanPathState.selectedId === s.id}
       onClick={this.onStationClick.bind(this, s.id)}

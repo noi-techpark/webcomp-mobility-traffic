@@ -9,7 +9,7 @@ export interface NoiPathState {
   readonly path: Array<NoiLinkStation>;
   readonly loading: boolean;
   readonly errorCode: string;
-  readonly stations: Array<{position: number, id: string, name: string, coordinates: NoiCoordinate}>;
+  readonly stations: Array<{timeSec: number, position: number, id: string, name: string, coordinates: NoiCoordinate}>;
   readonly durationMin: number;
   readonly distance: number;
 }
@@ -39,10 +39,11 @@ onChange('path', (path) => {
       position: result[result.length-1].position + i.distance,
       id: i.end.id,
       name: i.end.name,
-      coordinates: i.end.coordinates
+      coordinates: i.end.coordinates,
+      timeSec: i.timeSec
     });
     return result;
-  }, [{position: 0, name: path[0].start.name, id: path[0].start.id, coordinates: path[0].start.coordinates}]);
+  }, [{timeSec: 0, position: 0, name: path[0].start.name, id: path[0].start.id, coordinates: path[0].start.coordinates}]);
   set('stations', stations);
 });
 
@@ -101,6 +102,8 @@ function loadUrbanPath(startId: string, endId: string): void {
 
 export const urbanPathState = state;
 
+export type TimeMap = {[id: string]: number};
+
 /**
  * it's like a Redux Effect to load external data in async way
  */
@@ -120,10 +123,11 @@ async function loadUrbanPathEffect(startId: string, endId: string): Promise<{pat
     result += timeMin;
     return result;
   }, 0);
-  const pathWithJams = path.map(i => {
+  const pathWithJamsAndTime = path.map(i => {
     const jamLevel = getJamLevel(jams, i.id, velocityMap[i.id]);
-    return {...i, jamLevel}
+    const timeSec = Math.round((i.distance / (1000 * velocityMap[i.id])) * 60 * 60);
+    return {...i, jamLevel, timeSec}
   });
-  return {path: pathWithJams, timeMin}
+  return {path: pathWithJamsAndTime, timeMin}
 }
 
