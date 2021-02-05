@@ -63,7 +63,7 @@
 }
 
 .noi-map-path--jam-none {
-  stroke: var(--noi-action);
+  stroke: var(--noi-jam-none, blue);
 }
 
 .noi-map-path--jam-light {

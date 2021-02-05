@@ -143,7 +143,7 @@ export class NoiMap {
     const jam = e.getAttribute('jam');
     const layer = new GeoJSON(geometry, {
       style: {
-        className: 'noi-map-path' + (jam ? ` noi-map-path--jam-${jam}` : '')
+        className: 'noi-map-path' + (jam ? ` noi-map-path--jam-${jam}` : ` noi-map-path--jam-none`)
       }, 
     });
     layer.setZIndex(1);

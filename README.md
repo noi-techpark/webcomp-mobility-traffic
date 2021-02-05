@@ -49,6 +49,7 @@ noi-mobility-traffic {
   --noi-error: #B44C00;
   --noi-error-rgb: 180,76,0;
   --noi-error-contrast: #ffffff;
+  --noi-jam-none: #0068B4;
   --noi-jam-strong: #B44C00;
   --noi-jam-light: yellow;
 }
@@ -122,6 +123,14 @@ The value that will be used to color a segment path with light traffic on the ma
 
 ```css
 --noi-jam-strong: yellow;
+```
+
+#### --noi-jam-none
+
+The value that will be used to color a segment path without any traffic. Default is blue.
+
+```css
+--noi-jam-none: blue;
 ```
 
 
