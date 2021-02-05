@@ -69,7 +69,8 @@ export interface NoiLinkStation {
   end: NoiBTStation,
   geometry: GeoJSON.Geometry,
   distance?: number,
-  jamLevel?: JamLevel
+  jamLevel?: JamLevel,
+  timeSec?: number 
 }
 
 export interface NoiTreeItem {

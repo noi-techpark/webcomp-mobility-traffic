@@ -12,7 +12,7 @@ export class StationItem {
   @Prop()
   position!: number;
   @Prop()
-  time: number;
+  timeSec: number;
   @Prop()
   isStart: boolean = false;
   @Prop()
@@ -26,8 +26,8 @@ export class StationItem {
       return null;
     } 
     result += `${(this.position/1000).toFixed(1)} km`;
-    if (this.time) {
-      result += ` - ${Math.round(this.time / 60)} min`;
+    if (this.timeSec) {
+      result += ` - ${Math.round(this.timeSec / 60)} min`;
     }
     return <p>{result}</p>;
   }

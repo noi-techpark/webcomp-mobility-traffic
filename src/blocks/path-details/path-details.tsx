@@ -71,7 +71,7 @@ export class PathDetails {
         {stations.map((s, i) => <noi-station-item
           name={s.name}
           position={Math.abs(startPos - s.position)}
-          time={i === 0 ? undefined : Math.round(segmentsTime[`${stations[i-1].id}-${s.id}`])}
+          timeSec={i === 0 ? undefined : Math.round(segmentsTime[`${stations[i-1].id}-${s.id}`])}
           isStart={!!s.isStart}
           isEnd={!!s.isEnd}
         ></noi-station-item>)}

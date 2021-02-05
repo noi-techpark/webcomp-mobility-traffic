@@ -174,7 +174,7 @@ export namespace Components {
         "isStart": boolean;
         "name": string;
         "position": number;
-        "time": number;
+        "timeSec": number;
     }
     interface NoiStationsModal {
         "overlayIndex": number;
@@ -444,7 +444,7 @@ declare namespace LocalJSX {
         "isStart"?: boolean;
         "name": string;
         "position": number;
-        "time"?: number;
+        "timeSec"?: number;
     }
     interface NoiStationsModal {
         "onModalClose"?: (event: CustomEvent<{stationId: string}>) => void;
