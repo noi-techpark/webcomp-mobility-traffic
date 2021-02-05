@@ -58,5 +58,5 @@
   "Galilei_Palermo->Galilei_Lancia": 300,
   "Galilei_Lancia->Galilei_Virgolo": 300,
   "Galilei_Virgolo->Galleria_Virgolo": 300,
-  "Galilei_Virgolo->P_Campiglio": 300
+  "Galleria_Virgolo->P_Campiglio": 300
 }
