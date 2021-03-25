@@ -1,5 +1,5 @@
 {
-  "title": "Noi Mobility Traffic Web Component",
+  "title": "Noi Mobility Traffic",
   "description": "Noi Mobility Traffic Web Component",
   "descriptionAbstract": "Noi Mobility Traffic Web Component",
   "license": "AGPL-3.0",
@@ -26,7 +26,7 @@
     }
   ],
   "image": "wcs-logo.png",
-  "searchTags": [],
+  "searchTags": ["mobility"],
   "dist": {
     "basePath": "cdn/noi",
     "files": [
