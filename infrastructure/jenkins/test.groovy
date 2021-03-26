@@ -8,6 +8,7 @@ pipeline {
         ansiColor('xterm')
     }
     environment {
+		WC_DIST_PATH = "cdn/noi"
         CLIENT_SECRET = credentials("it.bz.opendatahub.webcomponents.mobility-traffic")
         CLIENT_ID = "it.bz.opendatahub.webcomponents.mobility-traffic"
         TOKEN_URL = "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
