@@ -8,7 +8,9 @@ pipeline {
         ansiColor('xterm')
     }
     environment {
-        HEREMAP_API_KEY = credentials("here-api-key")
+        CLIENT_SECRET = credentials("it.bz.opendatahub.webcomponents.mobility-traffic")
+        CLIENT_ID = "it.bz.opendatahub.webcomponents.mobility-traffic"
+        TOKEN_URL = "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
     }
     stages {
         stage('Prepare') {
