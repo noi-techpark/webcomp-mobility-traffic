@@ -20,14 +20,34 @@ pipeline {
                 '''
             }
         }
-        stage('Dependencies') {
+        stage('Test') {
             steps {
-                sh 'yarn'
+                sh 'npm run test'
+            }
+        }
+        stage('Configure') {
+            steps {
+                sh """
+                    rm -rf .env
+                    echo 'CLIENT_SECRET=$CLIENT_SECRET' >> .env
+                    echo 'CLIENT_ID=$CLIENT_ID' >> .env
+                    echo 'TOKEN_URL=$TOKEN_URL' >> .env
+                """
             }
         }
         stage('Build') {
             steps {
-                sh 'yarn build'
+                sh 'npm run build:cdn'
+            }
+        }
+        stage('Update wcs-manifest.json') {
+            steps {
+                sh """
+                    ls "$WC_DIST_PATH/" | jq -R -s -c 'split("\\n")[:-1]' | jq '.' > files-list.json
+                    jq '.dist.files = input' wcs-manifest.json files-list.json > wcs-manifest-tmp.json
+                    mv wcs-manifest-tmp.json wcs-manifest.json
+                    rm -f files-list.json
+                """
             }
         }
 		stage('Deploy to Test Store') {
