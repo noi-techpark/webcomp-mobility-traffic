@@ -19,7 +19,6 @@ pipeline {
                 sh '''
 					cp /webcompbuild/.env .env
                     rm -rf $(jq -r ".dist.basePath" wcs-manifest.json)
-					echo "HEREMAP_API_KEY=$HEREMAP_API_KEY" >> .env
                 '''
             }
         }
