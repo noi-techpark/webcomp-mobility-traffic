@@ -19,6 +19,7 @@ pipeline {
                 sh '''
 					cp /webcompbuild/.env .env
                     rm -rf $(jq -r ".dist.basePath" wcs-manifest.json)
+					ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
                 '''
             }
         }
