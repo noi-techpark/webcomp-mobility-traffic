@@ -22,11 +22,6 @@ pipeline {
                 '''
             }
         }
-        stage('Test') {
-            steps {
-                sh 'npm run test'
-            }
-        }
         stage('Configure') {
             steps {
                 sh """
@@ -37,6 +32,16 @@ pipeline {
                 """
             }
         }
+		stage('Dependencies') {
+            steps {
+                sh 'npm ci'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm run test'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'npm run build:cdn'
@@ -44,12 +49,7 @@ pipeline {
         }
         stage('Update wcs-manifest.json') {
             steps {
-                sh """
-                    ls "$WC_DIST_PATH/" | jq -R -s -c 'split("\\n")[:-1]' | jq '.' > files-list.json
-                    jq '.dist.files = input' wcs-manifest.json files-list.json > wcs-manifest-tmp.json
-                    mv wcs-manifest-tmp.json wcs-manifest.json
-                    rm -f files-list.json
-                """
+                sh '/webcompbuild/wcstorecli.sh -u'
             }
         }
 		stage('Deploy to Test Store') {
