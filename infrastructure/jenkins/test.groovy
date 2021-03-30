@@ -26,7 +26,6 @@ pipeline {
         stage('Configure') {
             steps {
                 sh '''
-                    rm -rf .env
                     echo 'CLIENT_SECRET=$CLIENT_SECRET' >> .env
                     echo 'CLIENT_ID=$CLIENT_ID' >> .env
                     echo 'TOKEN_URL=$TOKEN_URL' >> .env
