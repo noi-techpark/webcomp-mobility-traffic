@@ -58,5 +58,13 @@
   "Galilei_Palermo->Galilei_Lancia": 3000,
   "Galilei_Lancia->Galilei_Virgolo": 3000,
   "Galilei_Virgolo->Galleria_Virgolo": 3000,
+  "TN-Cadino->TN-Nord": 3000,
+  "TN-Nord->TN-Cadino": 3000,
+  "TN-Nord->TN-Maccani": 3000,
+  "TN-Maccani->TN-Nord": 3000,
+  "TN-Maccani->TN-Sud": 3000,
+  "TN-Sud->TN-Maccani": 3000,
+  "TN-Sud->TN-Acquaviva": 3000,
+  "TN-Acquaviva->TN-Sud": 3000,
   "Galleria_Virgolo->P_Campiglio": 3000
 }
