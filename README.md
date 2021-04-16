@@ -1,5 +1,7 @@
 # noi-mobility-traffic
 
+[![REUSE status](https://api.reuse.software/badge/github.com/noi-techpark/webcomp-mobility-traffic)](https://api.reuse.software/info/github.com/noi-techpark/webcomp-mobility-traffic)
+
 A responsive Web-component "tempi di percorrenza"
 
 ## Table of contents
@@ -24,7 +26,7 @@ Secondly, you'll need to include the component stylesheet:
 ```html
   <link rel="stylesheet" href="/build/noi-mobility-traffic.css">
 ```
-    
+
 Now, define the web component like this:
 
 ```html
@@ -37,7 +39,7 @@ We tried to comply as much as possible the HTML/CSS spec so the only attribute t
 
 ```css
 noi-mobility-traffic {
-  --noi-font-family: "Roboto", "Helvetica Neue", sans-serif; 
+  --noi-font-family: "Roboto", "Helvetica Neue", sans-serif;
   --noi-width: 100%;
   --noi-height: 100%;
   --noi-primary: #0068B4;
@@ -134,13 +136,13 @@ The value that will be used to color a segment path without any traffic. Default
 ```
 
 
-### Configuration 
+### Configuration
 
 The app uses following four json files to configure different thresholds and currently missing api data:
 
 - `geometries.json` - provide missing geometry data for A22 path
 - `jams.json` - values to identify traffic jams on segments
-- `time-thresholds.json` - thresholds to identify time values outlayers 
+- `time-thresholds.json` - thresholds to identify time values outlayers
 - `urban-segments.json` - provide missing urban connections between two highway stations
 
 #### Geometries configuration
