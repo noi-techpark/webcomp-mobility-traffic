@@ -1,17 +1,47 @@
-# noi-mobility-traffic
+# Mobility Traffic
 
 [![REUSE status](https://api.reuse.software/badge/github.com/noi-techpark/webcomp-mobility-traffic)](https://api.reuse.software/info/github.com/noi-techpark/webcomp-mobility-traffic)
 
-A responsive Web-component "tempi di percorrenza"
+A responsive webcomponent for travelling times
 
-## Table of contents
+- [Mobility Traffic](#mobility-traffic)
+  - [Usage](#usage)
+    - [Attributes](#attributes)
+      - [--noi-font-family](#--noi-font-family)
+      - [--noi-width, --noi-height](#--noi-width---noi-height)
+      - [--noi-primary, --noi-primary-rgb](#--noi-primary---noi-primary-rgb)
+      - [--noi-primary-contrast](#--noi-primary-contrast)
+      - [--noi-action, --noi-action-rgb](#--noi-action---noi-action-rgb)
+      - [--noi-action-contrast](#--noi-action-contrast)
+      - [--noi-error, --noi-error-rgb](#--noi-error---noi-error-rgb)
+      - [--noi-error-contrast](#--noi-error-contrast)
+      - [--noi-jam-strong](#--noi-jam-strong)
+      - [--noi-jam-light](#--noi-jam-light)
+      - [--noi-jam-none](#--noi-jam-none)
+    - [Configuration](#configuration)
+      - [Geometries configuration](#geometries-configuration)
+      - [Jams configuration](#jams-configuration)
+      - [Time Outlayers configuration](#time-outlayers-configuration)
+      - [Urban segments configuration](#urban-segments-configuration)
+  - [Getting started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Source code](#source-code)
+    - [Dependencies](#dependencies)
+    - [Developer server start](#developer-server-start)
+  - [Tests](#tests)
+  - [Deployment](#deployment)
+  - [Docker environment](#docker-environment)
+    - [Installation](#installation)
+    - [Dependenices](#dependenices)
+    - [Start and stop the containers](#start-and-stop-the-containers)
+    - [Running commands inside the container](#running-commands-inside-the-container)
+  - [Information](#information)
+    - [Support](#support)
+    - [Contributing](#contributing)
+    - [Documentation](#documentation)
+    - [Boilerplate](#boilerplate)
+    - [License](#license)
 
-- [Usage](#usage)
-- [Gettings started](#getting-started)
-- [Tests and linting](#tests-and-linting)
-- [Deployment](#deployment)
-- [Docker environment](#docker-environment)
-- [Information](#information)
 
 ## Usage
 
@@ -140,6 +170,7 @@ The value that will be used to color a segment path without any traffic. Default
 
 The app uses following four json files to configure different thresholds and currently missing api data:
 
+Inside the folder `data`:
 - `geometries.json` - provide missing geometry data for A22 path
 - `jams.json` - values to identify traffic jams on segments
 - `time-thresholds.json` - thresholds to identify time values outlayers
@@ -147,7 +178,8 @@ The app uses following four json files to configure different thresholds and cur
 
 #### Geometries configuration
 
-Provide a json map (by LinkStation id) that should comply the  following structure. Geometry attribute should be a valid **GeoJSON** object.
+Provide a json map (by LinkStation id) that should comply the  following
+structure. Geometry attribute should be a valid **GeoJSON** object.
 ```json
 {
   "1853-1854": {
@@ -159,7 +191,13 @@ Provide a json map (by LinkStation id) that should comply the  following structu
 
 #### Jams configuration
 
-Traffic jams map (by LinkStation id) that should comply the  following structure. Supports both Urban and A22 segments. Each key should be an array of two velocity values - heavy traffic value and light traffic value. If actual segment velocity is lower than first value, the traffic considered to be heavy. If higher than first but lower than second, light traffic. Higher than second, no traffic. If value is missing the segment will have the default colour on the map. Example:
+Traffic jams map (by LinkStation id) that should comply the  following
+structure. Supports both Urban and A22 segments. Each key should be an array of
+two velocity values - heavy traffic value and light traffic value. If actual
+segment velocity is lower than first value, the traffic considered to be heavy.
+If higher than first but lower than second, light traffic. Higher than second,
+no traffic. If value is missing the segment will have the default colour on the
+map. Example:
 
 ```json
 {
@@ -170,7 +208,9 @@ Traffic jams map (by LinkStation id) that should comply the  following structure
 
 #### Time Outlayers configuration
 
-Time thresholds map. If historical value + thresholds < actual value, then the actual value will be considered an outlayer and a historical value will be used. Example:
+Time thresholds map. If historical value + thresholds < actual value, then the
+actual value will be considered an outlayer and a historical value will be used.
+Example:
 
 ```json
 {
@@ -180,7 +220,11 @@ Time thresholds map. If historical value + thresholds < actual value, then the a
 
 #### Urban segments configuration
 
-Contains the urban stations path (as an array of ids) that connect two highway stations. The id should be a concatenation of start station id and end station id with `->` separator in-between (as in example below `1854->1853` LinkStation connecting Bz Nord and Bz Süd). If no data is provided for given start/end, urban path is considered to be absent.
+Contains the urban stations path (as an array of ids) that connect two highway
+stations. The id should be a concatenation of start station id and end station
+id with `->` separator in-between (as in example below `1854->1853` LinkStation
+connecting Bz Nord and Bz Süd). If no data is provided for given start/end,
+urban path is considered to be absent.
 
 ```json
 {
@@ -203,7 +247,8 @@ on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-Before building/starting the project one will need to add a `.env` file in the root prj dir wit following secrets:
+Before building/starting the project one will need to add a `.env` file in the
+root prj dir with following secrets:
 
 ```
 CLIENT_SECRET=???
@@ -216,7 +261,9 @@ To build the project, the following prerequisites must be met:
 - ToDo: Check the prerequisites
 - Node 12 / NPM 6
 
-For a ready to use Docker environment with all prerequisites already installed and prepared, you can check out the [Docker environment](#docker-environment) section.
+For a ready to use Docker environment with all prerequisites already installed
+and prepared, you can check out the [Docker environment](#docker-environment)
+section.
 
 ### Source code
 
@@ -292,6 +339,8 @@ Before start working you have to start the Docker containers:
 docker-compose up --build --detach
 ```
 
+The application will be served and can be accessed at [http://localhost:8999](http://localhost:8999).
+
 After finished working you can stop the Docker containers:
 
 ```
@@ -316,7 +365,7 @@ docker-compose run --rm app /bin/bash -c "npm run test"
 
 ### Support
 
-ToDo: For support, please contact [info@opendatahub.bz.it](mailto:info@opendatahub.bz.it).
+For support, please contact [help@opendatahub.bz.it](mailto:help@opendatahub.bz.it).
 
 ### Contributing
 
