@@ -7,34 +7,34 @@
     "Galilei_Virgolo->Galleria_Virgolo",
     "Galleria_Virgolo->P_Campiglio"
   ],
-  "1858-1860": [
+  "1858->1860": [
     "TN-Cadino->TN-Nord"
   ],
-  "1860-1858": [
+  "1860->1858": [
     "TN-Nord->TN-Cadino"
   ],
-  "1861-1860": [
+  "1861->1860": [
     "TN-Maccani->TN-Nord"
   ],
-  "1860-1861": [
+  "1860->1861": [
     "TN-Nord->TN-Maccani"
   ],
-  "1861-13502": [
+  "1861->13502": [
     "TN-Maccani->TN-Sud"
   ],
-  "13502-1861": [
+  "13502->1861": [
     "TN-Sud->TN-Maccani"
   ],
-  "13502-41898": [
+  "13502->41898": [
     "TN-Maccani->TN-Sud"
   ],
-  "41898-13502": [
+  "41898->13502": [
     "TN-Sud->TN-Maccani"
   ],
-  "41898-1862": [
+  "41898->1862": [
     "TN-Sud->TN-Acquaviva"
   ],
-  "1862-41898": [
+  "1862->41898": [
     "TN-Acquaviva->Sud-Maccani"
   ],
   "1853->1854": [
