@@ -43,8 +43,13 @@ export function formatDuration(valueMin: number): string {
   return h ? `${h} h ${min} min` : `${min} min`;
 }
 
-export function formatDate(value: Date): string {
-  const str = value.toISOString();
+export function getBrowserUTCOffsetMs() {
+  return -new Date().getTimezoneOffset() * 60 * 1000;
+}
+
+export function formatDate(value: Date, offsetMs = 0): string {
+  const date = new Date(value.getTime() + offsetMs);
+  const str = date.toISOString();
   if (str.slice(0, 10) === (new Date()).toISOString().slice(0, 10)) {
     return str.slice(0, -8).split('T')[1];
   }
