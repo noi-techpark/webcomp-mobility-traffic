@@ -353,9 +353,9 @@ export class OpenDataHubNoiService {
     }, {});
   }
 
-  async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number}>> {
+  async getLinkStationsVelocity(ids: Array<string>, auth = false): Promise<Array<{id: string, velocityKmH: number, syncDate?: Date}>> {
     const where = `scode.in.(${ids.join(',')}),mperiod.eq.3600`;
-    const select = `mvalue,scode`;
+    const select = `mvalue,scode,mvalidtime`;
     const accessToken = auth ? await NoiAuth.getValidAccessToken() : null;
     const headers = accessToken ? { 'Authorization': `bearer ${accessToken}` } : {};
     const response = await this.request(
@@ -368,7 +368,7 @@ export class OpenDataHubNoiService {
     if (response.data.length !== ids.length) {
       throw new NoiError(LINK_STATION_VELOCITY_ERR_NOT_FOUND, {message: `Some of LinkStation ids=${ids.join(',')} are not found`});
     }
-    return response.data.map(s => ({velocityKmH: s.mvalue, id: s.scode}));
+    return response.data.map(s => ({velocityKmH: s.mvalue, id: s.scode, syncDate: s.mvalidtime ? new Date(s.mvalidtime) : undefined}));
   }
 
   async getUrbanSegmentsIds(startId: string, endId: string): Promise<Array<string>> {

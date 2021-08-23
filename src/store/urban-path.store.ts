@@ -12,6 +12,7 @@ export interface NoiPathState {
   readonly stations: Array<{timeSec: number, position: number, id: string, name: string, coordinates: NoiCoordinate}>;
   readonly durationMin: number;
   readonly distance: number;
+  readonly syncDate: Date;
 }
 
 const urbanPathStore = createStore<NoiPathState>({
@@ -22,12 +23,13 @@ const urbanPathStore = createStore<NoiPathState>({
   errorCode: undefined,
   stations: undefined,
   durationMin: undefined,
-  distance: undefined
+  distance: undefined,
+  syncDate: undefined,
 });
 
 const { onChange, set, state } = urbanPathStore;
 
-let effectPromise: CancellablePromise<{path: Array<NoiLinkStation>, timeMin: number}> = undefined;
+let effectPromise: CancellablePromise<UrbanPathEffectData> = undefined;
 
 onChange('path', (path) => {
   if (!path || !path.length) {
@@ -85,6 +87,7 @@ function loadUrbanPath(startId: string, endId: string): void {
       }
       set('path', data.path);
       set('durationMin', data.timeMin);
+      set('syncDate', data.syncDate);
     })
     .catch(err => {
       if (err.isCancelled) {
@@ -104,17 +107,24 @@ export const urbanPathState = state;
 
 export type TimeMap = {[id: string]: number};
 
+export interface UrbanPathEffectData {
+  path: Array<NoiLinkStation>;
+  timeMin: number;
+  syncDate: Date;
+}
+
 /**
  * it's like a Redux Effect to load external data in async way
  */
-async function loadUrbanPathEffect(startId: string, endId: string): Promise<{path: Array<NoiLinkStation>, timeMin: number}> {
+async function loadUrbanPathEffect(startId: string, endId: string): Promise<UrbanPathEffectData> {
   const segmentsIds = await NoiAPI.getUrbanSegmentsIds(startId, endId);
   const jams = await loadJams();
   if (!segmentsIds) {
     return undefined;
   }
   const path =  await NoiAPI.getLinkStationsByIds(segmentsIds, {calcGeometryDistance: true});
-  const velocityMap = (await NoiAPI.getLinkStationsVelocity(path.map(i => i.id))).reduce(
+  const velocityInfo = await NoiAPI.getLinkStationsVelocity(path.map(i => i.id));
+  const velocityMap = velocityInfo.reduce(
     (result, i) => { result[i.id] = i.velocityKmH; return result;},
     {}
   );
@@ -128,6 +138,7 @@ async function loadUrbanPathEffect(startId: string, endId: string): Promise<{pat
     const timeSec = Math.round((i.distance / (1000 * velocityMap[i.id])) * 60 * 60);
     return {...i, jamLevel, timeSec}
   });
-  return {path: pathWithJamsAndTime, timeMin}
+  const syncDate = Math.min(...velocityInfo.filter(Boolean).map(i => i.syncDate.getTime()))
+  return {path: pathWithJamsAndTime, timeMin, syncDate: syncDate ? new Date(syncDate) : undefined}
 }
 

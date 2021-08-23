@@ -157,6 +157,9 @@ export namespace Components {
          */
         "value"?: string | number | null | undefined;
     }
+    interface NoiLastSync {
+        "syncDate": Date;
+    }
     interface NoiMap {
         "lat": number;
         "long": number;
@@ -202,6 +205,12 @@ declare global {
     var HTMLNoiInputElement: {
         prototype: HTMLNoiInputElement;
         new (): HTMLNoiInputElement;
+    };
+    interface HTMLNoiLastSyncElement extends Components.NoiLastSync, HTMLStencilElement {
+    }
+    var HTMLNoiLastSyncElement: {
+        prototype: HTMLNoiLastSyncElement;
+        new (): HTMLNoiLastSyncElement;
     };
     interface HTMLNoiMapElement extends Components.NoiMap, HTMLStencilElement {
     }
@@ -249,6 +258,7 @@ declare global {
         "noi-backdrop": HTMLNoiBackdropElement;
         "noi-button": HTMLNoiButtonElement;
         "noi-input": HTMLNoiInputElement;
+        "noi-last-sync": HTMLNoiLastSyncElement;
         "noi-map": HTMLNoiMapElement;
         "noi-mobility-traffic": HTMLNoiMobilityTrafficElement;
         "noi-path-details": HTMLNoiPathDetailsElement;
@@ -426,6 +436,9 @@ declare namespace LocalJSX {
          */
         "value"?: string | number | null | undefined;
     }
+    interface NoiLastSync {
+        "syncDate": Date;
+    }
     interface NoiMap {
         "lat"?: number;
         "long"?: number;
@@ -458,6 +471,7 @@ declare namespace LocalJSX {
         "noi-backdrop": NoiBackdrop;
         "noi-button": NoiButton;
         "noi-input": NoiInput;
+        "noi-last-sync": NoiLastSync;
         "noi-map": NoiMap;
         "noi-mobility-traffic": NoiMobilityTraffic;
         "noi-path-details": NoiPathDetails;
@@ -474,6 +488,7 @@ declare module "@stencil/core" {
             "noi-backdrop": LocalJSX.NoiBackdrop & JSXBase.HTMLAttributes<HTMLNoiBackdropElement>;
             "noi-button": LocalJSX.NoiButton & JSXBase.HTMLAttributes<HTMLNoiButtonElement>;
             "noi-input": LocalJSX.NoiInput & JSXBase.HTMLAttributes<HTMLNoiInputElement>;
+            "noi-last-sync": LocalJSX.NoiLastSync & JSXBase.HTMLAttributes<HTMLNoiLastSyncElement>;
             "noi-map": LocalJSX.NoiMap & JSXBase.HTMLAttributes<HTMLNoiMapElement>;
             "noi-mobility-traffic": LocalJSX.NoiMobilityTraffic & JSXBase.HTMLAttributes<HTMLNoiMobilityTrafficElement>;
             "noi-path-details": LocalJSX.NoiPathDetails & JSXBase.HTMLAttributes<HTMLNoiPathDetailsElement>;
