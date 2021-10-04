@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "lib": [
+      "dom",
+      "es2017"
+    ],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es2017",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "baseUrl": ".",
+    "paths": {
+      "@noi/api/*": ["src/api/*"],
+      "@noi/api": ["src/api"],
+      "@noi/store/*": ["src/store/*"],
+      "@noi/store": ["src/store"],
+      "@noi/utils": ["src/utils"],
+      "@noi/components/*": ["src/components/*"],
+      "@noi/lang": ["src/lang"]
+    }
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

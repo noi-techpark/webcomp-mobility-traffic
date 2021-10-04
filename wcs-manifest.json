@@ -1,0 +1,90 @@
+{
+  "title": "Noi Mobility Traffic",
+  "description": "Noi Mobility Traffic Web Component",
+  "descriptionAbstract": "Noi Mobility Traffic Web Component",
+  "license": "AGPL-3.0",
+  "copyrightHolders": [
+    {
+      "name": "NOI",
+      "email": "digital@noi.bz.it",
+      "organization": "NOI S.p.A",
+      "organizationUrl": "https://noi.bz.it"
+    }
+  ],
+  "authors": [
+    {
+      "name": "NOI",
+      "email": "digital@noi.bz.it",
+      "organization": "NOI S.p.A",
+      "organizationUrl": "https://noi.bz.it"
+    },
+    {
+      "name": "Solhea",
+      "email": "info@solhea.com",
+      "organization": "Solhea S.R.L.",
+      "organizationUrl": "https://solhea.com"
+    }
+  ],
+  "image": "wcs-logo.png",
+  "searchTags": ["mobility"],
+  "dist": {
+    "basePath": "cdn/noi",
+    "files": [
+      "geometries.json",
+      "host.config.json",
+      "index.esm.js",
+      "index.html",
+      "jams.json",
+      "logo.svg",
+      "mountains.svg",
+      "noi-mobility-traffic.esm.js",
+      "noi-mobility-traffic.i18n.de.json",
+      "noi-mobility-traffic.i18n.en.json",
+      "noi-mobility-traffic.i18n.it.json",
+      "noi-mobility-traffic.js",
+      "p-55123202.entry.js",
+      "p-cdb96f25.js",
+      "search.svg",
+      "time-thresholds.json",
+      "urban-segments.json"
+    ],
+    "scripts": [
+      {
+        "file": "noi-mobility-traffic.esm.js",
+        "parameter": "type='module'"
+      },
+      {
+        "file": "noi-mobility-traffic.js",
+        "parameter": "nomodule"
+      }
+    ]
+  },
+  "configuration": {
+    "tagName": "noi-mobility-traffic",
+    "options": [
+      {
+        "key": "lang",
+        "type": "select",
+        "label": "Two letter key for the language to be used, if omitted the widget will use the lang attribute of the closest parent element. Fallback is `en`",
+        "required": false,
+        "options": {
+          "values": [
+            "en",
+            "de",
+            "it"
+          ],
+          "default": "en"
+        }
+      },
+      {
+        "key": "style",
+        "type": "text",
+        "label": "CSS style definition",
+        "required": false,
+        "options": {
+          "default": "--noi-font-family: 'Roboto', 'Helvetica Neue', sans-serif; --noi-width: 100%; --noi-height: 100%; --noi-primary: #0068B4; --noi-primary-rgb: 0, 104, 180; --noi-primary-contrast: #ffffff; --noi-action-rgb: 87, 173, 57; --noi-action: #339966; --noi-action-contrast: #ffffff"
+        }
+      }
+    ]
+  }
+}

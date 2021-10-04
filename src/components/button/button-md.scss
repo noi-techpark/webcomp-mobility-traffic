@@ -1,0 +1,117 @@
+@import "../mixins";
+
+$color: #999;
+$color-contrast: #333;
+
+:host(.button-md) {
+  --border-radius: 4px;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 1.1em;
+  --padding-end: 1.1em;
+  --transition: box-shadow 100ms cubic-bezier(.4, 0, .2, 1),
+                background-color 15ms linear,
+                color 15ms linear;
+
+  @include margin(4px, 2px, 4px, 2px);
+
+  height: 36px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+:host(.button-md.button-solid) {
+  --background-activated: transparent;
+  --background-hover: #{$color-contrast};
+  --background-focused: #{$color-contrast};
+  --background-activated-opacity: 0;
+  --background-focused-opacity: .24;
+  --background-hover-opacity: .08;
+  --box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+}
+
+:host(.button-md.button-solid.noi-activated) {
+  --box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
+}
+
+// Material Design Outline Button
+// --------------------------------------------------
+
+:host(.button-md.button-outline) {
+  --border-width: 2px;
+  --border-style: solid;
+  --box-shadow: none;
+  --background-activated: transparent;
+  --background-focused: #{$color};
+  --background-hover: #{$color};
+  --background-activated-opacity: 0;
+  --background-focused-opacity: .12;
+  --background-hover-opacity: .04;
+}
+
+:host(.button-md.button-outline.noi-activated) .noi-button__native {
+  background: transparent;
+}
+
+
+// Material Design Clear Button
+// --------------------------------------------------
+
+:host(.button-md.button-clear) {
+  --background-activated: transparent;
+  --background-focused: #{$color};
+  --background-hover: #{$color};
+  --background-activated-opacity: 0;
+  --background-focused-opacity: .12;
+  --background-hover-opacity: .04;
+}
+
+
+// Material Design Round Button
+// --------------------------------------------------
+
+:host(.button-md.button-round) {
+  --border-radius: 64px;
+  --padding-top: 0;
+  --padding-start: 26px;
+  --padding-end: 26px;
+  --padding-bottom: 0;
+}
+
+
+// Material Design Button Sizes
+// --------------------------------------------------
+
+:host(.button-md.button-large) {
+  --padding-top: 0;
+  --padding-start: 0;
+  --padding-end: 1em;
+  --padding-bottom: 0;
+
+  height: 2.8em;
+  font-size: 20px;
+}
+
+:host(.button-md.button-small) {
+  --padding-top: 0;
+  --padding-start: .9em;
+  --padding-end: .9em;
+  --padding-bottom: 0;
+
+  height: 2.1em;
+  font-size: 13px;
+}
+
+
+// MD strong Button
+// --------------------------------------------------
+
+:host(.button-md.button-strong) {
+  font-weight: bold;
+}
+

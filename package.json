@@ -1,0 +1,47 @@
+{
+  "name": "noi-mobility-traffic",
+  "version": "0.0.1",
+  "description": "NOI Mobility Traffic Web Component",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/types/components.d.ts",
+  "es2015": "dist/esm/index.mjs",
+  "es2017": "dist/esm/index.mjs",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/noi-mobility-traffic/noi-mobility-traffic.esm.js",
+  "files": [
+    "dist/",
+    "loader/"
+  ],
+  "scripts": {
+    "build:cdn": "stencil build --docs --config stencil.config-cdn.ts",
+    "build:local": "stencil build --docs --config  stencil.config-local.ts",
+    "start": "stencil build --config  stencil.config-local.ts --dev --watch --serve",
+    "start:iframe": "stencil build --config  stencil.config-iframe.ts --dev --watch --serve",
+    "start:prod": "stencil build --config stencil.config-local.ts --watch --serve",
+    "test": "stencil test --spec --config stencil.config-local.ts",
+    "test.watch": "stencil test --spec --watchAll --config stencil.config-local.ts",
+    "generate": "stencil generate",
+    "chrome": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --disable-web-security --user-data-dir=\"/tmp/chrome_dev_test\" --remote-debugging-port=9222"
+  },
+  "dependencies": {
+    "@stencil/core": "^2.0.1",
+    "@stencil/store": "^1.3.0",
+    "leaflet": "^1.7.1",
+    "resize-observer-polyfill": "^1.5.1"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@stencil/sass": "^1.3.2",
+    "@stencil/webpack": "0.0.6",
+    "@types/geojson": "^7946.0.7",
+    "@types/jest": "^26.0.12",
+    "@types/leaflet": "^1.5.17",
+    "@types/node": "^14.11.2",
+    "jest": "^26.4.2",
+    "jest-cli": "^26.4.2",
+    "rollup-plugin-dotenv": "^0.3.0",
+    "tsconfig-paths-jest": "0.0.1"
+  }
+}
