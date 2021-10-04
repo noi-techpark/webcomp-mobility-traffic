@@ -161,7 +161,7 @@ async function loadPathDetailsEffect(segments: Array<{id: string, length: number
 
 async function loadPathEffect(segments: Array<{id: string, length: number}>, velocityMap: StringNumberMap): Promise<Array<NoiLinkStation>> {
   const segmentsIds = segments.map(i => i.id);
-  const geometryMap = await NoiAPI.getSegmentsGeometries(segmentsIds);
+  const geometryMap = await NoiAPI.getPathGeometries(segmentsIds);
   const jams = await loadJams();
   const path = segmentsIds.reduce((result, id) => {
     if (!geometryMap[id]) {

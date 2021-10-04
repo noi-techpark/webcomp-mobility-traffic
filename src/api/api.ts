@@ -391,18 +391,57 @@ export class OpenDataHubNoiService {
     }
   }
 
-  async getSegmentsGeometries(segmentsIds: Array<string>): Promise<{[id: string]: {name: string, geometry: any}}> {
+  async getPathGeometries(segmentsIds: Array<string>): Promise<{[id: string]: {name: string, geometry: any}}> {
     if (this.geometries) {
       return selectSegmentsGeometries(segmentsIds, this.geometries);
     }
     try {
-      const response = await fetch(getAssetPath('./geometries.json'));
-      if (response.ok) {
-        const json = await response.json() || {};
-        this.geometries = json;
-        return selectSegmentsGeometries(segmentsIds, this.geometries);
+      await this.fetchGeometries();
+      await this.fetchFallbackGeometries();
+      return selectSegmentsGeometries(segmentsIds, this.geometries);
+    } catch (error) {
+      if (error instanceof NoiError) {
+        throw error;
       }
       throw new NoiError('error.geometries');
+    }
+  }
+
+  async fetchGeometries(): Promise<void> {
+    try {
+      const where = `egeometry.neq.null,eactive.eq.true`;
+      const response = await this.request(
+        `${OpenDataHubNoiService.BASE_URL}/${OpenDataHubNoiService.VERSION}/flat,edge/LinkStation?where=${where}&limit=-1`,
+        {}
+      );
+      if (!response || !response.data || !Array.isArray(response.data)) {
+        throw new NoiError(NOI_SERVICE_ERR_DATA_FORMAT, {message: `LinkStations expecting an array response`});
+      }
+      this.geometries = (response.data as Array<any>).map(getLinkStationParser({calcGeometryDistance: true})).reduce(
+        (result, i) => {result[i.id] = i; return result;},
+        {}
+      );
+    } catch (error) {
+      if (error instanceof NoiError) {
+        throw error;
+      }
+      throw new NoiError('error.geometries');
+    }
+  }
+
+  async fetchFallbackGeometries(): Promise<void> {
+    try {
+      const response = await fetch(getAssetPath('./geometries.json'));
+      if (!response.ok) {
+        throw new NoiError('error.geometries');
+      }
+      const json = await response.json() || {};
+      this.geometries = this.geometries || {};
+      Object.keys(json).forEach(id => {
+        if (!this.geometries[id]) {
+          this.geometries[id] = json[id];
+        }
+      });
     } catch (error) {
       if (error instanceof NoiError) {
         throw error;
