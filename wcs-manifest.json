@@ -26,27 +26,31 @@
     }
   ],
   "image": "wcs-logo.png",
-  "searchTags": ["mobility"],
+  "searchTags": [
+    "mobility"
+  ],
   "dist": {
     "basePath": "cdn/noi",
     "files": [
+      "index.esm.js",
+      "noi-mobility-traffic.i18n.en.json",
+      "search.svg",
+      "noi-mobility-traffic.i18n.de.json",
+      "index.html",
       "geometries.json",
       "host.config.json",
-      "index.esm.js",
-      "index.html",
-      "jams.json",
-      "logo.svg",
-      "mountains.svg",
-      "noi-mobility-traffic.esm.js",
-      "noi-mobility-traffic.i18n.de.json",
-      "noi-mobility-traffic.i18n.en.json",
       "noi-mobility-traffic.i18n.it.json",
-      "noi-mobility-traffic.js",
-      "p-55123202.entry.js",
-      "p-cdb96f25.js",
-      "search.svg",
+      "p-27f78161.entry.js",
+      "logo.svg",
+      "urban-segments.json",
+      "noi-mobility-traffic.esm.js",
+      "jams.json",
+      "p-d2f8bff6.js",
       "time-thresholds.json",
-      "urban-segments.json"
+      "noi-mobility-traffic.js",
+      "mountains.svg",
+      "p-cdb96f25.js",
+      "p-3ab4d723.entry.js"
     ],
     "scripts": [
       {

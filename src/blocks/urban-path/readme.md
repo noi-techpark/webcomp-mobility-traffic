@@ -14,11 +14,13 @@
 ### Depends on
 
 - [noi-station-item](../station-item)
+- [noi-last-sync](../last-sync)
 
 ### Graph
 ```mermaid
 graph TD;
   noi-urban-path --> noi-station-item
+  noi-urban-path --> noi-last-sync
   noi-path-details --> noi-urban-path
   style noi-urban-path fill:#f9f,stroke:#333,stroke-width:4px
 ```

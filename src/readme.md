@@ -27,10 +27,12 @@ graph TD;
   noi-stations-modal --> noi-input
   noi-search --> noi-path-details
   noi-search --> noi-button
+  noi-path-details --> noi-last-sync
   noi-path-details --> noi-urban-path
   noi-path-details --> noi-station-item
   noi-path-details --> noi-button
   noi-urban-path --> noi-station-item
+  noi-urban-path --> noi-last-sync
   noi-map --> noi-button
   style noi-mobility-traffic fill:#f9f,stroke:#333,stroke-width:4px
 ```
