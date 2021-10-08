@@ -38,6 +38,7 @@ pipeline {
 							echo 'CLIENT_ID=$CLIENT_ID' >> .env
 							echo 'TOKEN_URL=$TOKEN_URL' >> .env
 							rm -rf $(jq -r ".dist.basePath" wcs-manifest.json)
+							ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
 						'''
 					}
 				}
