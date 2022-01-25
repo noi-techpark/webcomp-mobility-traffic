@@ -1,0 +1,33 @@
+# version 1.0
+name: CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          cache: 'npm'
+      
+      - name: configure
+        run: |
+          rm -f .env
+          echo 'CLIENT_SECRET=fake-secret-for-testing' >> .env
+          echo 'CLIENT_ID=it.bz.opendatahub.webcomponents.mobility-traffic' >>.env
+          echo 'TOKEN_URL=https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token' >>.env
+
+      - name: install
+        run: npm ci
+      
+      - name: test
+        run: npm run test
+
+      - name: build
+        run: npm run build:cdn
+
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v1
