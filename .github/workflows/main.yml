@@ -25,6 +25,7 @@ jobs:
 
       - uses: noi-techpark/github-actions/npm-test@v2
         with:
+          lint-enabled: false
           node-version: ${{env.NODE_VERSION}}
 
       - uses: noi-techpark/github-actions/npm-build@v2
