@@ -20,7 +20,7 @@ jobs:
           X_CLIENT_ID: "it.bz.opendatahub.webcomponents.mobility-traffic"
           X_TOKEN_URL: "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
 
-      - name: Prepare stencil for test
+      - name: Prepare stencil bin
         run: |
             mkdir -p ~/.local/bin
             ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
@@ -53,6 +53,11 @@ jobs:
           X_CLIENT_ID: "it.bz.opendatahub.webcomponents.mobility-traffic"
           X_TOKEN_URL: "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
 
+      - name: Prepare stencil bin
+        run: |
+            mkdir -p ~/.local/bin
+            ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
+
       - uses: noi-techpark/github-actions/npm-build@v2
         with:
           build-command: npm run build:cdn
@@ -77,6 +82,11 @@ jobs:
           X_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           X_CLIENT_ID: "it.bz.opendatahub.webcomponents.mobility-traffic"
           X_TOKEN_URL: "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
+
+      - name: Prepare stencil bin
+        run: |
+            mkdir -p ~/.local/bin
+            ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
 
       - uses: noi-techpark/github-actions/npm-build@v2
         with:
