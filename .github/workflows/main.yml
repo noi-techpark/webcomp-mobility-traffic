@@ -63,6 +63,9 @@ jobs:
           build-command: npm run build:cdn
           node-version: ${{env.NODE_VERSION}}
 
+      - name: Print cdn/noi directory
+        run: ls -la cdn/noi
+
       - uses: noi-techpark/github-actions/webcomp-push@v2
         with:
           keycloak-secret: ${{secrets.WCSTORE_CLI_KEYCLOAK_SECRET_TEST}}
