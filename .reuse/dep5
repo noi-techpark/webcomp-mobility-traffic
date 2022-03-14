@@ -7,18 +7,6 @@ Files: src/* work/* dist/webcomp-*.js webcomp-*.js e2e/* example/* assets/* cdn/
 Copyright: (c) 2021 NOI Techpark <info@noi.bz.it>
 License: AGPL-3.0-or-later
 
-Files: src/*.md src/*.txt .env.* *.js.LICENSE.txt *.json .env stencil.* loader/*
+Files: src/*.md src/*.txt .env.* *.js.LICENSE.txt *.json .env stencil.* loader/* .github/workflows/main.yml  infrastructure/* .editorconfig .gitignore README.md docker-compose.yml package.json wcs-manifest.json yarn.lock webpack.* wcs-logo.png
 Copyright: (c) 2021 NOI Techpark <info@noi.bz.it>
-License: CC0-1.0
-
-Files: infrastructure/*
-Copyright: (c) 2021 NOI Techpark <info@noi.bz.it>
-License: CC0-1.0
-
-Files: .editorconfig .gitignore README.md docker-compose.yml package.json wcs-manifest.json yarn.lock webpack.* wcs-logo.png
-Copyright: (c) 2021 NOI Techpark <info@noi.bz.it>
-License: CC0-1.0
-
-Files: .github/workflows/ci.yml
-Copyright: (c) 2022 Simon Dalvai <s.dalvai@noi.bz.it>
 License: CC0-1.0
