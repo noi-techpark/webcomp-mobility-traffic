@@ -41,17 +41,17 @@
       "geometries.json",
       "host.config.json",
       "noi-mobility-traffic.i18n.it.json",
-      "p-27f78161.entry.js",
       "logo.svg",
       "urban-segments.json",
       "noi-mobility-traffic.esm.js",
       "jams.json",
-      "p-d2f8bff6.js",
       "time-thresholds.json",
       "noi-mobility-traffic.js",
       "mountains.svg",
       "p-cdb96f25.js",
-      "p-387298c8.entry.js"
+      "p-d2f8bff6.js",
+      "p-27f78161.entry.js",
+      "p-bfe28c67.entry.js"
     ],
     "scripts": [
       {
