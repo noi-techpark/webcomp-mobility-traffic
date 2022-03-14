@@ -3,6 +3,7 @@
   "description": "Noi Mobility Traffic Web Component",
   "descriptionAbstract": "Noi Mobility Traffic Web Component",
   "license": "AGPL-3.0",
+  "repositoryUrl": "https://github.com/noi-techpark/webcomp-mobility-traffic.git",
   "copyrightHolders": [
     {
       "name": "NOI",
