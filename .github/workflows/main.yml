@@ -22,7 +22,7 @@ jobs:
 
       - name: Prepare stencil for test
         run: |
-            mkdir -p ~/.local/bin/stencil
+            mkdir -p ~/.local/bin
             ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
 
       - uses: noi-techpark/github-actions/npm-test@v2
