@@ -21,7 +21,7 @@ jobs:
           X_TOKEN_URL: "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
 
       - name: Prepare stencil for test
-        run: ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
+        run: ln -s "$PWD/node_modules/@stencil/core/bin/stencil" .stencil
 
       - uses: noi-techpark/github-actions/npm-test@v2
         with:

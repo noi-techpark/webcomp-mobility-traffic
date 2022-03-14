@@ -1,5 +1,6 @@
 # Mobility Traffic
 
+[![CI/CD](https://github.com/noi-techpark/webcomp-mobility-traffic/actions/workflows/main.yml/badge.svg)](https://github.com/noi-techpark/webcomp-mobility-traffic/actions/workflows/main.yml)
 [![REUSE status](https://api.reuse.software/badge/github.com/noi-techpark/webcomp-mobility-traffic)](https://api.reuse.software/info/github.com/noi-techpark/webcomp-mobility-traffic)
 
 A responsive webcomponent for travelling times
