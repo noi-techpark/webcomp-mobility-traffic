@@ -19,7 +19,7 @@ jobs:
         env:
           X_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           X_CLIENT_ID: "it.bz.opendatahub.webcomponents.mobility-traffic"
-          X_TOKEN_URL: "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
+          X_TOKEN_URL: "https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/token"
 
       - name: Prepare stencil bin
         run: |
@@ -49,7 +49,7 @@ jobs:
         env:
           X_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           X_CLIENT_ID: "it.bz.opendatahub.webcomponents.mobility-traffic"
-          X_TOKEN_URL: "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
+          X_TOKEN_URL: "https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/token"
 
       - name: Prepare stencil bin
         run: |
@@ -82,7 +82,7 @@ jobs:
         env:
           X_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           X_CLIENT_ID: "it.bz.opendatahub.webcomponents.mobility-traffic"
-          X_TOKEN_URL: "https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
+          X_TOKEN_URL: "https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/token"
 
       - name: Prepare stencil bin
         run: |

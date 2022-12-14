@@ -254,7 +254,7 @@ root prj dir with following secrets:
 ```
 CLIENT_SECRET=???
 CLIENT_ID=it.bz.opendatahub.webcomponents.mobility-traffic
-TOKEN_URL="https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/token"
+TOKEN_URL="https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/token"
 ```
 
 To build the project, the following prerequisites must be met:
