@@ -237,7 +237,7 @@ function getLinkStationParser(options?: { calcGeometryDistance?: boolean }) {
 
 
 export class OpenDataHubNoiService {
-  static BASE_URL = 'https://mobility.api.opendatahub.bz.it';
+  static BASE_URL = 'https://mobility.api.opendatahub.com';
   static VERSION = 'v2';
   static ORIGIN = '&origin=webcomp-mobility-traffic';
   private jams = undefined;
