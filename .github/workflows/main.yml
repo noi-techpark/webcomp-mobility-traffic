@@ -64,9 +64,8 @@ jobs:
       # npm run build:cdn builds files that can change name
       # so this command fills the wcs-manifest with that files
       - name: Fill wcs-manifest files
-        run: |
-          CDN_FILES = $(ls cdn/noi/ | jq -R -s -c 'split("\n")[:-1]')
-          sed -i 's/FILES_BY_CICD/'"$CDN_FILES"'/g' wcs-manifest.json
+        run: sed -i 's/FILES_BY_CICD/'"$(ls cdn/noi/ | jq -R -s -c 'split("\n")[:-1]')"'/g' wcs-manifest.json
+
 
       - uses: noi-techpark/github-actions/webcomp-push@v2
         with:
