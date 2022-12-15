@@ -27,32 +27,10 @@
     }
   ],
   "image": "wcs-logo.png",
-  "searchTags": [
-    "mobility"
-  ],
+  "searchTags": ["mobility"],
   "dist": {
     "basePath": "cdn/noi",
-    "files": [
-      "index.esm.js",
-      "noi-mobility-traffic.i18n.en.json",
-      "search.svg",
-      "noi-mobility-traffic.i18n.de.json",
-      "index.html",
-      "geometries.json",
-      "host.config.json",
-      "noi-mobility-traffic.i18n.it.json",
-      "logo.svg",
-      "urban-segments.json",
-      "noi-mobility-traffic.esm.js",
-      "jams.json",
-      "time-thresholds.json",
-      "noi-mobility-traffic.js",
-      "mountains.svg",
-      "p-cdb96f25.js",
-      "p-d2f8bff6.js",
-      "p-27f78161.entry.js",
-      "p-d5fb1c3d.entry.js"
-    ],
+    "files": ["geometries.json","host.config.json","index.esm.js","index.html","jams.json","logo.svg","mountains.svg","noi-mobility-traffic.esm.js","noi-mobility-traffic.i18n.de.json","noi-mobility-traffic.i18n.en.json","noi-mobility-traffic.i18n.it.json","noi-mobility-traffic.js","p-27f78161.entry.js","p-cdb96f25.js","p-d2f8bff6.js","p-d5fb1c3d.entry.js","search.svg","time-thresholds.json","urban-segments.json"],
     "scripts": [
       {
         "file": "noi-mobility-traffic.esm.js",
@@ -73,11 +51,7 @@
         "label": "Two letter key for the language to be used, if omitted the widget will use the lang attribute of the closest parent element. Fallback is `en`",
         "required": false,
         "options": {
-          "values": [
-            "en",
-            "de",
-            "it"
-          ],
+          "values": ["en", "de", "it"],
           "default": "en"
         }
       },

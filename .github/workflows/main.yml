@@ -23,8 +23,8 @@ jobs:
 
       - name: Prepare stencil bin
         run: |
-            mkdir -p ~/.local/bin
-            ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
+          mkdir -p ~/.local/bin
+          ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
 
       - uses: noi-techpark/github-actions/npm-test@v2
         with:
@@ -53,13 +53,20 @@ jobs:
 
       - name: Prepare stencil bin
         run: |
-            mkdir -p ~/.local/bin
-            ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
+          mkdir -p ~/.local/bin
+          ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
 
       - uses: noi-techpark/github-actions/npm-build@v2
         with:
           build-command: npm run build:cdn
           node-version: ${{env.NODE_VERSION}}
+
+      # npm run build:cdn builds files that can change name
+      # so this command fills the wcs-manifest with that files
+      - name: Fill wcs-manifest files
+        run: |
+          CDN_FILES = $(ls cdn/noi/ | jq -R -s -c 'split("\n")[:-1]')
+          sed -i 's/FILES_BY_CICD/'"$CDN_FILES"'/g' wcs-manifest.json
 
       - uses: noi-techpark/github-actions/webcomp-push@v2
         with:
@@ -83,17 +90,23 @@ jobs:
 
       - name: Prepare stencil bin
         run: |
-            mkdir -p ~/.local/bin
-            ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
+          mkdir -p ~/.local/bin
+          ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
 
       - uses: noi-techpark/github-actions/npm-build@v2
         with:
           build-command: npm run build:cdn
           node-version: ${{env.NODE_VERSION}}
 
+      # npm run build:cdn builds files that can change name
+      # so this command fills the wcs-manifest with that files
+      - name: Fill wcs-manifest files
+        run: |
+          CDN_FILES = $(ls cdn/noi/ | jq -R -s -c 'split("\n")[:-1]')
+          sed -i 's/FILES_BY_CICD/'"$CDN_FILES"'/g' wcs-manifest.json
+
       - uses: noi-techpark/github-actions/webcomp-push@v2
         with:
           keycloak-secret: ${{secrets.WCSTORE_CLI_KEYCLOAK_SECRET_PROD}}
           version-tag: ${{github.ref_name}}
           production: "true"
-
