@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { translate } from '@noi/lang';
 import { formatDate, getBrowserUTCOffsetMs } from '@noi/utils';
 import { Component, h, Host, Prop } from '@stencil/core';

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { NoiError, NOI_ERR_NO_LOCALE } from '@noi/api/error';
 import { getAssetPath } from '@stencil/core';
 

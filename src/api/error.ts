@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 export const NOI_ERR_UNKNOWN = 'error.unknown';
 export const NOI_ERR_NO_LOCALE = 'error.no-locale';
 

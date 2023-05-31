@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { NOI_SERVICE_ERR_UNKNOWN, NOI_SERVICE_ERR_OFFLINE, OpenDataHubNoiService } from './api';
 import { NoiError } from './error';

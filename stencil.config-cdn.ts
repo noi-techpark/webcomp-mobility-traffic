@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: CC0-1.0
+
 import { Config } from '@stencil/core';
 import dotEnvPlugin from 'rollup-plugin-dotenv';
 import { sass } from '@stencil/sass';

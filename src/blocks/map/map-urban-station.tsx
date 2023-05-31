@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { FunctionalComponent, h } from '@stencil/core';
 import { CircleMarker, FillRule, Browser } from 'leaflet';
 import { NoiCoordinate, Selectable } from '@noi/utils';

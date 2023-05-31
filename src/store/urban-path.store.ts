@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { NoiError, NOI_ERR_UNKNOWN } from '@noi/api/error';
 import { createStore } from '@stencil/store';
 import { CancellablePromise, cancellablePromise, NoiCoordinate } from '@noi/utils';

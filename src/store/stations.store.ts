@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { createStore } from '@stencil/store';
 import { NoiHighwayStation } from '../api';
 import { Selectable, WithStartEnd } from '../utils';

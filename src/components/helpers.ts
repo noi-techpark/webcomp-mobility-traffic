@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { EventEmitter } from '@stencil/core';
 
 declare const __zone_symbol__requestAnimationFrame: any;

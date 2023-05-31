@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { Host, Component, h, Prop, Event, EventEmitter, State, Watch } from '@stencil/core';
 import noiStore, { selectStationsWithSelected } from '@noi/store';
 import { translate } from '@noi/lang';

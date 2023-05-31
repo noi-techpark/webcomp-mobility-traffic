@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { LatLng } from 'leaflet';
 
 export type Selectable<T> = T & {selected?: boolean};
