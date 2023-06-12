@@ -3,7 +3,7 @@ Upstream-Name: webcomp-mobility-traffic
 Upstream-Contact: Peter Moser <p.moser@noi.bz.it>
 Source: https://github.com/noi-techpark/webcomp-mobility-traffic
 
-Files: .github/* infrastructure/* .gitignore LICENSE.md .editorconfig *.png *.svg *.json
+Files: .github/* infrastructure/* .gitignore .pre-commit-config.yaml LICENSE.md .editorconfig *.png *.svg *.json
 Copyright: (c) NOI Techpark <digital@noi.bz.it>
 License: CC0-1.0
 
