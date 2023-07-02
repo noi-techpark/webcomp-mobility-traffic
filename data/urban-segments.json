@@ -3,8 +3,7 @@
     "Torricelli->siemens",
     "siemens->Galilei_Palermo",
     "Galilei_Palermo->Galilei_Lancia",
-    "Galilei_Lancia->Galilei_Virgolo",
-    "Galilei_Virgolo->Galleria_Virgolo",
+    "Galilei_Lancia->Galleria_Virgolo",
     "Galleria_Virgolo->P_Campiglio"
   ],
   "1858->1860": [
