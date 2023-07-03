@@ -1,5 +1,6 @@
 {
   "title": "Noi Mobility Traffic",
+  "shortName": "noi-mobility-traffic",
   "description": "Noi Mobility Traffic Web Component",
   "descriptionAbstract": "Noi Mobility Traffic Web Component",
   "license": "AGPL-3.0",
