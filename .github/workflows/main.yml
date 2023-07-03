@@ -26,6 +26,11 @@ jobs:
           mkdir -p ~/.local/bin
           ln -s "$PWD/node_modules/@stencil/core/bin/stencil" ~/.local/bin/stencil
 
+      # npm run build:cdn builds files that can change name
+      # so this command fills the wcs-manifest with that files
+      - name: Fill wcs-manifest files
+        run: sed -i 's/FILES_BY_CICD/'"$(ls cdn/noi/ | jq -R -s -c 'split("\n")[:-1]')"'/g' wcs-manifest.json
+
       - uses: noi-techpark/github-actions/npm-test@v2
         with:
           lint-enabled: false
