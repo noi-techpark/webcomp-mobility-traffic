@@ -42,6 +42,7 @@ export class NoiMap {
 
   componentDidLoad() {
     this.map = new Map(this.el, { zoomControl: false });
+    this.map.attributionControl.addAttribution("<a href='https://opendatahub.com' target='_blank'>OpenDataHub.com</a> | &copy <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors.");
     this.entityFactory = new MapEntityFactory(this.map);
     this.updateCenterAndZoom();
     new TileLayer(TILE_LAYER).addTo(this.map);
