@@ -28,7 +28,10 @@
     }
   ],
   "image": "wcs-logo.png",
-  "searchTags": ["mobility"],
+  "searchTags": [
+    "mobility", 
+    "map"
+  ],
   "dist": {
     "basePath": "cdn/noi",
     "files": FILES_BY_CICD,
